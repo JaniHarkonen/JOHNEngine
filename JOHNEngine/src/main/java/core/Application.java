@@ -1,8 +1,14 @@
 package core;
 
+import testing.DebugUtils;
+
 public class Application {
+	
+	public Application() {
+		DebugUtils.log(this, "hello again");
+	}
 
 	public static void main(String[] args) {
-		System.out.println("hello world :)");
+		new Application();
 	}
 }
