@@ -2,9 +2,10 @@ package testing;
 
 public class DebugUtils {
 
-	public static void log(Object me, String message) {
+	public static void log(Object me, Object ...message) {
 		System.out.println(me + ":");
-		System.out.println(message);
 		
+		for( Object m : message )
+		System.out.println(m);
 	}
 }
