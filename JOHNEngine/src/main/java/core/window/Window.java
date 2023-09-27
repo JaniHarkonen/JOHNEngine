@@ -1,15 +1,15 @@
-package core.assetmngr;
+package core.window;
 
 import core.engine.IEngineComponent;
 
-public final class AssetManager implements IEngineComponent {
+public final class Window implements IEngineComponent {
 	
-	public AssetManager() {
+	public Window() {
 		
 	}
 	
-	public static AssetManager setup() {
-		return new AssetManager();
+	public static Window setup() {
+		return new Window();
 	}
 
 	public int beforeTick() {
@@ -21,5 +21,6 @@ public final class AssetManager implements IEngineComponent {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	
 }
