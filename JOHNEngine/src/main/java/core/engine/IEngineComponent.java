@@ -2,6 +2,6 @@ package core.engine;
 
 public interface IEngineComponent {
 
-	public int beforeTick();
-	public int afterTick();
+	public int beforeTick(float deltaTime);
+	public int afterTick(float deltaTime);
 }

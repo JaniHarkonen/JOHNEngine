@@ -12,12 +12,12 @@ public final class Window implements IEngineComponent {
 		return new Window();
 	}
 
-	public int beforeTick() {
+	public int beforeTick(float deltaTime) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int afterTick() {
+	public int afterTick(float deltaTime) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -5,6 +5,12 @@ import testing.DebugUtils;
 
 public final class Engine {
 	
+	/**
+	 * State of the game engine.
+	 * 
+	 * @author User
+	 *
+	 */
 	public enum STATE {
 		START_FAILED,
 		START_FAILED_NO_GAME,
@@ -13,18 +19,6 @@ public final class Engine {
 	}
 	
 	public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY;	// Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
-	
-	
-
-	/*public static final int SETUP_WINDOW = 2;
-
-	public static final int SETUP_ASSET_MANAGER = 2;
-	
-
-	public static final int SETUP_NETWORKER = 4;
-	
-	
-	public static final int SETUP_SERVER = 8;*/
 	
 	public static Engine engine;
 	
@@ -57,35 +51,6 @@ public final class Engine {
 		this.state = Engine.STATE.STOPPED;
 	}
 	
-	/*private void initializeEngineComponents(int setupMask) {
-		if( CommonUtils.checkBitPattern(setupMask, SETUP_WINDOW) )
-		{
-			
-		}
-		
-		if( CommonUtils.checkBitPattern(setupMask, SETUP_ASSET_MANAGER) )
-		{
-			
-		}
-		
-		if( CommonUtils.checkBitPattern(setupMask, SETUP_NETWORKER) )
-		{
-			
-		}
-		
-		if( CommonUtils.checkBitPattern(setupMask, SETUP_SERVER) )
-		{
-			
-		}
-		
-		DebugUtils.log(this,
-			"setup renderer: " + CommonUtils.checkBitPattern(setupMask, SETUP_WINDOW),
-			"setup asset manager: " + CommonUtils.checkBitPattern(setupMask, SETUP_ASSET_MANAGER),
-			"setup networker: " + CommonUtils.checkBitPattern(setupMask, SETUP_NETWORKER),
-			"setup server: " + CommonUtils.checkBitPattern(setupMask, SETUP_SERVER)
-		);
-	}*/
-	
 	private void run() {
 		this.state = Engine.STATE.RUNNING;
 		DebugUtils.log(this, "number of engine components: " + this.engineComponents.length);
@@ -111,13 +76,13 @@ public final class Engine {
 			
 				// (BEFORE TICK) Poll engine components
 			for( IEngineComponent ec : this.engineComponents )
-			ec.beforeTick();
+			ec.beforeTick(deltaTime);
 			
 			game.tick(deltaTime);	// Run game logic
 			
 				// (AFTER TICK) Update engine components
 			for( IEngineComponent ec : this.engineComponents )
-			ec.afterTick();
+			ec.afterTick(deltaTime);
 		}
 		
 		game.onClose();	// Close the game and free memory

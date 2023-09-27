@@ -1,4 +1,4 @@
-package game;
+package testing;
 
 import core.LauncherFramework;
 import core.assetmngr.AssetManager;
