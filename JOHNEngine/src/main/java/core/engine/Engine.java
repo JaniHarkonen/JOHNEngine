@@ -1,12 +1,13 @@
 package core.engine;
 
+import core.AbstractGame;
 import testing.DebugUtils;
-import utils.CommonUtils;
 
 public final class Engine {
 	
 	public enum STATE {
 		START_FAILED,
+		START_FAILED_NO_GAME,
 		RUNNING,
 		STOPPED
 	}
@@ -30,19 +31,23 @@ public final class Engine {
 	private STATE state;
 	private float ticksPerSecond;
 	private IEngineComponent[] engineComponents;
+	private AbstractGame game;
 
 	private Engine() {
 		this.state = Engine.STATE.STOPPED;
 		this.ticksPerSecond = TICK_SPEED_CAP;
 	}
 	
-	public static STATE start(IEngineComponent ...engineComponents) {
+	public static STATE start(AbstractGame game, IEngineComponent ...engineComponents) {
 		if( engine != null )
 		return Engine.STATE.START_FAILED;
 		
+		if( game == null )
+		return Engine.STATE.START_FAILED_NO_GAME;
+		
 		engine = new Engine();
-		//engine.initializeEngineComponents(setupMask);
 		engine.setEngineComponents(engineComponents);
+		engine.setGame(game);
 		engine.run();
 		
 		return Engine.STATE.STOPPED;
@@ -81,12 +86,6 @@ public final class Engine {
 		);
 	}*/
 	
-	private class loller {
-		public void leller() {
-			
-		}
-	}
-	
 	private void run() {
 		this.state = Engine.STATE.RUNNING;
 		DebugUtils.log(this, "number of engine components: " + this.engineComponents.length);
@@ -94,16 +93,11 @@ public final class Engine {
 	}
 	
 	private void loop() {
+		game.onCreate(engineComponents);	// Create the game
+		
 		long lastTime = System.nanoTime();
 		float tickInterval = 1 / this.ticksPerSecond;
 		float deltaTime;
-		long counter = 0;
-		loller lollerino = null;
-		
-		if( Math.random() > 0.5 )
-		lollerino = new loller();
-			
-		long testtime = System.currentTimeMillis();
 		
 		while( this.state == Engine.STATE.RUNNING )
 		{
@@ -115,21 +109,25 @@ public final class Engine {
 			
 			lastTime = currentTime;
 			
-			if( lollerino != null )
-			lollerino.leller();
+				// (BEFORE TICK) Poll engine components
+			for( IEngineComponent ec : this.engineComponents )
+			ec.beforeTick();
 			
-			counter++;
+			game.tick(deltaTime);	// Run game logic
 			
-			if( System.currentTimeMillis() - testtime >= 1000 )
-			{
-				DebugUtils.log(this, counter);
-				counter = 0;
-				testtime = System.currentTimeMillis();
-			}
+				// (AFTER TICK) Update engine components
+			for( IEngineComponent ec : this.engineComponents )
+			ec.afterTick();
 		}
+		
+		game.onClose();	// Close the game and free memory
 	}
 	
 	private void setEngineComponents(IEngineComponent ...engineComponents) {
 		this.engineComponents = engineComponents;
+	}
+	
+	private void setGame(AbstractGame game) {
+		this.game = game;
 	}
 }
