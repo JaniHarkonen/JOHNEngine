@@ -1,7 +1,6 @@
 package core.engine;
 
 import core.AbstractGame;
-import testing.DebugUtils;
 
 public final class Engine {
 
@@ -21,21 +20,21 @@ public final class Engine {
     public static Engine engine;
 
     private STATE state;
-    private float ticksPerSecond;
+    private float tickRate;
     private IEngineComponent[] engineComponents;
     private AbstractGame game;
 
     private Engine() {
         this.state = Engine.STATE.STOPPED;
-        this.ticksPerSecond = TICK_SPEED_CAP;
+        this.tickRate = TICK_SPEED_CAP;
     }
 
     public static STATE start(AbstractGame game, IEngineComponent... engineComponents) {
         if (engine != null)
-            return Engine.STATE.START_FAILED;
+        return Engine.STATE.START_FAILED;
 
         if (game == null)
-            return Engine.STATE.START_FAILED_NO_GAME;
+        return Engine.STATE.START_FAILED_NO_GAME;
 
         engine = new Engine();
         engine.setEngineComponents(engineComponents);
@@ -51,15 +50,14 @@ public final class Engine {
 
     private void run() {
         this.state = Engine.STATE.RUNNING;
-        DebugUtils.log(this, "number of engine components: " + this.engineComponents.length);
         this.loop();
     }
 
     private void loop() {
-        game.onCreate(engineComponents); // Create the game
+        game.onStart(this, engineComponents); // Start the game
 
         long lastTime = System.nanoTime();
-        float tickInterval = 1 / this.ticksPerSecond;
+        float tickInterval = 1 / this.tickRate;
         float deltaTime;
 
         while (this.state == Engine.STATE.RUNNING) {
@@ -67,19 +65,19 @@ public final class Engine {
             deltaTime = (currentTime - lastTime) / 1000000000.0f;
 
             if (deltaTime < tickInterval)
-                continue;
+            continue;
 
             lastTime = currentTime;
 
             // (BEFORE TICK) Poll engine components
             for (IEngineComponent ec : this.engineComponents)
-                ec.beforeTick(deltaTime);
+            ec.beforeTick(deltaTime);
 
             game.tick(deltaTime); // Run game logic
 
             // (AFTER TICK) Update engine components
             for (IEngineComponent ec : this.engineComponents)
-                ec.afterTick(deltaTime);
+            ec.afterTick(deltaTime);
         }
 
         game.onClose(); // Close the game and free memory
@@ -91,5 +89,9 @@ public final class Engine {
 
     private void setGame(AbstractGame game) {
         this.game = game;
+    }
+    
+    public void setTickRate(float tickRate) {
+        this.tickRate = tickRate;
     }
 }

@@ -12,6 +12,7 @@ public final class Launcher extends LauncherFramework {
         this.setupComponent(Window.setup());
         this.setupComponent(AssetManager.setup());
         this.setupComponent(Networker.setup());
+        this.setupGame(new TestGame());
     }
 
     public static void main(String[] args) {
