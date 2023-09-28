@@ -1,6 +1,6 @@
 package core.assetmngr;
 
-import core.engine.IEngineComponent;
+import core.IEngineComponent;
 
 public final class AssetManager implements IEngineComponent {
 
@@ -12,11 +12,13 @@ public final class AssetManager implements IEngineComponent {
         return new AssetManager();
     }
 
+    @Override
     public int beforeTick(float deltaTime) {
         // TODO Auto-generated method stub
         return 0;
     }
 
+    @Override
     public int afterTick(float deltaTime) {
         // TODO Auto-generated method stub
         return 0;

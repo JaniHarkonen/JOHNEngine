@@ -1,6 +1,6 @@
 package core.networker;
 
-import core.engine.IEngineComponent;
+import core.IEngineComponent;
 
 public final class Networker implements IEngineComponent {
 

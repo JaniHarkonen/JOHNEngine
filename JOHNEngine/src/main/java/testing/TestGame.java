@@ -3,9 +3,9 @@ package testing;
 import org.lwjgl.glfw.GLFW;
 
 import core.AbstractGame;
+import core.IEngineComponent;
 import core.assetmngr.AssetManager;
 import core.engine.Engine;
-import core.engine.IEngineComponent;
 import core.networker.Networker;
 import core.window.Window;
 

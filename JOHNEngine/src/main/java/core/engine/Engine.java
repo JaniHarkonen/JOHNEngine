@@ -1,6 +1,7 @@
 package core.engine;
 
 import core.AbstractGame;
+import core.IEngineComponent;
 
 public final class Engine {
 

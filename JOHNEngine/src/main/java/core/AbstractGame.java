@@ -1,7 +1,6 @@
 package core;
 
 import core.engine.Engine;
-import core.engine.IEngineComponent;
 
 public abstract class AbstractGame {
 

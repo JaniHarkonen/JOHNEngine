@@ -3,7 +3,7 @@ package core.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
-import core.engine.IEngineComponent;
+import core.IEngineComponent;
 import testing.DebugUtils;
 
 public final class Window extends Thread implements IEngineComponent {
