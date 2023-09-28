@@ -2,46 +2,99 @@ package core.window;
 
 import org.lwjgl.glfw.GLFW;
 
-import testing.DebugUtils;
-
 public class Input {
     
-    /*public class MouseInfo {
-        private double x;
-        private double y;
+        // The state has been promoted to its own class because a snapshot has 
+        // to be maintained for each tick
+    public static class State {
+        private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
+        private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
+        
+        private static final int INPUT_NO_ACTION = 0;
+        private static final int INPUT_RELEASED = 1;
+        private static final int INPUT_PRESSED = 2;
+        
+        private final int[] keyMap;
         private final int[] buttonMap;
+        private double mouseX;
+        private double mouseY;
         
-        private MouseInfo() {
-            this.buttonMap = new int[GLFW.GLFW_MOUSE_BUTTON_LAST];
+        private State() {
+            this.keyMap = new int[KEY_MAP_SIZE];
+            this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
         }
         
-        public double getX() {
-            return this.x;
+        public static State createNullState() {
+            return new State();
         }
         
-        public double getY() {
-            return this.y;
+        private void takeSnapshot(State dest) {
+            for( int i = 0; i < KEY_MAP_SIZE; i++ )
+            {
+                dest.keyMap[i] = this.keyMap[i];
+                
+                    // Reset released keys
+                if( this.keyMap[i] == INPUT_RELEASED )
+                this.keyMap[i] = INPUT_NO_ACTION;
+                
+                if( i >= MOUSE_BUTTON_MAP_SIZE )
+                continue;
+                
+                dest.buttonMap[i] = this.buttonMap[i];
+                
+                    // Reset released mouse buttons
+                if( this.buttonMap[i] == INPUT_RELEASED )
+                this.buttonMap[i] = INPUT_NO_ACTION;
+            }
+            
+            dest.mouseX = this.mouseX;
+            dest.mouseY = this.mouseY;
         }
-    }*/
+        
+        private boolean checkKey(int key, int state) {
+            return (this.keyMap[key] == state);
+        }
+        
+        private boolean checkMouseButton(int mouseButton, int state) {
+            return (this.buttonMap[mouseButton] == state);
+        }
+        
+        public boolean isKeyReleased(int key) {
+            return this.checkKey(key, INPUT_RELEASED);
+        }
+        
+        public boolean isKeyDown(int key) {
+            return this.checkKey(key, INPUT_PRESSED);
+        }
+        
+        public boolean isMouseReleased(int button) {
+            return this.checkMouseButton(button, INPUT_RELEASED);
+        }
+        
+        public boolean isMouseDown(int button) {
+            return this.checkMouseButton(button, INPUT_PRESSED);
+        }
+        
+        public double getMouseX() {
+            return this.mouseX;
+        }
+        
+        public double getMouseY() {
+            return this.mouseY;
+        }
+    }
     
-    private static final int KEY_NO_ACTION = 0;
-    private static final int KEY_RELEASED = 1;
-    private static final int KEY_PRESSED = 2;
-    private static final int KEY_HELD = 3;
     
-    private static final int SECTION_UPDATING = 0;
-    private static final int SECTION_SNAPSHOT = 1;
-    
-    private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
+    /************************************* Input-class **************************************/
     
     private final Window hostWindow;
-    private final int[][] keyMap;
-    private final int[][] mouseButtonMap;
+    private final State updatingState;
+    private final State snapshotState;
 
     public Input(Window hostWindow) {
         this.hostWindow = hostWindow;
-        this.keyMap = new int[2][KEY_MAP_SIZE];
-        this.mouseButtonMap = new int [2][GLFW.GLFW_MOUSE_BUTTON_LAST + 1];
+        this.updatingState = new State();
+        this.snapshotState = new State();
     }
     
     public void attach() {
@@ -52,43 +105,26 @@ public class Input {
     }
     
     public void snapshot() {
-        final int[] updatingMap = this.keyMap[SECTION_UPDATING];
-        final int[] snapshotMap = this.keyMap[SECTION_SNAPSHOT];
-        
-        for( int i = 0; i < KEY_MAP_SIZE; i++ )
-        {
-            snapshotMap[i] = updatingMap[i];
-            
-            if( updatingMap[i] == KEY_RELEASED )
-            updatingMap[i] = KEY_NO_ACTION;
-        }
+        this.updatingState.takeSnapshot(this.snapshotState);
     }
     
-    public boolean isKeyPressed(int key) {
-        return (this.keyMap[SECTION_SNAPSHOT][key] == KEY_PRESSED);
-    }
-    
-    public boolean isKeyReleased(int key) {
-        return (this.keyMap[SECTION_SNAPSHOT][key] == KEY_RELEASED);
-    }
-    
-    public boolean isKeyDown(int key) {
-        int keyState = this.keyMap[SECTION_SNAPSHOT][key];
-        return (keyState == KEY_HELD || keyState == KEY_PRESSED);
+    public State getState() {
+        return this.snapshotState;
     }
     
     private void keyListener(int key, int action) {
         if( action == GLFW.GLFW_REPEAT )
         return;
         
-        this.keyMap[SECTION_UPDATING][key] = action + 1;
+        this.updatingState.keyMap[key] = action + 1;
     }
     
     private void mouseListener(double mouseX, double mouseY) {
-        
+        this.updatingState.mouseX = mouseX;
+        this.updatingState.mouseY = mouseY;
     }
     
     private void mouseListener(int button, int action) {
-        
+        this.updatingState.buttonMap[button] = action + 1;
     }
 }

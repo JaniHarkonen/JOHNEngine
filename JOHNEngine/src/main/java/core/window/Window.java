@@ -16,13 +16,15 @@ public final class Window extends Thread implements IEngineComponent {
     public static final int MOUSE_EVENT_MOVED = 1;
     public static final int MOUSE_EVENT_BUTTON = 2;
     
+    private static final Input.State NULL_STATE = Input.State.createNullState();
+    
     private long windowID;
     private int width;
     private int height;
     private String title;
-    private volatile boolean hasWindowClosed;
+    private boolean hasWindowClosed;
     private Renderer renderer;
-    private Input input;
+    private Input input; 
     
     public Window() {
         this.windowID = NULL_WINDOW;
@@ -108,8 +110,11 @@ public final class Window extends Thread implements IEngineComponent {
         return this.renderer;
     }
     
-    public Input getInput() {
-        return this.input;
+    public Input.State getInput() {
+        if( this.input == null )
+        return NULL_STATE;
+        
+        return this.input.getState();
     }
     
     public int getWidth() {

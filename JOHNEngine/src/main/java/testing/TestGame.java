@@ -58,10 +58,15 @@ public class TestGame extends AbstractGame {
                 //DebugUtils.log(this, "AAAAAAAAAAA");
             
             if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
+            DebugUtils.log(this, "aaaa");
+            
+            DebugUtils.log(this, this.gameWindow.getInput().getMouseX() + ", " + this.gameWindow.getInput().getMouseY());
+            
+            /*if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
                 DebugUtils.log(this, "BBBBB");
             
             if( this.gameWindow.getInput().isKeyDown(GLFW.GLFW_KEY_A) )
-                DebugUtils.log(this, "?????????");
+                DebugUtils.log(this, "?????????");*/
         }
         
     }
