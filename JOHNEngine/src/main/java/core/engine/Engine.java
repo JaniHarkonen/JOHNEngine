@@ -69,15 +69,14 @@ public final class Engine {
 
             lastTime = currentTime;
 
-            // (BEFORE TICK) Poll engine components
+                // Update engine components
             for (IEngineComponent ec : this.engineComponents)
-            ec.beforeTick(deltaTime);
+            {
+                ec.afterTick(deltaTime);
+                ec.beforeTick(deltaTime);
+            }
 
             game.tick(deltaTime); // Run game logic
-
-            // (AFTER TICK) Update engine components
-            for (IEngineComponent ec : this.engineComponents)
-            ec.afterTick(deltaTime);
         }
 
         game.onClose(); // Close the game and free memory
