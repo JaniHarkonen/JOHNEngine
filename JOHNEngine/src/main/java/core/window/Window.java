@@ -23,6 +23,7 @@ public final class Window extends Thread implements IEngineComponent {
     private int height;
     private String title;
     private boolean hasWindowClosed;
+    private int fps;
     private Renderer renderer;
     private Input input; 
     
@@ -32,6 +33,9 @@ public final class Window extends Thread implements IEngineComponent {
         this.height = DEFAULT_HEIGHT;
         this.title = DEFAULT_TITLE;
         this.hasWindowClosed = true;
+        this.fps = 0;
+        this.renderer = null;
+        this.input = null;
     }
 
     public static Window setup() {
@@ -49,23 +53,24 @@ public final class Window extends Thread implements IEngineComponent {
     @Override
     public void run() {
         GLFW.glfwInit();
-        
         this.createWindow();
         
-        long time = System.currentTimeMillis();
-        long counter = 0;
+        long startTime = System.currentTimeMillis();
+        int fpsCounter = 0;
         while( !GLFW.glfwWindowShouldClose(this.windowID) )
         {
+            long currentTime = System.currentTimeMillis();
+            
             GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
+            fpsCounter++;
             
-            counter++;
-            if( System.currentTimeMillis() - time >= 1000 )
+            if( currentTime - startTime >= 1000 )
             {
-                time = System.currentTimeMillis();
-                //DebugUtils.log(this, counter);
-                counter = 0;
+                this.fps = fpsCounter;
+                fpsCounter = 0;
+                startTime = currentTime;
             }
         }
         
@@ -83,6 +88,19 @@ public final class Window extends Thread implements IEngineComponent {
 
     public int afterTick(float deltaTime) {
         return 0;
+    }
+    
+    private long createWindow() {
+        this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
+        this.input = new Input(this);
+        this.input.attach();
+        GLFW.glfwMakeContextCurrent(this.windowID);
+        GLFW.glfwSwapInterval(0);
+        GLFW.glfwShowWindow(this.windowID);
+        
+        this.renderer = new Renderer();
+        
+        return this.windowID;
     }
     
         // Avaialble for all sub-components in the package
@@ -133,20 +151,9 @@ public final class Window extends Thread implements IEngineComponent {
         return this.hasWindowClosed;
     }
     
-    private long createWindow() {
-        this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
-        this.input = new Input(this);
-        this.input.attach();
-        GLFW.glfwMakeContextCurrent(this.windowID);
-        GLFW.glfwSwapInterval(0);
-        GLFW.glfwShowWindow(this.windowID);
-        
-        this.renderer = new Renderer();
-        
-        return this.windowID;
+    public int getFPS() {
+        return this.fps;
     }
-    
-    
     
     private boolean isWindowCreated() {
         return (this.windowID != NULL_WINDOW);

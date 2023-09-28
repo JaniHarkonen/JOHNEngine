@@ -100,7 +100,7 @@ public class Input {
     public void attach() {
         long windowID = this.hostWindow.getWindowID();
         GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
-        GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mouseListener(xpos, ypos));
+        GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
         GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
     }
     
@@ -119,7 +119,7 @@ public class Input {
         this.updatingState.keyMap[key] = action + 1;
     }
     
-    private void mouseListener(double mouseX, double mouseY) {
+    private void mousePositionListener(double mouseX, double mouseY) {
         this.updatingState.mouseX = mouseX;
         this.updatingState.mouseY = mouseY;
     }

@@ -25,7 +25,7 @@ public class TestGame extends AbstractGame {
         this.assetManager   = (AssetManager)    engineComponents[1];
         this.networker      = (Networker)       engineComponents[2];
         
-        //this.engine.setTickRate(60);
+        this.engine.setTickRate(60);
         this.gameWindow.setTitle("ezzzpzzz B)");
         this.gameWindow.resize(640, 480);
         this.gameWindow.enable();
@@ -40,7 +40,7 @@ public class TestGame extends AbstractGame {
         
         if( this.gameWindow.getRenderer() != null )
         {
-            //this.gameWindow.setTitle(""+this.DEBUG_fpsCounter);
+            this.gameWindow.setTitle(""+this.gameWindow.getFPS());
             float same = (float)Math.random();
             this.gameWindow.getRenderer().r = same;
             this.gameWindow.getRenderer().g = same;
