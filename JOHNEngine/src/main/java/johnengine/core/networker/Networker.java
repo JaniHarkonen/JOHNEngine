@@ -1,6 +1,6 @@
-package core.networker;
+package johnengine.core.networker;
 
-import core.IEngineComponent;
+import johnengine.core.IEngineComponent;
 
 public final class Networker implements IEngineComponent {
 

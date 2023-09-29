@@ -1,10 +1,10 @@
-package core.window;
+package johnengine.core.window;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
-import core.IEngineComponent;
-import testing.DebugUtils;
+import johnengine.core.IEngineComponent;
+import johnengine.testing.DebugUtils;
 
 public final class Window extends Thread implements IEngineComponent {
     

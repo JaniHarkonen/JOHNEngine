@@ -1,9 +1,9 @@
-package core;
+package johnengine.core;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import core.engine.Engine;
+import johnengine.core.engine.Engine;
 
 public abstract class LauncherFramework {
 

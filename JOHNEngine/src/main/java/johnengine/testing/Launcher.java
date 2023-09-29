@@ -1,9 +1,9 @@
-package testing;
+package johnengine.testing;
 
-import core.LauncherFramework;
-import core.assetmngr.AssetManager;
-import core.networker.Networker;
-import core.window.Window;
+import johnengine.core.LauncherFramework;
+import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.networker.Networker;
+import johnengine.core.window.Window;
 
 public final class Launcher extends LauncherFramework {
 

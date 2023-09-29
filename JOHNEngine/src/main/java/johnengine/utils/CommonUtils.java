@@ -1,4 +1,4 @@
-package utils;
+package johnengine.utils;
 
 public final class CommonUtils {
 

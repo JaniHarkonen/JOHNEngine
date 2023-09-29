@@ -1,4 +1,4 @@
-package game;
+package johnengine.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;

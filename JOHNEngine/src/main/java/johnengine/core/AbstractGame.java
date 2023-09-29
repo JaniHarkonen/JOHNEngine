@@ -1,6 +1,6 @@
-package core;
+package johnengine.core;
 
-import core.engine.Engine;
+import johnengine.core.engine.Engine;
 
 public abstract class AbstractGame implements IHasTick {
 

@@ -1,4 +1,4 @@
-package core;
+package johnengine.core;
 
 public interface IEngineComponent {
 

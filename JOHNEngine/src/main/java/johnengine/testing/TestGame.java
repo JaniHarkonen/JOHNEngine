@@ -1,13 +1,13 @@
-package testing;
+package johnengine.testing;
 
 import org.lwjgl.glfw.GLFW;
 
-import core.AbstractGame;
-import core.IEngineComponent;
-import core.assetmngr.AssetManager;
-import core.engine.Engine;
-import core.networker.Networker;
-import core.window.Window;
+import johnengine.core.AbstractGame;
+import johnengine.core.IEngineComponent;
+import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.engine.Engine;
+import johnengine.core.networker.Networker;
+import johnengine.core.window.Window;
 
 public class TestGame extends AbstractGame {
 

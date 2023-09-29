@@ -1,6 +1,6 @@
-package core.assetmngr;
+package johnengine.core.assetmngr;
 
-import core.IEngineComponent;
+import johnengine.core.IEngineComponent;
 
 public final class AssetManager implements IEngineComponent {
 

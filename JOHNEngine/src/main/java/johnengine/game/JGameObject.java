@@ -1,6 +1,6 @@
-package game;
+package johnengine.game;
 
-import core.IHasTick;
+import johnengine.core.IHasTick;
 
 public abstract class JGameObject implements IHasTick {
 

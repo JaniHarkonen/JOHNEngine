@@ -1,7 +1,7 @@
-package core.engine;
+package johnengine.core.engine;
 
-import core.AbstractGame;
-import core.IEngineComponent;
+import johnengine.core.AbstractGame;
+import johnengine.core.IEngineComponent;
 
 public final class Engine {
 

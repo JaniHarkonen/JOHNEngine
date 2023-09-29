@@ -1,4 +1,4 @@
-package core.window;
+package johnengine.core.window;
 
 import org.lwjgl.glfw.GLFW;
 
