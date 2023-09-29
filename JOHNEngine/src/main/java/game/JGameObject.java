@@ -1,18 +1,18 @@
 package game;
 
-public abstract class JGameObject {
+import core.IHasTick;
 
-    protected long id;
-    protected boolean isActive;
-    protected boolean isDestroyed;
+public abstract class JGameObject implements IHasTick {
+
+    private long id;
+    private boolean isActive;
+    private boolean isDestroyed;
 
     protected JGameObject(long id) {
         this.id = id;
         this.isActive = true;
         this.isDestroyed = false;
     }
-
-    public abstract void tick(float deltaTime);
 
     public void destroy() {
         this.isDestroyed = true;

@@ -34,7 +34,7 @@ public class TestGame extends AbstractGame {
     }
 
     @Override
-    public void tick(float deltaTime) {
+    public int tick(float deltaTime) {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
@@ -69,6 +69,7 @@ public class TestGame extends AbstractGame {
                 DebugUtils.log(this, "?????????");*/
         }
         
+        return 1;
     }
 
     @Override

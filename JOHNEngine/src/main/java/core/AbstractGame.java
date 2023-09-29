@@ -2,11 +2,12 @@ package core;
 
 import core.engine.Engine;
 
-public abstract class AbstractGame {
+public abstract class AbstractGame implements IHasTick {
 
     public abstract void onStart(Engine engine, IEngineComponent[] engineComponents);
 
-    public abstract void tick(float deltaTime);
+    //@Override
+    //public abstract int tick(float deltaTime);
 
     public abstract void onClose();
 }
