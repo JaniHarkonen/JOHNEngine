@@ -2,6 +2,8 @@ package johnengine.core.window;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.testing.DebugUtils;
+
 public class Input {
     
         // The state has been promoted to its own class because a snapshot has 
@@ -18,10 +20,16 @@ public class Input {
         private final int[] buttonMap;
         private double mouseX;
         private double mouseY;
+        //private int windowWidth;
+        //private int windowHeight;
         
         private State() {
             this.keyMap = new int[KEY_MAP_SIZE];
             this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
+            this.mouseX = 0;
+            this.mouseY = 0;
+            //this.windowWidth = 0;
+            //this.windowHeight = 0;
         }
         
         public static State createNullState() {
@@ -82,6 +90,14 @@ public class Input {
         public double getMouseY() {
             return this.mouseY;
         }
+        
+        /*public int getWindowWidth() {
+            return this.windowWidth;
+        }
+        
+        public int getWindowHeight() {
+            return this.windowHeight;
+        }*/
     }
     
     
@@ -102,6 +118,14 @@ public class Input {
         GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
         GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
+        GLFW.glfwSetFramebufferSizeCallback(windowID, (window, width, height) -> resizeListener(width, height));
+        
+        /*int[] windowWidth = new int[1];
+        int[] windowHeight = new int[1];
+        GLFW.glfwGetWindowSize(windowID, windowWidth, windowHeight);*/
+        
+        //this.updatingState.windowWidth = windowWidth[0];
+        //this.updatingState.windowHeight = windowHeight[0];
     }
     
     public void snapshot() {
@@ -126,5 +150,11 @@ public class Input {
     
     private void mouseListener(int button, int action) {
         this.updatingState.buttonMap[button] = action + 1;
+    }
+    
+    private void resizeListener(int width, int height) {
+        //this.updatingState.windowWidth = width;
+        //this.updatingState.windowHeight = height;
+        this.hostWindow.setSize(width, height);
     }
 }
