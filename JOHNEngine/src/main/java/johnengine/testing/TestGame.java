@@ -17,28 +17,6 @@ public class TestGame extends AGame {
     private Networker networker;
     private Engine engine;
     private MilliCounter timer;
-
-    /*@Override
-    public void onStart(Engine engine, IEngineComponent[] engineComponents) {
-        this.engine         = engine;
-        this.gameWindow     = (Window2)         engineComponents[0];
-        this.assetManager   = (AssetManager)    engineComponents[1];//[1];
-        this.networker      = (Networker)       engineComponents[1];//[2];
-        
-        DebugUtils.log(this, this.gameWindow);
-        
-        //this.engine.setTickRate(60);
-        this.gameWindow.setTitle("ezzzpzzz B)");
-        this.gameWindow.resize(640, 480);
-        this.gameWindow.setCursorVisibility(true);
-        this.gameWindow.enable();
-        this.timer = new MilliCounter(1000) {
-            @Override
-            protected void performAction() {
-                gameWindow.setTitle(""+this.getLastCount());
-            }
-        };
-    }*/
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {

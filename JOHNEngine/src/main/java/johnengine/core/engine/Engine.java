@@ -3,6 +3,7 @@ package johnengine.core.engine;
 import johnengine.core.AGame;
 import johnengine.core.AThreadable;
 import johnengine.core.IEngineComponent;
+import johnengine.testing.DebugUtils;
 
 public final class Engine extends AThreadable {
 
@@ -32,10 +33,10 @@ public final class Engine extends AThreadable {
     
     public static void start(AGame game, IEngineComponent[] engineComponents) {
         if( engine != null )
-        return;
+        throw new RuntimeException("Engine instance is already running!");
 
         if( game == null )
-        return;
+        throw new RuntimeException("Trying to run a NULL game!");
 
         engine = new Engine();
         engine.setEngineComponents(engineComponents);

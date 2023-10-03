@@ -1,19 +1,20 @@
 package johnengine.testing;
 
-import johnengine.core.ALauncherFramework;
+import johnengine.core.WindowedLauncher;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.networker.Networker;
-import johnengine.core.window.Window;
 
-public final class Launcher extends ALauncherFramework {
+public final class Launcher extends WindowedLauncher {
 
     @Override
     protected void configureEngine() {
-        this.setupComponent(Window.setup());
+        super.configureEngine();
         this.setupComponent(AssetManager.setup());
         this.setupComponent(Networker.setup());
         this.setupGame(new TestGame());
     }
 
-    
+    public static void main(String[] args) {
+        new Launcher();
+    }
 }
