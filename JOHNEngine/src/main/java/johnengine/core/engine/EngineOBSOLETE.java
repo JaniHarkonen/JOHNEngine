@@ -1,10 +1,9 @@
 package johnengine.core.engine;
 
 import johnengine.core.AGame;
-import johnengine.core.AThreadable;
 import johnengine.core.IEngineComponent;
 
-public final class Engine extends AThreadable {
+//public class Engine {
 
     /**
      * State of the game engine.
@@ -12,7 +11,7 @@ public final class Engine extends AThreadable {
      * @author User
      *
      */
-    public enum STATE {
+/*    public enum STATE {
         START_FAILED, START_FAILED_NO_GAME, RUNNING, STOPPED
     }
 
@@ -25,40 +24,36 @@ public final class Engine extends AThreadable {
     private IEngineComponent[] engineComponents;
     private AGame game;
 
-    private Engine() {
+    protected Engine() {
         this.state = Engine.STATE.STOPPED;
         this.tickRate = TICK_SPEED_CAP;
     }
-    
-    public static void start(AGame game, IEngineComponent[] engineComponents) {
+
+    public static STATE start(AGame game, IEngineComponent... engineComponents) {
         if( engine != null )
-        return;
+        return Engine.STATE.START_FAILED;
 
         if( game == null )
-        return;
+        return Engine.STATE.START_FAILED_NO_GAME;
 
         engine = new Engine();
         engine.setEngineComponents(engineComponents);
         engine.setGame(game);
-        
-        engine.start();
-        return;
-    }
-    
-    @Override
-    public void start() {
-        this.state = Engine.STATE.RUNNING;
-        
-        this.startProcess();
-        return;
+        engine.run();
+
+        return Engine.STATE.STOPPED;
     }
 
-    @Override
-    protected void loop() {
-        try {
-        Thread.sleep(1000);
-        }catch(Exception e) {}
-        
+    public void stop() {
+        this.state = Engine.STATE.STOPPED;
+    }
+
+    private void run() {
+        this.state = Engine.STATE.RUNNING;
+        this.loop();
+    }
+
+    private void loop() {
         game.onStart(this, engineComponents); // Start the game
 
         long lastTime = System.nanoTime();
@@ -87,11 +82,6 @@ public final class Engine extends AThreadable {
         game.onClose(); // Close the game and free memory
     }
 
-    @Override
-    public void stop() {
-        this.state = Engine.STATE.STOPPED;
-    }
-
     private void setEngineComponents(IEngineComponent... engineComponents) {
         this.engineComponents = engineComponents;
     }
@@ -103,4 +93,4 @@ public final class Engine extends AThreadable {
     public void setTickRate(float tickRate) {
         this.tickRate = tickRate;
     }
-}
+}*/

@@ -10,7 +10,7 @@ public class Renderer {
     public float b = 0.0f;
     public float a = 1.0f;
 
-    public Renderer() {
+    public void initialize() {
         GL.createCapabilities();
     }
     

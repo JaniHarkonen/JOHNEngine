@@ -2,54 +2,80 @@ package johnengine.testing;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.core.AbstractGame;
+import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 import johnengine.core.networker.Networker;
 import johnengine.core.window.Window;
+import johnengine.utils.counter.MilliCounter;
 
-public class TestGame extends AbstractGame {
+public class TestGame extends AGame {
 
     private Window gameWindow;
     private AssetManager assetManager;
     private Networker networker;
     private Engine engine;
-    
-    private long DEBUG_fpsCounter;
+    private MilliCounter timer;
 
-    @Override
+    /*@Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
         this.engine         = engine;
-        this.gameWindow     = (Window)          engineComponents[0];
-        this.assetManager   = (AssetManager)    engineComponents[1];
-        this.networker      = (Networker)       engineComponents[2];
+        this.gameWindow     = (Window2)         engineComponents[0];
+        this.assetManager   = (AssetManager)    engineComponents[1];//[1];
+        this.networker      = (Networker)       engineComponents[1];//[2];
         
-        this.engine.setTickRate(60);
+        DebugUtils.log(this, this.gameWindow);
+        
+        //this.engine.setTickRate(60);
         this.gameWindow.setTitle("ezzzpzzz B)");
         this.gameWindow.resize(640, 480);
         this.gameWindow.setCursorVisibility(true);
         this.gameWindow.enable();
+        this.timer = new MilliCounter(1000) {
+            @Override
+            protected void performAction() {
+                gameWindow.setTitle(""+this.getLastCount());
+            }
+        };
+    }*/
+    
+    @Override
+    public void onStart(Engine engine, IEngineComponent[] engineComponents) {
+        this.engine         = engine;
+        this.gameWindow     = (Window)         engineComponents[0];
+        this.assetManager   = (AssetManager)    engineComponents[1];//[1];
+        this.networker      = (Networker)       engineComponents[2];//[2];
         
-        this.DEBUG_fpsCounter = 0;
+        //this.engine.setTickRate(60);
+        this.gameWindow.setTitle("ezzzpzzz B)");
+        this.gameWindow.resize(640, 480);
+        this.gameWindow.setCursorVisibility(true);
+        //this.gameWindow.start();
+        //this.gameWindow.enable();
+        this.timer = new MilliCounter(1000) {
+            @Override
+            protected void performAction() {
+                gameWindow.setTitle(""+this.getLastCount());
+                //gameWindow.setTitle(""+gameWindow.getFPS());
+            }
+        };
     }
 
     @Override
-    public int tick(float deltaTime) {
+    public void tick(float deltaTime) {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
         if( this.gameWindow.getRenderer() != null )
         {
-            this.gameWindow.setTitle(""+this.gameWindow.getFPS());
+            //this.gameWindow.setTitle(""+this.gameWindow.getFPS());
             float same = (float)Math.random();
             this.gameWindow.getRenderer().r = same;
             this.gameWindow.getRenderer().g = same;
             this.gameWindow.getRenderer().b =same;
             this.gameWindow.getRenderer().a = same;
         }
-        
-        this.DEBUG_fpsCounter++;
         
         //DebugUtils.log(this, this.DEBUG_fpsCounter);
         
@@ -58,7 +84,7 @@ public class TestGame extends AbstractGame {
             //if( this.gameWindow.getInput().isKeyPressed(GLFW.GLFW_KEY_A) )
                 //DebugUtils.log(this, "AAAAAAAAAAA");
             
-            if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
+            if( this.gameWindow.getInput().isKeyDown(GLFW.GLFW_KEY_A) )
             this.gameWindow.setFullscreen(true);
             //DebugUtils.log(this, "aaaa");
             
@@ -73,7 +99,7 @@ public class TestGame extends AbstractGame {
                 DebugUtils.log(this, "?????????");*/
         }
         
-        return 1;
+        this.timer.count();
     }
 
     @Override

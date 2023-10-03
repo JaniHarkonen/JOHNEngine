@@ -2,8 +2,6 @@ package johnengine.core.window;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.testing.DebugUtils;
-
 public class Input {
     
         // The state has been promoted to its own class because a snapshot has 
@@ -119,13 +117,6 @@ public class Input {
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
         GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
         GLFW.glfwSetFramebufferSizeCallback(windowID, (window, width, height) -> resizeListener(width, height));
-        
-        /*int[] windowWidth = new int[1];
-        int[] windowHeight = new int[1];
-        GLFW.glfwGetWindowSize(windowID, windowWidth, windowHeight);*/
-        
-        //this.updatingState.windowWidth = windowWidth[0];
-        //this.updatingState.windowHeight = windowHeight[0];
     }
     
     public void snapshot() {

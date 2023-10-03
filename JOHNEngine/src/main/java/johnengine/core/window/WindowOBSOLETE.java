@@ -6,10 +6,10 @@ import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
 import johnengine.testing.DebugUtils;
-
-public final class Window implements IEngineComponent {
+/*
+public class WindowOBSOLETE implements IEngineComponent {
     
-    public static Window instance;
+    public static WindowOBSOLETE instance;
     
     public static final int DEFAULT_WIDTH = 640;
     public static final int DEFAULT_HEIGHT = 480;
@@ -37,14 +37,13 @@ public final class Window implements IEngineComponent {
     private boolean isFullscreen;
     private boolean isDecorated;
     
-    public Window() {
-        instance = this;
+    public WindowOBSOLETE() {
         this.windowID = NULL_WINDOW;
         this.primaryMonitorID = MemoryUtil.NULL;
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
         this.title = DEFAULT_TITLE;
-        this.hasWindowClosed = false;
+        this.hasWindowClosed = true;
         this.fps = 0;
         this.renderer = null;
         this.input = null;
@@ -53,8 +52,8 @@ public final class Window implements IEngineComponent {
         this.isDecorated = DEFAULT_IS_DECORATED;
     }
 
-    public static Window setup() {
-        return new Window();
+    public static WindowOBSOLETE setup() {
+        return new WindowOBSOLETE();
     }
     
     public void enable() {
@@ -68,29 +67,33 @@ public final class Window implements IEngineComponent {
     public void start() {
         GLFW.glfwInit();
         this.createWindow();
-        GLFW.glfwMakeContextCurrent(windowID);
-        renderer.initialize();
-        GLFW.glfwSwapInterval(0);
         
-        long startTime = System.currentTimeMillis();
-        int fpsCounter = 0;
-        while( !GLFW.glfwWindowShouldClose(windowID) )
-        {
-            GLFW.glfwPollEvents();
-            long currentTime = System.currentTimeMillis();
-            GLFW.glfwSwapBuffers(windowID);
-            renderer.render();
-            fpsCounter++;
-            
-            if( currentTime - startTime >= 1000 )
-            {
-                fps = fpsCounter;
-                fpsCounter = 0;
-                startTime = currentTime;
+        Thread process = new Thread() {
+            @Override
+            public void run() {
+                GLFW.glfwMakeContextCurrent(windowID);
+                renderer.initialize();
+                GLFW.glfwSwapInterval(0);
+                
+                long startTime = System.currentTimeMillis();
+                int fpsCounter = 0;
+                while( !GLFW.glfwWindowShouldClose(windowID) )
+                {
+                    long currentTime = System.currentTimeMillis();
+                    GLFW.glfwSwapBuffers(windowID);
+                    renderer.render();
+                    fpsCounter++;
+                    
+                    if( currentTime - startTime >= 1000 )
+                    {
+                        fps = fpsCounter;
+                        fpsCounter = 0;
+                        startTime = currentTime;
+                    }
+                }
             }
-        }
-        
-        this.stop();
+        };
+        process.start();
     }
     
     public void stop() {
@@ -104,6 +107,8 @@ public final class Window implements IEngineComponent {
     }
 
     public int beforeTick(float deltaTime) {
+        GLFW.glfwPollEvents();
+        
         if( this.input != null )
         this.input.snapshot();
         return 0;
@@ -115,9 +120,9 @@ public final class Window implements IEngineComponent {
     
     private long createWindow() {
         this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
-        //GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
+        GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
         this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
-        //GLFW.glfwSetWindowPos(this.windowID, 0, 0);
+        GLFW.glfwSetWindowPos(this.windowID, 0, 0);
         this.input = new Input(this);
         this.input.attach();
         
@@ -210,4 +215,4 @@ public final class Window implements IEngineComponent {
     private boolean isWindowCreated() {
         return (this.windowID != NULL_WINDOW);
     }
-}
+}*/
