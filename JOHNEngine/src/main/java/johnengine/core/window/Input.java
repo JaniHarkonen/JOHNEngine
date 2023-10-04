@@ -117,10 +117,6 @@ public class Input {
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
         GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
         //GLFW.glfwSetScrollCallback(window, cbfun)
-        //GLFW.glfwSetWindowFocusCallback(window, cbfun)
-        //GLFW.glfwSetWindowMaximizeCallback(window, cbfun)
-        //GLFW.glfwSetWindowPosCallback(window, cbfun)
-        //GLFW.glfwSetFramebufferSizeCallback(windowID, (window, width, height) -> resizeListener(width, height));
     }
     
     public void snapshot() {

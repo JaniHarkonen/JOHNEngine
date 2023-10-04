@@ -1,5 +1,7 @@
 package johnengine.core.window.reqs;
 
+import johnengine.core.window.Window;
+
 public final class RFullscreen extends AWindowRequest {
     private final boolean isFullscreen;
     
@@ -14,7 +16,6 @@ public final class RFullscreen extends AWindowRequest {
 
     @Override
     protected void setGLFW(WindowRequestContext context) {
-        // TODO Auto-generated method stub
-        
+        ((Window) context.window).DEBUGgoFullscreen();
     }
 }

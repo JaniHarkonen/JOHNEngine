@@ -15,7 +15,6 @@ public class Renderer {
     }
     
     public void render() {
-        r = (float) Math.random();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glClearColor(this.r, this.g, this.b, this.a);
         GL11.glViewport(0, 0, 640, 480);

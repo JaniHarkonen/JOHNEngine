@@ -3,12 +3,10 @@ package johnengine.core.window;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.reqmngr.RequestManager;
-import johnengine.core.window.reqs.RBorder;
 import johnengine.core.window.reqs.RChangeCursorVisibility;
 import johnengine.core.window.reqs.RChangeTitle;
 import johnengine.core.window.reqs.RFullscreen;
 import johnengine.core.window.reqs.RLockCursor;
-import johnengine.core.window.reqs.RMaximize;
 import johnengine.core.window.reqs.RMove;
 import johnengine.core.window.reqs.RResize;
 import johnengine.core.window.reqs.RVSync;
@@ -24,8 +22,8 @@ public abstract class AWindowFramework {
     public static class Properties {
         public static final int DEFAULT_WIDTH = 640;
         public static final int DEFAULT_HEIGHT = 480;
-        public static final int DEFAULT_X = 0;
-        public static final int DEFAULT_Y = 0;
+        public static final int DEFAULT_X = 32;
+        public static final int DEFAULT_Y = 32;
         public static final String DEFAULT_TITLE = "Powered by JOHNEngine v.1.0.0";
         
         public static final boolean DEFAULT_IS_FULLSCREEN = false;
@@ -34,23 +32,23 @@ public abstract class AWindowFramework {
         public static final boolean DEFAULT_IS_CURSOR_VISIBLE = true;
         public static final boolean DEFAULT_USE_VSYNC = false;
         
-        private int width;
-        private int height;
-        private int x;
-        private int y;
-        private int monitorWidth;
-        private int monitorHeight;
-        private long fps;
-        private String title;
+        public int width;
+        public int height;
+        public int x;
+        public int y;
+        public int monitorWidth;
+        public int monitorHeight;
+        public long fps;
+        public String title;
         
-        private boolean isFullscreen;
-        private boolean hasBorder;
-        private boolean lockCursorToCenter;
-        private boolean isCursorVisible;
-        private AWindowFramework.STATE windowState;
-        private boolean useVSync;
-        private boolean isFocused;
-        private boolean isMaximized;
+        public boolean isFullscreen;
+        public boolean hasBorder;
+        public boolean lockCursorToCenter;
+        public boolean isCursorVisible;
+        public AWindowFramework.STATE windowState;
+        public boolean useVSync;
+        public boolean isFocused;
+        public boolean isMaximized;
         
         public Properties() {
             this.width = Properties.DEFAULT_WIDTH;
@@ -68,7 +66,7 @@ public abstract class AWindowFramework {
             this.isCursorVisible = Properties.DEFAULT_IS_CURSOR_VISIBLE;
             this.useVSync = Properties.DEFAULT_USE_VSYNC;
             this.isFocused = true;
-            this.isMaximized = true;
+            this.isMaximized = false;
             
             this.windowState = AWindowFramework.STATE.INITIALIZING;
         }
@@ -120,68 +118,87 @@ public abstract class AWindowFramework {
         this.primaryMonitorID = MemoryUtil.NULL;
     }
     
+    /************************ LISTENERS ***************************/
+    
+    protected void focusListener(boolean isFocused) {
+        this.setFocused(isFocused);
+    }
+    
+    protected void maximizeListener(boolean isMaximized) {
+        this.setMaximized(isMaximized);
+    }
+    
+    protected void positionListener(int xpos, int ypos) {
+        this.setPosition(xpos, ypos);
+    }
+    
+    protected void resizeListener(int width, int height) {
+        this.setSize(width, height);
+    }
+    
+    protected void closeListener() {
+        this.setWindowState(STATE.CLOSED);
+    }
+    
+    
     /************************* REQUESTS ***************************/
     
-    public void move(int x, int y) {
+    
+    
+    public AWindowFramework move(int x, int y) {
         this.requestManager.request(new RMove(this.windowID, x, y));
+        return this;
     }
     
-    public void resize(int width, int height) {
+    public AWindowFramework resize(int width, int height) {
         this.requestManager.request(new RResize(this.windowID, width, height));
+        return this;
     }
     
-    public void changeTitle(String title) {
+    public AWindowFramework changeTitle(String title) {
         this.requestManager.request(new RChangeTitle(this.windowID, title));
+        return this;
     }
     
-    public void enterFullscreen() {
+    public AWindowFramework enterFullscreen() {
         this.requestManager.request(new RFullscreen(this.windowID, true));
+        return this;
     }
     
-    public void exitFullscreen() {
+    public AWindowFramework exitFullscreen() {
         this.requestManager.request(new RFullscreen(this.windowID, false));
-    }
-    
-    public void showBorder() {
-        this.requestManager.request(new RBorder(this.windowID, true));
-    }
-    
-    public void hideBorder() {
-        this.requestManager.request(new RBorder(this.windowID, false));
+        return this;
     }
 
-    public void lockCursorToCenter() {
+    public AWindowFramework lockCursorToCenter() {
         this.requestManager.request(new RLockCursor(this.windowID, true));
+        return this;
     }
     
-    public void freeCursorLock() {
+    public AWindowFramework freeCursorLock() {
         this.requestManager.request(new RLockCursor(this.windowID, false));
+        return this;
     }
     
-    public void showCursor() {
+    public AWindowFramework showCursor() {
         this.requestManager.request(new RChangeCursorVisibility(this.windowID, true));
+        return this;
     }
     
-    public void hideCursor() {
+    public AWindowFramework hideCursor() {
         this.requestManager.request(new RChangeCursorVisibility(this.windowID, false));
+        return this;
     }
 
-    public void enableVSync() {
+    public AWindowFramework enableVSync() {
         this.requestManager.request(new RVSync(this.windowID, true));
+        return this;
     }
     
-    public void disableVSync() {
+    public AWindowFramework disableVSync() {
         this.requestManager.request(new RVSync(this.windowID, false));
+        return this;
     }
-
-    public void maximize() {
-        this.requestManager.request(new RMaximize(this.windowID, true));
-    }
-    
-    public void maximizeRestore() {
-        this.requestManager.request(new RMaximize(this.windowID, false));
-    }
-    
     
     /************************** SETTERS ***************************/
     

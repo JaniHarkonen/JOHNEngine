@@ -1,5 +1,7 @@
 package johnengine.testing;
 
+import org.lwjgl.glfw.GLFW;
+
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
@@ -25,14 +27,21 @@ public class TestGame extends AGame {
         
         this.engine.setTickRate(60);
         
-        this.gameWindow.changeTitle("ezzzzpzzz B)");//setTitle("ezzzpzzz B)");
+        this.gameWindow.changeTitle("ezzzzpzzz B)");
+        //this.gameWindow.resize(1000, 1000);
+        this.gameWindow.disableVSync();
+        try {
+            Thread.sleep(1000);
+        }
+        catch(Exception e) {}
+        //this.gameWindow.lockCursorToCenter();
         //this.gameWindow.resize(640, 480);
         //this.gameWindow.setCursorVisibility(true);
         this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {
-                //gameWindow.setTitle(""+this.getLastCount());
-                //gameWindow.setTitle(""+gameWindow.getFPS());
+                //gameWindow.changeTitle(""+this.getLastCount());
+                gameWindow.changeTitle("FPS: "+gameWindow.getFPS() + " | Tick rate: " + this.getLastCount());
                 //gameWindow.changeTitle(""+gameWindow.getFPS());
             }
         };
@@ -43,10 +52,11 @@ public class TestGame extends AGame {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
-        this.gameWindow.changeTitle(""+this.gameWindow.getFPS());
+        //this.gameWindow.changeTitle(""+this.gameWindow.getFPS());
+        //this.gameWindow.changeTitle(this.gameWindow.getWidth() + ", " + this.gameWindow.getHeight() + " | FPS: " + this.gameWindow.getFPS() + " | Maximized: " + this.gameWindow.isMaximized());
         
         
-        if( this.gameWindow.getRenderer() != null )
+        /*if( this.gameWindow.getRenderer() != null )
         {
             //this.gameWindow.setTitle(""+this.gameWindow.getFPS());
             float same = (float)Math.random();
@@ -54,10 +64,13 @@ public class TestGame extends AGame {
             this.gameWindow.getRenderer().g = same;
             this.gameWindow.getRenderer().b =same;
             this.gameWindow.getRenderer().a = same;
-        }
+        }*/
         
         if( this.gameWindow.getInput() != null )
         {
+            if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
+            this.gameWindow.enterFullscreen();
+            //this.gameWindow.changeTitle(this.gameWindow.getInput().getMouseX() + ", " + this.gameWindow.getInput().getMouseY());
             //if( this.gameWindow.getInput().isKeyDown(GLFW.GLFW_KEY_A) )
             //this.gameWindow.changeTitle(title);
             //this.gameWindow.setFullscreen(true);

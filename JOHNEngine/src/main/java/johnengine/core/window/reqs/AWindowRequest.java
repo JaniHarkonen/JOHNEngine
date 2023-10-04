@@ -1,5 +1,7 @@
 package johnengine.core.window.reqs;
 
+import org.lwjgl.system.MemoryUtil;
+
 import johnengine.core.reqmngr.ARequest;
 import johnengine.core.reqmngr.IRequestContext;
 
@@ -9,6 +11,8 @@ public abstract class AWindowRequest extends ARequest {
     public void process(IRequestContext context) {
         WindowRequestContext winContext = (WindowRequestContext) context;
         this.setState(winContext);
+        
+        if( winContext.window.getWindowID() != MemoryUtil.NULL )
         this.setGLFW(winContext);
     }
     
