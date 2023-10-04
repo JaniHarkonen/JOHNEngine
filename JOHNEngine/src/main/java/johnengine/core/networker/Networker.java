@@ -12,14 +12,12 @@ public final class Networker implements IEngineComponent {
         return new Networker();
     }
 
-    public int beforeTick(float deltaTime) {
+    public void beforeTick(float deltaTime) {
         // TODO Auto-generated method stub
-        return 0;
     }
 
-    public int afterTick(float deltaTime) {
+    public void afterTick(float deltaTime) {
         // TODO Auto-generated method stub
-        return 0;
     }
 
 }

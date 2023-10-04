@@ -13,15 +13,13 @@ public final class AssetManager implements IEngineComponent {
     }
 
     @Override
-    public int beforeTick(float deltaTime) {
+    public void beforeTick(float deltaTime) {
         // TODO Auto-generated method stub
-        return 0;
     }
 
     @Override
-    public int afterTick(float deltaTime) {
+    public void afterTick(float deltaTime) {
         // TODO Auto-generated method stub
-        return 0;
     }
 
 }

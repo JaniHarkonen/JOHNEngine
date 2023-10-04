@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import johnengine.core.engine.Engine;
-import johnengine.testing.DebugUtils;
 
 public abstract class ALauncherFramework {
 
@@ -15,7 +14,7 @@ public abstract class ALauncherFramework {
     public ALauncherFramework() {
         this.engineConfiguration = new ArrayList<IEngineComponent>();
         this.configureEngine();
-        Engine.start(
+        Engine.run(
             this.game,
             this.engineConfiguration.toArray(new IEngineComponent[this.engineConfiguration.size()])
         );

@@ -1,9 +1,8 @@
 package johnengine.core.engine;
 
 import johnengine.core.AGame;
-import johnengine.core.AThreadable;
 import johnengine.core.IEngineComponent;
-import johnengine.testing.DebugUtils;
+import johnengine.core.threadable.AThreadable;
 
 public final class Engine extends AThreadable {
 
@@ -14,12 +13,15 @@ public final class Engine extends AThreadable {
      *
      */
     public enum STATE {
-        START_FAILED, START_FAILED_NO_GAME, RUNNING, STOPPED
+        START_FAILED,
+        START_FAILED_NO_GAME,
+        RUNNING,
+        STOPPED
     }
 
     public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY; // Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
 
-    public static Engine engine;
+    public static Engine engineSingleton;
 
     private STATE state;
     private float tickRate;
@@ -31,36 +33,29 @@ public final class Engine extends AThreadable {
         this.tickRate = TICK_SPEED_CAP;
     }
     
-    public static void start(AGame game, IEngineComponent[] engineComponents) {
-        if( engine != null )
+    public static void run(AGame game, IEngineComponent[] engineComponents) {
+        if( engineSingleton != null )
         throw new RuntimeException("Engine instance is already running!");
 
         if( game == null )
         throw new RuntimeException("Trying to run a NULL game!");
 
-        engine = new Engine();
-        engine.setEngineComponents(engineComponents);
-        engine.setGame(game);
+        engineSingleton = new Engine();
+        engineSingleton.setEngineComponents(engineComponents);
+        engineSingleton.setGame(game);
         
-        engine.start();
-        return;
+        engineSingleton.start();
     }
     
     @Override
     public void start() {
         this.state = Engine.STATE.RUNNING;
-        
-        this.startProcess();
-        return;
+        this.startProcess();    // Enters thread
     }
 
     @Override
-    protected void loop() {
-        try {
-        Thread.sleep(1000);
-        }catch(Exception e) {}
-        
-        game.onStart(this, engineComponents); // Start the game
+    public void loop() {
+        this.game.onStart(this, engineComponents); // Start the game
 
         long lastTime = System.nanoTime();
         float tickInterval = 1 / this.tickRate;
@@ -73,8 +68,6 @@ public final class Engine extends AThreadable {
             if( deltaTime < tickInterval )
             continue;
 
-            lastTime = currentTime;
-
                 // Update engine components
             for( IEngineComponent ec : this.engineComponents )
             {
@@ -82,10 +75,11 @@ public final class Engine extends AThreadable {
                 ec.beforeTick(deltaTime);
             }
 
-            game.tick(deltaTime); // Run game logic
+            this.game.tick(deltaTime); // Run game logic
+            lastTime = currentTime;
         }
 
-        game.onClose(); // Close the game and free memory
+        this.game.onClose(); // Close the game and free memory
     }
 
     @Override

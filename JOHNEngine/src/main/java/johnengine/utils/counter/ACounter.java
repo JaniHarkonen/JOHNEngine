@@ -22,6 +22,7 @@ public abstract class ACounter {
     
     public long count() {
         long timeNow = this.getTime();
+        this.counter++;
         
         if( timeNow - this.lastTime >= this.interval )
         {
@@ -31,8 +32,6 @@ public abstract class ACounter {
             
             this.counter = 0;
         }
-        else
-        this.counter++;
         
         return this.lastCount;
     }

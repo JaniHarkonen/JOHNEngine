@@ -116,7 +116,11 @@ public class Input {
         GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
         GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
-        GLFW.glfwSetFramebufferSizeCallback(windowID, (window, width, height) -> resizeListener(width, height));
+        //GLFW.glfwSetScrollCallback(window, cbfun)
+        //GLFW.glfwSetWindowFocusCallback(window, cbfun)
+        //GLFW.glfwSetWindowMaximizeCallback(window, cbfun)
+        //GLFW.glfwSetWindowPosCallback(window, cbfun)
+        //GLFW.glfwSetFramebufferSizeCallback(windowID, (window, width, height) -> resizeListener(width, height));
     }
     
     public void snapshot() {
@@ -143,9 +147,9 @@ public class Input {
         this.updatingState.buttonMap[button] = action + 1;
     }
     
-    private void resizeListener(int width, int height) {
+    /*private void resizeListener(int width, int height) {
         //this.updatingState.windowWidth = width;
         //this.updatingState.windowHeight = height;
         this.hostWindow.setSize(width, height);
-    }
+    }*/
 }

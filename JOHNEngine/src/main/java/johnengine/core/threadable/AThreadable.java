@@ -1,6 +1,6 @@
-package johnengine.core;
+package johnengine.core.threadable;
 
-public abstract class AThreadable {
+public abstract class AThreadable implements IThreadable {
     
     private class Process extends Thread {
         @Override
@@ -12,8 +12,4 @@ public abstract class AThreadable {
     protected void startProcess() {
         (new Process()).start();
     }
-    
-    public abstract void start();
-    protected abstract void loop();
-    public abstract void stop();
 }
