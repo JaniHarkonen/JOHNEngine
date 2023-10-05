@@ -7,7 +7,10 @@ import org.lwjgl.system.MemoryUtil;
 import johnengine.core.IEngineComponent;
 import johnengine.core.reqmngr.RequestManager;
 import johnengine.core.threadable.IThreadable;
-import johnengine.core.window.reqs.WindowRequestContext;
+import johnengine.core.window.framework.AWindowFramework;
+import johnengine.core.window.framework.BasicWindowRequestContext;
+import johnengine.core.window.input.Input;
+import johnengine.core.window.renderer.Renderer;
 
 public class Window extends AWindowFramework implements IEngineComponent, IThreadable {
     
@@ -25,7 +28,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     public Window() {
         super(new Properties(), new Properties(), new RequestManager());
         
-        this.requestManager.setContext(new WindowRequestContext(this));
+        this.requestManager.setContext(new BasicWindowRequestContext(this));
         instance = this;
     }
     
@@ -34,8 +37,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     public void start() {
         GLFW.glfwInit();
         this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
-        //this.createWindow();
-        this.windowID = this.createWindow2();
+        this.windowID = this.createWindow();
         this.input = new Input(this);
         this.input.attach();
         GLFW.glfwShowWindow(this.windowID);
@@ -54,7 +56,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
         
-        while( /*!GLFW.glfwWindowShouldClose(this.windowID)*/this.updatingProperties.windowState != STATE.CLOSED )
+        while( this.updatingProperties.windowState != STATE.CLOSED )
         {            
             this.requestManager.processRequests();
             GLFW.glfwPollEvents();
@@ -107,35 +109,15 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     }
     
     private long createWindow() {
-        //this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
-        //GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
-        /*this.windowID = GLFW.glfwCreateWindow(
-            Properties.DEFAULT_WIDTH,
-            Properties.DEFAULT_HEIGHT,
-            Properties.DEFAULT_TITLE,
-            MemoryUtil.NULL,
-            MemoryUtil.NULL
+        
+            // Remove deocration (borders) when in fullscreen mode
+        GLFW.glfwWindowHint(GLFW.GLFW_DECORATED,
+            this.updatingProperties.isFullscreen ? 
+            GLFW.GLFW_FALSE : 
+             GLFW.GLFW_TRUE
         );
         
-        GLFW.glfwSetWindowFocusCallback(this.windowID, (window, isFocused) -> focusListener(isFocused));
-        GLFW.glfwSetWindowMaximizeCallback(this.windowID, (window, isMaximized) -> maximizeListener(isMaximized));
-        GLFW.glfwSetWindowPosCallback(this.windowID, (window, xpos, ypos) -> positionListener(xpos, ypos));
-        GLFW.glfwSetFramebufferSizeCallback(this.windowID, (window, width, height) -> resizeListener(width, height));*/
-        
-        /*this.input = new Input(this);
-        this.input.attach();
-        */
-        /*if( !Properties.DEFAULT_IS_CURSOR_VISIBLE )
-        GLFW.glfwSetInputMode(this.windowID, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);*/
-
-        /*GLFW.glfwShowWindow(this.windowID);
-        this.renderer = new Renderer();
-        this.setWindowState(STATE.OPEN);*/
-        
-        return this.windowID;
-    }
-    
-    private long createWindow2() {
+            // Create window
         long winID = GLFW.glfwCreateWindow(
             this.updatingProperties.width,
             this.updatingProperties.height,
@@ -144,15 +126,21 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
             MemoryUtil.NULL
         );
         
-        GLFW.glfwSetWindowFocusCallback(winID, (window, isFocused) -> focusListener(isFocused));
-        GLFW.glfwSetWindowMaximizeCallback(winID, (window, isMaximized) -> maximizeListener(isMaximized));
-        GLFW.glfwSetWindowPosCallback(winID, (window, xpos, ypos) -> positionListener(xpos, ypos));
-        GLFW.glfwSetFramebufferSizeCallback(winID, (window, width, height) -> resizeListener(width, height));
-        GLFW.glfwSetWindowCloseCallback(winID, (window) -> closeListener());
+            // Set callbacks
+        GLFW.glfwSetWindowFocusCallback(winID, (window, isFocused) -> focusListener(isFocused));    // Focus
+        GLFW.glfwSetWindowMaximizeCallback(winID, (window, isMaximized) -> maximizeListener(isMaximized));  // Maximize
+        GLFW.glfwSetWindowPosCallback(winID, (window, xpos, ypos) -> positionListener(xpos, ypos)); // Position
+        GLFW.glfwSetFramebufferSizeCallback(winID, (window, width, height) -> resizeListener(width, height));   // Size
+        GLFW.glfwSetWindowCloseCallback(winID, (window) -> closeListener());    // Close
         
-        if( !this.updatingProperties.isCursorVisible )
-        GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
+            // Whether cursor is to be shown or hidden
+        GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR,
+            this.updatingProperties.isCursorVisible ? 
+            GLFW.GLFW_CURSOR_NORMAL : 
+            GLFW.GLFW_CURSOR_HIDDEN
+        );
         
+            // Position the window
         GLFW.glfwSetWindowPos(winID, this.updatingProperties.x, this.updatingProperties.y);
         
         return winID;
@@ -163,10 +151,10 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         this.renderer.initialize();
     }
     
-    private void rebuildWindow() {
+    void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
         this.setWindowState(STATE.INITIALIZING);
-        this.windowID = this.createWindow2();
+        this.windowID = this.createWindow();
         this.setWindowState(STATE.OPEN);
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
@@ -184,13 +172,33 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     }
     
     public void DEBUGgoFullscreen() {
-        GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
         GLFWVidMode videoMode = GLFW.glfwGetVideoMode(this.primaryMonitorID);
         this.setSize(videoMode.width(), videoMode.height());
         this.setPosition(0, 0);
         
         this.rebuildWindow();
-        //GLFW.glfwGetVideoMode(this.primaryMonitorID);
-        //this.setSize(, height);
+    }
+    
+    long getPrimaryMonitorID() {
+        return this.primaryMonitorID;
+    }
+    
+    /********************* LIFTED METHODS ************************/
+    
+    // Some inherited methods may have to be lifted in order for them
+    // to be visible inside the current package as AWindowFramework
+    // and its protected methods are declared in another package.
+    
+    
+    protected void setFullscreen(boolean isFullscreen) {
+        super.setFullscreen(isFullscreen);
+    }
+    
+    protected void setPosition(int x, int y) {
+        super.setPosition(x, y);
+    }
+    
+    protected void setSize(int width, int height) {
+        super.setSize(width, height);
     }
 }

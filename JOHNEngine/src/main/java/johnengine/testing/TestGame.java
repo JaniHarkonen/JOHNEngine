@@ -27,9 +27,8 @@ public class TestGame extends AGame {
         
         this.engine.setTickRate(60);
         
-        this.gameWindow.changeTitle("ezzzzpzzz B)");
+        this.gameWindow.changeTitle("ezzzzpzzz B)").disableVSync();
         //this.gameWindow.resize(1000, 1000);
-        this.gameWindow.disableVSync();
         try {
             Thread.sleep(1000);
         }

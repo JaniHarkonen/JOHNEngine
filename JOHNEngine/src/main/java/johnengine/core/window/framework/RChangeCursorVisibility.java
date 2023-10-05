@@ -1,8 +1,8 @@
-package johnengine.core.window.reqs;
+package johnengine.core.window.framework;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RChangeCursorVisibility extends AWindowRequest {
+public final class RChangeCursorVisibility extends ABasicWindowRequest {
     private final boolean isVisible;
     
     public RChangeCursorVisibility(long windowID, boolean isVisible) {
@@ -11,12 +11,12 @@ public final class RChangeCursorVisibility extends AWindowRequest {
 
     
     @Override
-    protected void setState(WindowRequestContext context) {
+    protected void setState(BasicWindowRequestContext context) {
         context.window.setCursorVisibility(this.isVisible);
     }
     
     @Override
-    protected void setGLFW(WindowRequestContext context) {
+    protected void setGLFW(BasicWindowRequestContext context) {
         GLFW.glfwSetInputMode(
             context.window.getWindowID(),
             GLFW.GLFW_CURSOR,

@@ -1,6 +1,8 @@
-package johnengine.core.window;
+package johnengine.core.window.input;
 
 import org.lwjgl.glfw.GLFW;
+
+import johnengine.core.window.Window;
 
 public class Input {
     

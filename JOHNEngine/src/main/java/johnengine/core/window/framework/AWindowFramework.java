@@ -1,15 +1,9 @@
-package johnengine.core.window;
+package johnengine.core.window.framework;
 
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.reqmngr.RequestManager;
-import johnengine.core.window.reqs.RChangeCursorVisibility;
-import johnengine.core.window.reqs.RChangeTitle;
-import johnengine.core.window.reqs.RFullscreen;
-import johnengine.core.window.reqs.RLockCursor;
-import johnengine.core.window.reqs.RMove;
-import johnengine.core.window.reqs.RResize;
-import johnengine.core.window.reqs.RVSync;
+import johnengine.core.window.RFullscreen;
 
 public abstract class AWindowFramework {
     
@@ -204,57 +198,57 @@ public abstract class AWindowFramework {
     
     
     
-    public void setPosition(int x, int y) {
+    protected void setPosition(int x, int y) {
         this.updatingProperties.x = x;
         this.updatingProperties.y = y;
     }
     
-    public void setSize(int width, int height) {
+    protected void setSize(int width, int height) {
         this.updatingProperties.width = width;
         this.updatingProperties.height = height;
     }
 
-    public void setMonitorSize(int width, int height) {
+    protected void setMonitorSize(int width, int height) {
         this.updatingProperties.monitorWidth = width;
     }
     
-    public void setFPS(long fps) {
+    protected void setFPS(long fps) {
         this.updatingProperties.fps = fps;
     }
     
-    public void setTitle(String title) {
+    protected void setTitle(String title) {
         this.updatingProperties.title = title;
     }
     
-    public void setFullscreen(boolean isFullscreen) {
+    protected void setFullscreen(boolean isFullscreen) {
         this.updatingProperties.isFullscreen = isFullscreen;
     }
     
-    public void setBorder(boolean hasBorder) {
+    protected void setBorder(boolean hasBorder) {
         this.updatingProperties.hasBorder = hasBorder;
     }
 
-    public void setCursorLockedToCenter(boolean isLockedToCenter) {
+    protected void setCursorLockedToCenter(boolean isLockedToCenter) {
         this.updatingProperties.lockCursorToCenter = isLockedToCenter;
     }
 
-    public void setCursorVisibility(boolean isVisible) {
+    protected void setCursorVisibility(boolean isVisible) {
         this.updatingProperties.isCursorVisible = isVisible;
     }
 
-    public void setVSync(boolean useVSync) {
+    protected void setVSync(boolean useVSync) {
         this.updatingProperties.useVSync = useVSync;
     }
 
-    public void setFocused(boolean isFocused) {
+    protected void setFocused(boolean isFocused) {
         this.updatingProperties.isFocused = isFocused;
     }
     
-    public void setMaximized(boolean isMaximized) {
+    protected void setMaximized(boolean isMaximized) {
         this.updatingProperties.isMaximized = isMaximized;
     }
     
-    public void setWindowState(AWindowFramework.STATE state) {
+    protected void setWindowState(AWindowFramework.STATE state) {
         this.updatingProperties.windowState = state;
     }
     
