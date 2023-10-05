@@ -114,7 +114,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         GLFW.glfwWindowHint(GLFW.GLFW_DECORATED,
             this.updatingProperties.isFullscreen ? 
             GLFW.GLFW_FALSE : 
-             GLFW.GLFW_TRUE
+            GLFW.GLFW_TRUE
         );
         
             // Create window

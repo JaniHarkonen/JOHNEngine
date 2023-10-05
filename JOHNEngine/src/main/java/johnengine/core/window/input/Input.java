@@ -20,16 +20,12 @@ public class Input {
         private final int[] buttonMap;
         private double mouseX;
         private double mouseY;
-        //private int windowWidth;
-        //private int windowHeight;
         
         private State() {
             this.keyMap = new int[KEY_MAP_SIZE];
             this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
             this.mouseX = 0;
             this.mouseY = 0;
-            //this.windowWidth = 0;
-            //this.windowHeight = 0;
         }
         
         public static State createNullState() {
@@ -90,14 +86,6 @@ public class Input {
         public double getMouseY() {
             return this.mouseY;
         }
-        
-        /*public int getWindowWidth() {
-            return this.windowWidth;
-        }
-        
-        public int getWindowHeight() {
-            return this.windowHeight;
-        }*/
     }
     
     
@@ -144,10 +132,4 @@ public class Input {
     private void mouseListener(int button, int action) {
         this.updatingState.buttonMap[button] = action + 1;
     }
-    
-    /*private void resizeListener(int width, int height) {
-        //this.updatingState.windowWidth = width;
-        //this.updatingState.windowHeight = height;
-        this.hostWindow.setSize(width, height);
-    }*/
 }
