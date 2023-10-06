@@ -4,7 +4,7 @@ import johnengine.core.window.framework.ABasicWindowRequest;
 import johnengine.core.window.framework.BasicWindowRequestContext;
 
 public abstract class AWindowRequest extends ABasicWindowRequest {
-
+    
     @Override
     protected void setState(BasicWindowRequestContext context) {
         this.setState((WindowRequestContext) context);

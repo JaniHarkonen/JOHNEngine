@@ -25,7 +25,7 @@ public class TestGame extends AGame {
         this.assetManager   = (AssetManager)    engineComponents[1];
         this.networker      = (Networker)       engineComponents[2];
         
-        this.engine.setTickRate(60);
+        //this.engine.setTickRate(60);
         
         this.gameWindow.changeTitle("ezzzzpzzz B)").disableVSync();
         //this.gameWindow.resize(1000, 1000);
@@ -52,7 +52,7 @@ public class TestGame extends AGame {
         this.engine.stop();
         
         //this.gameWindow.changeTitle(""+this.gameWindow.getFPS());
-        //this.gameWindow.changeTitle(this.gameWindow.getWidth() + ", " + this.gameWindow.getHeight() + " | FPS: " + this.gameWindow.getFPS() + " | Maximized: " + this.gameWindow.isMaximized());
+        this.gameWindow.changeTitle(this.gameWindow.getWidth() + ", " + this.gameWindow.getHeight() + " | FPS: " + this.gameWindow.getFPS() + " | Maximized: " + this.gameWindow.isMaximized());
         
         
         /*if( this.gameWindow.getRenderer() != null )

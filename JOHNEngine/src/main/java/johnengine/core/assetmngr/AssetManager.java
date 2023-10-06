@@ -1,11 +1,12 @@
 package johnengine.core.assetmngr;
 
 import johnengine.core.IEngineComponent;
+import johnengine.core.threadable.AThreadable;
 
-public final class AssetManager implements IEngineComponent {
+public final class AssetManager extends AThreadable implements IEngineComponent {
 
     public AssetManager() {
-
+        
     }
 
     public static AssetManager setup() {
@@ -22,4 +23,21 @@ public final class AssetManager implements IEngineComponent {
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public void start() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void loop() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void stop() {
+        // TODO Auto-generated method stub
+        
+    }
 }

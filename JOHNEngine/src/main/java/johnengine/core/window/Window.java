@@ -1,7 +1,6 @@
 package johnengine.core.window;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
@@ -101,11 +100,12 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         this.input.snapshot();
         
         this.snapshotProperties.copy(this.updatingProperties);
+        this.requestManager.requestsStart();
     }
 
     @Override
     public void afterTick(float deltaTime) {
-        
+        this.requestManager.requestsEnd();
     }
     
     private long createWindow() {
@@ -169,14 +169,6 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         return NULL_STATE;
         
         return this.input.getState();
-    }
-    
-    public void DEBUGgoFullscreen() {
-        GLFWVidMode videoMode = GLFW.glfwGetVideoMode(this.primaryMonitorID);
-        this.setSize(videoMode.width(), videoMode.height());
-        this.setPosition(0, 0);
-        
-        this.rebuildWindow();
     }
     
     long getPrimaryMonitorID() {
