@@ -20,9 +20,11 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     private Renderer renderer;
     private Input input;
     
+    
     public static Window setup() {
         return new Window();
     }
+    
     
     public Window() {
         super(new Properties(), new Properties(), new RequestManager());

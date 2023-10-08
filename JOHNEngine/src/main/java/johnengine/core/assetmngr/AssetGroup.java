@@ -1,0 +1,87 @@
+package johnengine.core.assetmngr;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AssetGroup {
+
+    protected final AssetManager assetManager;
+    protected final String name;
+    protected final List<String> assets;
+    protected final List<AssetGroup> subGroups;
+    
+    public AssetGroup(String name, AssetManager assetManager) {
+        this.assetManager = assetManager;
+        this.name = name;
+        this.assets = new ArrayList<String>();
+        this.subGroups = new ArrayList<AssetGroup>();
+    }
+    
+    
+    public AssetGroup put(String assetName) {
+        if( assetName != null )
+        this.assets.add(assetName);
+        
+        return this;
+    }
+    
+    public AssetGroup removeAsset(String assetName) {
+        if( assetName != null )
+        {
+            for( int i = 0; i < this.assets.size(); i++ )
+            {
+                if( this.assets.get(i) != assetName )
+                continue;
+                
+                this.assets.remove(i);
+                return this;
+            }
+        }
+        
+        return this;
+    }
+    
+    public AssetGroup put(AssetGroup assetGroup) {
+        if( assetGroup != null )
+        this.subGroups.add(assetGroup);
+        
+        return this;
+    }
+    
+    public AssetGroup removeSubGroup(String assetGroupName) {
+        if( assetGroupName != null )
+        {
+            for( int i = 0; i < this.subGroups.size(); i++ )
+            {
+                if( this.subGroups.get(i).getName() != assetGroupName )
+                continue;
+                
+                this.subGroups.remove(i);
+                return this;
+            }
+        }
+        
+        return this;
+    }
+    
+    public void load() {
+        for( AssetGroup assetGroup : this.subGroups )
+        assetGroup.load();
+        
+        for( String assetName : this.assets )
+        this.assetManager.loadAsset(assetName);
+    }
+    
+    public void deload() {
+        for( AssetGroup assetGroup : this.subGroups )
+        assetGroup.deload();
+        
+        for( String assetName : this.assets )
+        this.assetManager.deloadAsset(assetName);
+    }
+    
+    
+    public String getName() {
+        return this.name;
+    }
+}
