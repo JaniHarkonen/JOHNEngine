@@ -50,7 +50,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
             
             // Distribute requets across the processor threads
         for( int i = 0; i < buffer.size(); i++ )
-        processors[i % this.numberOfThreads].addRequest((AAssetRequest) buffer.get(i));
+        processors[i % processorCount].addRequest((AAssetRequest) buffer.get(i));
         
             // Start the threads
         for( AssetProcessor processor : processors )

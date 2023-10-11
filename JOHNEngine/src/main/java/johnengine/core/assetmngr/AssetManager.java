@@ -1,6 +1,5 @@
 package johnengine.core.assetmngr;
 
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import johnengine.core.assetmngr.reqs.AssetRequestContext;
 import johnengine.core.assetmngr.reqs.RDeloadAsset;
 import johnengine.core.assetmngr.reqs.RLoadAsset;
 import johnengine.core.threadable.AThreadable;
+import johnengine.testing.DebugUtils;
 
 public final class AssetManager extends AThreadable implements IEngineComponent {
     
@@ -18,7 +18,9 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     private final AssetRequestManager requestManager;
     
     public static AssetManager setup() {
-        return new AssetManager();
+        AssetManager assetManager = new AssetManager();
+        assetManager.start();
+        return assetManager;
     }
     
     public AssetManager() {
@@ -57,6 +59,10 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
         assetGroup.deload();
         return this;
     }
+    
+    public AAsset getAsset(String assetName) {
+        return this.assetMap.get(assetName);
+    }
 
     @Override
     public void beforeTick(float deltaTime) {
@@ -75,6 +81,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
 
     @Override
     public void loop() {
+        while( true )
         this.requestManager.processRequests();
     }
 

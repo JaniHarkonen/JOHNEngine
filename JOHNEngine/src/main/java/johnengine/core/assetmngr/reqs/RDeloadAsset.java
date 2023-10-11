@@ -11,6 +11,6 @@ public class RDeloadAsset extends AAssetRequest {
 
     @Override
     public void process(IRequestContext context) {
-        
+        this.asset.deload();
     }
 }

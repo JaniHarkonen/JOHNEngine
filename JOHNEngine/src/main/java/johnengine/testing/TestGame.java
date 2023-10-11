@@ -18,6 +18,7 @@ public class TestGame extends AGame {
     private Networker networker;
     private Engine engine;
     private MilliCounter timer;
+    private AssetGroup agMain;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -32,9 +33,10 @@ public class TestGame extends AGame {
         .changeTitle("ezzzzpzzz B)")
         .disableVSync();
         
-        AssetGroup agMain = this.assetManager.createAssetGroup("main").
-        putAndDeclare(new TestAsset("test", "/tests/test.txt")).
-        putAndDeclare(new TestAsset("test2", "/tests/test.txt"));
+        this.agMain = this.assetManager
+        .createAssetGroup("main")
+        .putAndDeclare(new TestAsset("test", "C:/Users/User/Desktop/copemax.txt"));
+        this.assetManager.loadGroup(this.agMain);
         
         //this.gameWindow.resize(1000, 1000);
         /*try {
@@ -70,6 +72,14 @@ public class TestGame extends AGame {
         {
             if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
             this.gameWindow.enterFullscreen();
+        }
+        
+        TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
+        DebugUtils.log(this, this.agMain.isLoaded());
+        if( this.agMain.isLoaded() )
+        {
+            DebugUtils.log(this, asset.getAsset());
+            this.assetManager.deloadGroup(this.agMain);
         }
         
         this.timer.count();

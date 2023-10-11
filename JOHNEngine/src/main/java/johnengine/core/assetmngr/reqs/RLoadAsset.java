@@ -11,6 +11,6 @@ public class RLoadAsset extends AAssetRequest {
 
     @Override
     public void process(IRequestContext context) {
-        
+        this.asset.load();
     }
 }
