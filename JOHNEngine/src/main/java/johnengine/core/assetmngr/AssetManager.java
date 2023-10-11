@@ -29,41 +29,39 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     
     public AssetManager() {
         this.assetMap = new HashMap<String, AAsset>();
-        this.requestManager = new AssetRequestManager(NUMBER_OF_THREADS, new AssetRequestContext(this));
+        this.requestManager = new AssetRequestManager(
+            NUMBER_OF_THREADS, 
+            new AssetRequestContext(this)
+        );
     }
     
-    
+        // Declares an asset and places a reference to it in the asset map
     public AssetManager declareAsset(AAsset asset) {
         this.assetMap.put(asset.getName(), asset);
         return this;
     }
     
+        // Creates an asset group and associates this asset manager with it
     public AssetGroup createAssetGroup(String groupName) {
         return new AssetGroup(groupName, this);
     }
     
+        // Creates and schedules an asset loading request
     public AssetManager loadAsset(String assetName) {
         AAsset asset = this.assetMap.get(assetName);
         this.requestManager.request(new RLoadAsset(asset));
         return this;
     }
     
-    public AssetManager loadGroup(AssetGroup assetGroup) {
-        assetGroup.load();
-        return this;
-    }
-    
+        // Creates and schedules an asset de-loading request
     public AssetManager deloadAsset(String assetName) {
         AAsset asset = this.assetMap.get(assetName);
         this.requestManager.request(new RDeloadAsset(asset));
         return this;
     }
     
-    public AssetManager deloadGroup(AssetGroup assetGroup) {
-        assetGroup.deload();
-        return this;
-    }
-    
+        // Returns a reference to an asset from the asset map given its name
+        // or NULL, if no such asset has been declared
     public AAsset getAsset(String assetName) {
         return this.assetMap.get(assetName);
     }
@@ -85,8 +83,16 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
 
     @Override
     public void loop() {
-        while( true )
-        this.requestManager.processRequests();
+        try
+        {
+            while( true )
+            {
+                Thread.sleep(1000);
+                this.requestManager.processRequests();
+            }
+        }
+        catch( Exception e )
+        { }
     }
 
     @Override

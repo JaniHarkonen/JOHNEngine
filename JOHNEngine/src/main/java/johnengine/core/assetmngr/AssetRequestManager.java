@@ -7,6 +7,7 @@ import johnengine.core.assetmngr.reqs.AAssetRequest;
 import johnengine.core.reqmngr.ABufferedRequestManager;
 import johnengine.core.reqmngr.IRequestContext;
 import johnengine.core.reqmngr.RequestBuffer;
+import johnengine.testing.DebugUtils;
 
 public class AssetRequestManager extends ABufferedRequestManager {
     
@@ -52,19 +53,25 @@ public class AssetRequestManager extends ABufferedRequestManager {
         }
     }
     
+    
+    /*************************** CLASS STARTS ******************************/
+    
     protected final int numberOfThreads;
     
     protected AssetRequestManager(int numberOfThreads, IRequestContext context) {
         this.numberOfThreads = numberOfThreads;
         this.context = context;
     }
+    
 
     @Override
     public void processRequests() {
         RequestBuffer buffer = this.requestQueue.poll();
         
-        if( buffer == null )
+        if( buffer == null)
         return;
+        
+        DebugUtils.log(this, buffer.size());
         
             // Create processor threads
         int processorCount = Math.min(this.numberOfThreads, buffer.size());
