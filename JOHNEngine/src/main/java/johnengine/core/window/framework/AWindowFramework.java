@@ -2,7 +2,7 @@ package johnengine.core.window.framework;
 
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.core.reqmngr.RequestManager;
+import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.window.RFullscreen;
 
 public abstract class AWindowFramework {
@@ -89,14 +89,14 @@ public abstract class AWindowFramework {
     
     protected final Properties updatingProperties;
     protected final Properties snapshotProperties;
-    protected final RequestManager requestManager;
+    protected final BufferedRequestManager requestManager;
     protected long windowID;
     protected long primaryMonitorID;
     
     protected AWindowFramework(
         Properties updatingProperties, 
         Properties snapshotProperties, 
-        RequestManager requestManager
+        BufferedRequestManager requestManager
     ) {
         
         this.updatingProperties = updatingProperties;

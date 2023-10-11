@@ -3,7 +3,7 @@ package johnengine.core.assetmngr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssetGroup {
+public class AssetGroup implements IAsset {
 
     protected final AssetManager assetManager;
     protected final String name;
@@ -18,9 +18,37 @@ public class AssetGroup {
     }
     
     
-    public AssetGroup put(String assetName) {
+    @Override
+    public void load() {
+        for( AssetGroup assetGroup : this.subGroups )
+        assetGroup.load();
+        
+        for( String assetName : this.assets )
+        this.assetManager.loadAsset(assetName);
+    }
+    
+    @Override
+    public void deload() {
+        for( AssetGroup assetGroup : this.subGroups )
+        assetGroup.deload();
+        
+        for( String assetName : this.assets )
+        this.assetManager.deloadAsset(assetName);
+    }
+    
+    public AssetGroup putAsset(String assetName) {
         if( assetName != null )
         this.assets.add(assetName);
+        
+        return this;
+    }
+    
+    public AssetGroup putAndDeclare(AAsset asset) {
+        if( asset != null )
+        {
+            this.assetManager.declareAsset(asset);
+            this.putAsset(asset.getName());
+        }
         
         return this;
     }
@@ -41,14 +69,14 @@ public class AssetGroup {
         return this;
     }
     
-    public AssetGroup put(AssetGroup assetGroup) {
+    public AssetGroup putGroup(AssetGroup assetGroup) {
         if( assetGroup != null )
         this.subGroups.add(assetGroup);
         
         return this;
     }
     
-    public AssetGroup removeSubGroup(String assetGroupName) {
+    public AssetGroup removeGroup(String assetGroupName) {
         if( assetGroupName != null )
         {
             for( int i = 0; i < this.subGroups.size(); i++ )
@@ -62,22 +90,6 @@ public class AssetGroup {
         }
         
         return this;
-    }
-    
-    public void load() {
-        for( AssetGroup assetGroup : this.subGroups )
-        assetGroup.load();
-        
-        for( String assetName : this.assets )
-        this.assetManager.loadAsset(assetName);
-    }
-    
-    public void deload() {
-        for( AssetGroup assetGroup : this.subGroups )
-        assetGroup.deload();
-        
-        for( String assetName : this.assets )
-        this.assetManager.deloadAsset(assetName);
     }
     
     

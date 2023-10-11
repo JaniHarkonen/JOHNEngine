@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
-import johnengine.core.reqmngr.RequestManager;
+import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.window.framework.AWindowFramework;
 import johnengine.core.window.framework.BasicWindowRequestContext;
@@ -27,7 +27,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     
     
     public Window() {
-        super(new Properties(), new Properties(), new RequestManager());
+        super(new Properties(), new Properties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
         instance = this;
@@ -102,12 +102,13 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         this.input.snapshot();
         
         this.snapshotProperties.copy(this.updatingProperties);
-        this.requestManager.requestsStart();
+        //this.requestManager.requestsStart();
     }
 
     @Override
     public void afterTick(float deltaTime) {
-        this.requestManager.requestsEnd();
+        this.requestManager.newBuffer();
+        //this.requestManager.requestsEnd();
     }
     
     private long createWindow() {
@@ -177,9 +178,9 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         return this.primaryMonitorID;
     }
     
-    /********************* LIFTED METHODS ************************/
+    /********************* HOISTED METHODS ************************/
     
-    // Some inherited methods may have to be lifted in order for them
+    // Some inherited methods may have to be hoisted in order for them
     // to be visible inside the current package as AWindowFramework
     // and its protected methods are declared in another package.
     

@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
+import johnengine.core.assetmngr.AssetGroup;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 import johnengine.core.networker.Networker;
@@ -25,14 +26,21 @@ public class TestGame extends AGame {
         this.assetManager   = (AssetManager)    engineComponents[1];
         this.networker      = (Networker)       engineComponents[2];
         
-        //this.engine.setTickRate(60);
+        this.engine.setTickRate(60);
         
-        this.gameWindow.changeTitle("ezzzzpzzz B)").disableVSync();
+        this.gameWindow
+        .changeTitle("ezzzzpzzz B)")
+        .disableVSync();
+        
+        AssetGroup agMain = this.assetManager.createAssetGroup("main").
+        putAndDeclare(new TestAsset("test", "/tests/test.txt")).
+        putAndDeclare(new TestAsset("test2", "/tests/test.txt"));
+        
         //this.gameWindow.resize(1000, 1000);
-        try {
+        /*try {
             Thread.sleep(1000);
         }
-        catch(Exception e) {}
+        catch(Exception e) {}*/
         //this.gameWindow.lockCursorToCenter();
         //this.gameWindow.resize(640, 480);
         //this.gameWindow.setCursorVisibility(true);
@@ -40,7 +48,7 @@ public class TestGame extends AGame {
             @Override
             protected void performAction() {
                 //gameWindow.changeTitle(""+this.getLastCount());
-                gameWindow.changeTitle("FPS: "+gameWindow.getFPS() + " | Tick rate: " + this.getLastCount());
+                //gameWindow.changeTitle("FPS: "+gameWindow.getFPS() + " | Tick rate: " + this.getLastCount());
                 //gameWindow.changeTitle(""+gameWindow.getFPS());
             }
         };
@@ -51,28 +59,17 @@ public class TestGame extends AGame {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
-        //this.gameWindow.changeTitle(""+this.gameWindow.getFPS());
-        this.gameWindow.changeTitle(this.gameWindow.getWidth() + ", " + this.gameWindow.getHeight() + " | FPS: " + this.gameWindow.getFPS() + " | Maximized: " + this.gameWindow.isMaximized());
-        
-        
-        /*if( this.gameWindow.getRenderer() != null )
-        {
-            //this.gameWindow.setTitle(""+this.gameWindow.getFPS());
-            float same = (float)Math.random();
-            this.gameWindow.getRenderer().r = same;
-            this.gameWindow.getRenderer().g = same;
-            this.gameWindow.getRenderer().b =same;
-            this.gameWindow.getRenderer().a = same;
-        }*/
+        this.gameWindow.changeTitle(
+            this.gameWindow.getWidth() + ", " + 
+            this.gameWindow.getHeight() + " | FPS: " + 
+            this.gameWindow.getFPS() + " | Maximized: " + 
+            this.gameWindow.isMaximized()
+        );
         
         if( this.gameWindow.getInput() != null )
         {
             if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
             this.gameWindow.enterFullscreen();
-            //this.gameWindow.changeTitle(this.gameWindow.getInput().getMouseX() + ", " + this.gameWindow.getInput().getMouseY());
-            //if( this.gameWindow.getInput().isKeyDown(GLFW.GLFW_KEY_A) )
-            //this.gameWindow.changeTitle(title);
-            //this.gameWindow.setFullscreen(true);
         }
         
         this.timer.count();

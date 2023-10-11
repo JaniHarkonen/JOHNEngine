@@ -5,21 +5,35 @@ public abstract class AAsset implements IAsset {
     protected final String name;
     protected final String path;
     protected Object asset;
+    protected boolean isLoaded;
     
     protected AAsset(String name, String path) {
         this.name = name;
         this.path = path;
         this.asset = null;
+        this.isLoaded = false;
     }
     
     
+    @Override
     public void load() {
+        if( this.isLoaded )
+        return;
         
+        this.loadImpl();
+        this.isLoaded = true;
     }
     
-    public void nullify() {
+    @Override
+    public void deload() {
+        this.deloadImpl();
         this.asset = null;
+        this.isLoaded = false;
     }
+    
+    protected abstract void loadImpl();
+    
+    protected abstract void deloadImpl();
     
     
     public String getName() {
@@ -32,5 +46,9 @@ public abstract class AAsset implements IAsset {
     
     public Object getAsset() {
         return this.asset;
+    }
+    
+    public boolean isLoaded() {
+        return this.isLoaded;
     }
 }

@@ -19,7 +19,8 @@ public final class Engine extends AThreadable {
         STOPPED
     }
 
-    public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY; // Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
+        // Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
+    public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY;
 
     public static Engine engineSingleton;
 
