@@ -13,4 +13,9 @@ public class RDeloadAsset extends AAssetRequest {
     public void process(IRequestContext context) {
         this.asset.deload();
     }
+    
+    @Override
+    public boolean canQueue() {
+        return this.asset.isLoaded();
+    }
 }

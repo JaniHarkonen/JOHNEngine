@@ -5,6 +5,7 @@ import java.util.List;
 
 import johnengine.core.assetmngr.reqs.AAssetRequest;
 import johnengine.core.reqmngr.ABufferedRequestManager;
+import johnengine.core.reqmngr.ARequest;
 import johnengine.core.reqmngr.IRequestContext;
 import johnengine.core.reqmngr.RequestBuffer;
 import johnengine.testing.DebugUtils;
@@ -64,6 +65,16 @@ public class AssetRequestManager extends ABufferedRequestManager {
     }
     
 
+    @Override
+    public void request(ARequest request) {
+        AAssetRequest arequest = ((AAssetRequest) request);
+        if( !arequest.canQueue() )
+        return;
+        
+        super.request(request);
+        arequest.queueAsset();
+    }
+    
     @Override
     public void processRequests() {
         RequestBuffer buffer = this.requestQueue.poll();

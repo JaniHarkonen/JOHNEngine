@@ -10,4 +10,10 @@ public abstract class AAssetRequest extends ARequest {
     protected AAssetRequest(AAsset asset) {
         this.asset = asset;
     }
+    
+    public void queueAsset() {
+        asset.queued();
+    }
+    
+    public abstract boolean canQueue();
 }

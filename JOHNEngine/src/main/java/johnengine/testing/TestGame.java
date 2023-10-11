@@ -78,11 +78,8 @@ public class TestGame extends AGame {
         }
         
         TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
-        if( asset.isLoaded() )
-        {
-            DebugUtils.log(this, asset.getAsset());
-            this.agMain.deload();
-        }
+        //DebugUtils.log(this, asset.getStatus());
+        this.agMain.deload();
         
         this.timer.count();
     }
