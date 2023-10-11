@@ -4,8 +4,8 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
-import johnengine.core.assetmngr.AssetGroup;
 import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.engine.Engine;
 import johnengine.core.networker.Networker;
 import johnengine.core.window.Window;
@@ -75,8 +75,7 @@ public class TestGame extends AGame {
         }
         
         TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
-        DebugUtils.log(this, this.agMain.isLoaded());
-        if( this.agMain.isLoaded() )
+        if( asset.isLoaded() )
         {
             DebugUtils.log(this, asset.getAsset());
             this.assetManager.deloadGroup(this.agMain);

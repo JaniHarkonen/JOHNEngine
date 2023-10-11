@@ -1,7 +1,9 @@
-package johnengine.core.assetmngr;
+package johnengine.core.assetmngr.asset;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import johnengine.core.assetmngr.AssetManager;
 
 public class AssetGroup implements IAsset {
 

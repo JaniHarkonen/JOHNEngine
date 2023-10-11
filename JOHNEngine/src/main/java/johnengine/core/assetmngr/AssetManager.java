@@ -4,14 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import johnengine.core.IEngineComponent;
+import johnengine.core.assetmngr.asset.AAsset;
+import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.assetmngr.reqs.AssetRequestContext;
 import johnengine.core.assetmngr.reqs.RDeloadAsset;
 import johnengine.core.assetmngr.reqs.RLoadAsset;
 import johnengine.core.threadable.AThreadable;
-import johnengine.testing.DebugUtils;
 
 public final class AssetManager extends AThreadable implements IEngineComponent {
     
+    /**
+     * Default number of worker threads available for the AssetManager. 
+     */
     public static final int NUMBER_OF_THREADS = 4;
 
     private final Map<String, AAsset> assetMap;

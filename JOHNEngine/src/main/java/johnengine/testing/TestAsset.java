@@ -3,7 +3,7 @@ package johnengine.testing;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import johnengine.core.assetmngr.AAsset;
+import johnengine.core.assetmngr.asset.AAsset;
 
 public class TestAsset extends AAsset {
     

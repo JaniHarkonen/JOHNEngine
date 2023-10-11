@@ -1,5 +1,8 @@
 package johnengine.core.assetmngr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import johnengine.core.assetmngr.reqs.AAssetRequest;
 import johnengine.core.reqmngr.ABufferedRequestManager;
 import johnengine.core.reqmngr.IRequestContext;
@@ -7,7 +10,28 @@ import johnengine.core.reqmngr.RequestBuffer;
 
 public class AssetRequestManager extends ABufferedRequestManager {
     
-    private class AssetProcessor extends Thread {
+    protected class AssetRequestSegment {
+        private final List<AAssetRequest> requests;
+        private int nextIndex;
+        
+        public AssetRequestSegment() {
+            this.requests = new ArrayList<AAssetRequest>();
+            this.nextIndex = 0;
+        }
+        
+        public AAssetRequest nextRequest() {
+            if( this.nextIndex < this.requests.size() )
+            return this.requests.get(this.nextIndex++);
+            
+            return null;
+        }
+        
+        public void add(AAssetRequest request) {
+            this.requests.add(request);
+        }
+    }
+    
+    protected class AssetProcessor extends Thread {
         private final AssetRequestSegment requestSegment;
         private final IRequestContext context;
         
