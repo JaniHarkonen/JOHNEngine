@@ -13,8 +13,7 @@ public final class Engine extends AThreadable {
      *
      */
     public enum STATE {
-        START_FAILED,
-        START_FAILED_NO_GAME,
+        START_FAILED
         RUNNING,
         STOPPED
     }

@@ -13,7 +13,6 @@ public abstract class ABufferedRequestManager {
         this.requestQueue = new ConcurrentLinkedQueue<RequestBuffer>();
         this.context = context;
         this.nextBuffer = new RequestBuffer();
-        //this.requestQueue.add(this.nextBuffer);
     }
     
     public ABufferedRequestManager() {

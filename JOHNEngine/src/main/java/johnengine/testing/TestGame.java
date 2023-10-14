@@ -55,6 +55,7 @@ public class TestGame extends AGame {
                 //gameWindow.changeTitle(""+this.getLastCount());
                 //gameWindow.changeTitle("FPS: "+gameWindow.getFPS() + " | Tick rate: " + this.getLastCount());
                 //gameWindow.changeTitle(""+gameWindow.getFPS());
+                gameWindow.changeTitle("(" + gameWindow.getInput().getMouseX() + ", " + gameWindow.getInput().getMouseY() + ")");
             }
         };
     }
@@ -64,12 +65,12 @@ public class TestGame extends AGame {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
-        this.gameWindow.changeTitle(
+        /*this.gameWindow.changeTitle(
             this.gameWindow.getWidth() + ", " + 
             this.gameWindow.getHeight() + " | FPS: " + 
             this.gameWindow.getFPS() + " | Maximized: " + 
             this.gameWindow.isMaximized()
-        );
+        );*/
         
         if( this.gameWindow.getInput() != null )
         {
@@ -80,6 +81,8 @@ public class TestGame extends AGame {
         TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
         //DebugUtils.log(this, asset.getStatus());
         this.agMain.deload();
+        
+        this.gameWindow.moveMouse((int) (Math.random() * 640), (int) (Math.random() * 480));
         
         this.timer.count();
     }

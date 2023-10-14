@@ -194,6 +194,11 @@ public abstract class AWindowFramework {
         return this;
     }
     
+    public AWindowFramework moveMouse(int x, int y) {
+        this.requestManager.request(new RMoveMouse(this.windowID, x, y));
+        return this;
+    }
+    
     /************************** SETTERS ***************************/
     
     
