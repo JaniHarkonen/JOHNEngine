@@ -15,8 +15,8 @@ public class AssetGroup implements IAsset {
     public AssetGroup(String name, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.name = name;
-        this.assets = new ArrayList<String>();
-        this.subGroups = new ArrayList<AssetGroup>();
+        this.assets = new ArrayList<>();
+        this.subGroups = new ArrayList<>();
     }
     
     

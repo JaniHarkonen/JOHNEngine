@@ -28,7 +28,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     }
     
     public AssetManager() {
-        this.assetMap = new HashMap<String, AAsset>();
+        this.assetMap = new HashMap<>();
         this.requestManager = new AssetRequestManager(
             NUMBER_OF_THREADS, 
             new AssetRequestContext(this)

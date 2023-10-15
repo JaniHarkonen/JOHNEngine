@@ -9,7 +9,7 @@ public class RequestBuffer {
     private boolean isReady;
     
     public RequestBuffer() {
-        this.requests = new ArrayList<ARequest>();
+        this.requests = new ArrayList<>();
         this.isReady = false;
     }
     

@@ -17,7 +17,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
         private int nextIndex;
         
         public AssetRequestSegment() {
-            this.requests = new ArrayList<AAssetRequest>();
+            this.requests = new ArrayList<>();
             this.nextIndex = 0;
         }
         
