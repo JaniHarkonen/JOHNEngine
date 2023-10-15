@@ -7,12 +7,11 @@ import johnengine.core.engine.Engine;
 
 public abstract class ALauncherFramework {
 
-    private List<IEngineComponent> engineConfiguration;
-
-    private AGame game;
+    protected final List<IEngineComponent> engineConfiguration;
+    protected AGame game;
 
     public ALauncherFramework() {
-        this.engineConfiguration = new ArrayList<IEngineComponent>();
+        this.engineConfiguration = new ArrayList<>();
         this.configureEngine();
         Engine.run(
             this.game,

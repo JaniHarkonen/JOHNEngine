@@ -13,8 +13,20 @@ public final class Engine extends AThreadable {
      *
      */
     public enum STATE {
-        START_FAILED
+        /**
+         * The engine failed to start the game.
+         */
+        START_FAILED,
+        
+        /**
+         * The engine is running a game.
+         */
         RUNNING,
+        
+        /**
+         * The engine has stopped running a game or the engine
+         * hasn't been started yet.
+         */
         STOPPED
     }
 
@@ -29,7 +41,7 @@ public final class Engine extends AThreadable {
     private AGame game;
 
     private Engine() {
-        this.state = Engine.STATE.STOPPED;
+        this.state = STATE.STOPPED;
         this.tickRate = TICK_SPEED_CAP;
     }
     
@@ -49,7 +61,7 @@ public final class Engine extends AThreadable {
     
     @Override
     public void start() {
-        this.state = Engine.STATE.RUNNING;
+        this.state = STATE.RUNNING;
         this.startProcess();    // Enters thread
     }
 
@@ -61,7 +73,8 @@ public final class Engine extends AThreadable {
         float tickInterval = 1 / this.tickRate;
         float deltaTime;
 
-        while( this.state == Engine.STATE.RUNNING ) {
+        while( this.isRunning() )
+        {
             long currentTime = System.nanoTime();
             deltaTime = (currentTime - lastTime) / 1000000000.0f;
 
@@ -84,7 +97,7 @@ public final class Engine extends AThreadable {
 
     @Override
     public void stop() {
-        this.state = Engine.STATE.STOPPED;
+        this.state = STATE.STOPPED;
     }
 
     private void setEngineComponents(IEngineComponent... engineComponents) {
@@ -93,6 +106,14 @@ public final class Engine extends AThreadable {
 
     private void setGame(AGame game) {
         this.game = game;
+    }
+    
+    public boolean isRunning() {
+        return (this.state == STATE.RUNNING);
+    }
+    
+    public boolean isStopped() {
+        return (this.state == STATE.STOPPED);
     }
     
     public void setTickRate(float tickRate) {

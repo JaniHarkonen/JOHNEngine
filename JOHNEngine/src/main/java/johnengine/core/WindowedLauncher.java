@@ -4,7 +4,7 @@ import johnengine.core.window.Window;
 
 public class WindowedLauncher extends ALauncherFramework {
     
-    private Window window;
+    protected Window window;
     
     public WindowedLauncher() {
         super();
