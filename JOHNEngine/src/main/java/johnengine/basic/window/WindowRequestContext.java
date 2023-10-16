@@ -1,6 +1,6 @@
 package johnengine.basic.window;
 
-import johnengine.core.window.framework.BasicWindowRequestContext;
+import johnengine.core.winframe.BasicWindowRequestContext;
 
 public class WindowRequestContext extends BasicWindowRequestContext {
 

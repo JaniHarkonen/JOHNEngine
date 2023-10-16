@@ -1,6 +1,6 @@
 package johnengine.testing;
 
-import johnengine.core.WindowedLauncher;
+import johnengine.basic.window.WindowedLauncher;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.networker.Networker;
 

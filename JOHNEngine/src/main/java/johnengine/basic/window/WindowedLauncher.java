@@ -1,6 +1,6 @@
-package johnengine.core;
+package johnengine.basic.window;
 
-import johnengine.basic.window.Window;
+import johnengine.core.ALauncherFramework;
 
 public class WindowedLauncher extends ALauncherFramework {
     

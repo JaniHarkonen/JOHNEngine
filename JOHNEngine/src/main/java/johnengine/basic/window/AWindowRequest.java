@@ -1,7 +1,7 @@
 package johnengine.basic.window;
 
-import johnengine.core.window.framework.ABasicWindowRequest;
-import johnengine.core.window.framework.BasicWindowRequestContext;
+import johnengine.core.winframe.ABasicWindowRequest;
+import johnengine.core.winframe.BasicWindowRequestContext;
 
 public abstract class AWindowRequest extends ABasicWindowRequest {
     

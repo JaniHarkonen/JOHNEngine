@@ -8,8 +8,8 @@ import johnengine.core.input.Input;
 import johnengine.core.renderer.Renderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
-import johnengine.core.window.framework.AWindowFramework;
-import johnengine.core.window.framework.BasicWindowRequestContext;
+import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.winframe.BasicWindowRequestContext;
 
 public class Window extends AWindowFramework implements IEngineComponent, IThreadable {
     

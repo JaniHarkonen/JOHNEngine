@@ -1,4 +1,4 @@
-package johnengine.core.window.framework;
+package johnengine.core.winframe;
 
 public final class RLockCursor extends ABasicWindowRequest {
     private final boolean isCursorLockedToCenter;
