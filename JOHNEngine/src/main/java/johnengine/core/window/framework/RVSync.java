@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFW;
 public final class RVSync extends ABasicWindowRequest {
     private final boolean useVSync;
     
-    public RVSync(long windowID, boolean useVSync) {
+    public RVSync(boolean useVSync) {
         this.useVSync = useVSync;
     }
 

@@ -6,7 +6,7 @@ public final class RMove extends ABasicWindowRequest {
     private final int x;
     private final int y;
     
-    public RMove(long windowID, int x, int y) {
+    public RMove(int x, int y) {
         this.x = x;
         this.y = y;
     }

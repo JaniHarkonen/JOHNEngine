@@ -1,4 +1,4 @@
-package johnengine.core.window;
+package johnengine.basic.window;
 
 import johnengine.core.window.framework.ABasicWindowRequest;
 import johnengine.core.window.framework.BasicWindowRequestContext;

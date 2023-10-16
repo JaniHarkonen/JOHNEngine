@@ -4,3 +4,4 @@
 - AAsset should be its own component which is then wrapped by a loader or
 writer depending on the request (use more templates)
 - remove windowID from the constructor of window framework requests
+- get information about the monitor from window

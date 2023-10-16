@@ -3,7 +3,7 @@ package johnengine.core.window.framework;
 public final class RLockCursor extends ABasicWindowRequest {
     private final boolean isCursorLockedToCenter;
     
-    public RLockCursor(long windowID, boolean isCursorLockedToCenter) {
+    public RLockCursor(boolean isCursorLockedToCenter) {
         this.isCursorLockedToCenter = isCursorLockedToCenter;
     }
 

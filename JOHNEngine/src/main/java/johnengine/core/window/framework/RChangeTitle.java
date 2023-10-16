@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFW;
 public final class RChangeTitle extends ABasicWindowRequest {
     private final String title;
     
-    public RChangeTitle(long window, String title) {
+    public RChangeTitle(String title) {
         this.title = title;
     }
 

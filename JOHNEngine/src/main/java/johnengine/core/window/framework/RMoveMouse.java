@@ -6,7 +6,7 @@ public final class RMoveMouse extends ABasicWindowRequest {
     private final int x;
     private final int y;
     
-    public RMoveMouse(long windowID, int x, int y) {
+    public RMoveMouse(int x, int y) {
         this.x = x;
         this.y = y;
     }

@@ -2,13 +2,13 @@ package johnengine.testing;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.engine.Engine;
 import johnengine.core.networker.Networker;
-import johnengine.core.window.Window;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {

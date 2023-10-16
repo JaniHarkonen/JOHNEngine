@@ -1,4 +1,4 @@
-package johnengine.core.window;
+package johnengine.basic.window;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -9,7 +9,7 @@ import johnengine.core.window.framework.BasicWindowRequestContext;
 public final class RFullscreen extends ABasicWindowRequest {
     private final boolean isFullscreen;
     
-    public RFullscreen(long windowID, boolean isFullscreen) {
+    public RFullscreen(boolean isFullscreen) {
         this.isFullscreen = isFullscreen;
     }
 

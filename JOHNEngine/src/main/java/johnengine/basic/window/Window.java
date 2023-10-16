@@ -1,19 +1,17 @@
-package johnengine.core.window;
+package johnengine.basic.window;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
+import johnengine.core.input.Input;
+import johnengine.core.renderer.Renderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.window.framework.AWindowFramework;
 import johnengine.core.window.framework.BasicWindowRequestContext;
-import johnengine.core.window.input.Input;
-import johnengine.core.window.renderer.Renderer;
 
 public class Window extends AWindowFramework implements IEngineComponent, IThreadable {
-    
-    public static Window instance;
     
     private static final Input.State NULL_STATE = Input.State.createNullState();
     
@@ -26,9 +24,7 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     
     public Window() {
         super(new Properties(), new Properties(), new BufferedRequestManager());
-        
         this.requestManager.setContext(new BasicWindowRequestContext(this));
-        instance = this;
     }
     
     
@@ -100,13 +96,11 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         this.input.snapshot();
         
         this.snapshotProperties.copy(this.updatingProperties);
-        //this.requestManager.requestsStart();
     }
 
     @Override
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
-        //this.requestManager.requestsEnd();
     }
     
     private long createWindow() {
@@ -175,6 +169,21 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     long getPrimaryMonitorID() {
         return this.primaryMonitorID;
     }
+    
+    
+    /************************* REQUESTS ***************************/
+    
+    
+    public AWindowFramework enterFullscreen() {
+        this.requestManager.request(new RFullscreen(true));
+        return this;
+    }
+    
+    public AWindowFramework exitFullscreen() {
+        this.requestManager.request(new RFullscreen(false));
+        return this;
+    }
+    
     
     /********************* HOISTED METHODS ************************/
     
