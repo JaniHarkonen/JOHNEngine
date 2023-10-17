@@ -42,10 +42,6 @@ public class TestGame extends AGame {
         this.agMain.load();
         
         //this.gameWindow.resize(1000, 1000);
-        /*try {
-            Thread.sleep(1000);
-        }
-        catch(Exception e) {}*/
         //this.gameWindow.lockCursorToCenter();
         //this.gameWindow.resize(640, 480);
         //this.gameWindow.setCursorVisibility(true);
@@ -65,17 +61,8 @@ public class TestGame extends AGame {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
-        /*this.gameWindow.changeTitle(
-            this.gameWindow.getWidth() + ", " + 
-            this.gameWindow.getHeight() + " | FPS: " + 
-            this.gameWindow.getFPS() + " | Maximized: " + 
-            this.gameWindow.isMaximized()
-        );*/
-        
-        
         if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
         this.gameWindow.enterFullscreen();
-        
         
         TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
         DebugUtils.log(this, asset.get());

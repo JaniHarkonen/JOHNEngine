@@ -18,7 +18,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
      */
     public static final int NUMBER_OF_THREADS = 4;
 
-    private final Map<String, AAsset> assetMap;
+    private final Map<String, AAsset<?>> assetMap;
     private final AssetRequestManager requestManager;
     
     public static AssetManager setup() {
@@ -36,7 +36,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     }
     
         // Declares an asset and places a reference to it in the asset map
-    public AssetManager declareAsset(AAsset asset) {
+    public AssetManager declareAsset(AAsset<?> asset) {
         this.assetMap.put(asset.getName(), asset);
         return this;
     }
@@ -48,21 +48,21 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     
         // Creates and schedules an asset loading request
     public AssetManager loadAsset(String assetName) {
-        AAsset asset = this.assetMap.get(assetName);
+        AAsset<?> asset = this.assetMap.get(assetName);
         this.requestManager.request(new RLoadAsset(asset));
         return this;
     }
     
         // Creates and schedules an asset de-loading request
     public AssetManager deloadAsset(String assetName) {
-        AAsset asset = this.assetMap.get(assetName);
+        AAsset<?> asset = this.assetMap.get(assetName);
         this.requestManager.request(new RDeloadAsset(asset));
         return this;
     }
     
         // Returns a reference to an asset from the asset map given its name
         // or NULL, if no such asset has been declared
-    public AAsset getAsset(String assetName) {
+    public AAsset<?> getAsset(String assetName) {
         return this.assetMap.get(assetName);
     }
 
@@ -83,21 +83,13 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
 
     @Override
     public void loop() {
-        try
-        {
-            while( true )
-            {
-                Thread.sleep(1000);
-                this.requestManager.processRequests();
-            }
-        }
-        catch( Exception e )
-        { }
+        while( true )
+        this.requestManager.processRequests();
     }
 
     @Override
     public void stop() {
-        for( Map.Entry<String, AAsset> en : this.assetMap.entrySet() )
+        for( Map.Entry<String, AAsset<?>> en : this.assetMap.entrySet() )
         {
             String key = en.getKey();
             this.assetMap.get(key).deload();

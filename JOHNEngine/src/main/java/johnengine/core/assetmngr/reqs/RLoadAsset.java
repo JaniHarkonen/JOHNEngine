@@ -5,7 +5,7 @@ import johnengine.core.reqmngr.IRequestContext;
 
 public class RLoadAsset extends AAssetRequest {
 
-    public RLoadAsset(AAsset asset) {
+    public RLoadAsset(AAsset<?> asset) {
         super(asset);
     }
 

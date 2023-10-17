@@ -5,7 +5,7 @@ import java.io.FileReader;
 
 import johnengine.core.assetmngr.asset.AAsset;
 
-public class TestAsset extends AAsset {
+public class TestAsset extends AAsset<String> {
     
     protected TestAsset(String name, String path) {
         super(name, path);
@@ -36,7 +36,7 @@ public class TestAsset extends AAsset {
     }
     
     @Override
-    protected Object getDefault() {
+    protected String getDefault() {
         return "";
     }
 }

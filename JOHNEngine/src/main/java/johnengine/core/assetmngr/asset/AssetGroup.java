@@ -45,7 +45,7 @@ public class AssetGroup implements IAsset {
         return this;
     }
     
-    public AssetGroup putAndDeclare(AAsset asset) {
+    public AssetGroup putAndDeclare(AAsset<?> asset) {
         if( asset != null )
         {
             this.assetManager.declareAsset(asset);
@@ -60,11 +60,11 @@ public class AssetGroup implements IAsset {
         {
             for( int i = 0; i < this.assets.size(); i++ )
             {
-                if( this.assets.get(i) != assetName )
-                continue;
-                
-                this.assets.remove(i);
-                return this;
+                if( this.assets.get(i) == assetName )
+                {
+                    this.assets.remove(i);
+                    break;
+                }
             }
         }
         
@@ -84,10 +84,10 @@ public class AssetGroup implements IAsset {
             for( int i = 0; i < this.subGroups.size(); i++ )
             {
                 if( this.subGroups.get(i).getName() != assetGroupName )
-                continue;
-                
-                this.subGroups.remove(i);
-                return this;
+                {
+                    this.subGroups.remove(i);
+                    break;
+                }
             }
         }
         

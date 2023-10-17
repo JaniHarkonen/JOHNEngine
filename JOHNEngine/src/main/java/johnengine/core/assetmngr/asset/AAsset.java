@@ -1,6 +1,6 @@
 package johnengine.core.assetmngr.asset;
 
-public abstract class AAsset implements IAsset {
+public abstract class AAsset<T> implements IAsset {
     
     /**
      * The status of the asset indicating with regards to (de)loading.
@@ -37,7 +37,7 @@ public abstract class AAsset implements IAsset {
 
     protected final String name;
     protected final String path;
-    protected Object asset;
+    protected T asset;
     protected STATUS loadingStatus;
     
     protected AAsset(String name, String path) {
@@ -74,7 +74,7 @@ public abstract class AAsset implements IAsset {
     
     protected abstract void deloadImpl();
     
-    protected Object getDefault() {
+    protected T getDefault() {
         return null;
     }
     
@@ -89,7 +89,7 @@ public abstract class AAsset implements IAsset {
         return this.path;
     }
     
-    public Object get() {
+    public T get() {
         if( this.asset != null )
         return this.asset;
         
