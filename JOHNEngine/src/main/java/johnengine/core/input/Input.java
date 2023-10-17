@@ -28,10 +28,6 @@ public class Input {
             this.mouseY = 0;
         }
         
-        public static State createNullState() {
-            return new State();
-        }
-        
         private void takeSnapshot(State dest) {
             for( int i = 0; i < KEY_MAP_SIZE; i++ )
             {

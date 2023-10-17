@@ -30,7 +30,8 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         }
     }
     
-    private static final Input.State NULL_STATE = Input.State.createNullState();
+    
+    /*************************** Window-class ****************************/
     
     private Renderer renderer;
     private Input input;
@@ -109,9 +110,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
 
     @Override
     public void beforeTick(float deltaTime) {
-        if( this.input != null )
         this.input.snapshot();
-        
         this.snapshotProperties.copy(this.updatingProperties);
     }
 
@@ -184,9 +183,6 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     }
     
     public Input.State getInput() {
-        if( this.input == null )
-        return NULL_STATE;
-        
         return this.input.getState();
     }
     
