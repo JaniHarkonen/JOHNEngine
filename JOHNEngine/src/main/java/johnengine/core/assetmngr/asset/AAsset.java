@@ -74,6 +74,10 @@ public abstract class AAsset implements IAsset {
     
     protected abstract void deloadImpl();
     
+    protected Object getDefault() {
+        return null;
+    }
+    
     
     /************************* GETTERS ************************/
     
@@ -86,7 +90,10 @@ public abstract class AAsset implements IAsset {
     }
     
     public Object get() {
+        if( this.asset != null )
         return this.asset;
+        
+        return this.getDefault();
     }
     
     public boolean isDeloaded() {

@@ -9,7 +9,7 @@ public class TestAsset extends AAsset {
     
     protected TestAsset(String name, String path) {
         super(name, path);
-        this.asset = "";
+        this.asset = this.getDefault();
     }
 
     @Override
@@ -33,5 +33,10 @@ public class TestAsset extends AAsset {
     protected void deloadImpl() {
         // TODO Auto-generated method stub
         
+    }
+    
+    @Override
+    protected Object getDefault() {
+        return "";
     }
 }

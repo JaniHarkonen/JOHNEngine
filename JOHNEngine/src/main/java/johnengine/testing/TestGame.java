@@ -72,14 +72,13 @@ public class TestGame extends AGame {
             this.gameWindow.isMaximized()
         );*/
         
-        if( this.gameWindow.getInput() != null )
-        {
-            if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
-            this.gameWindow.enterFullscreen();
-        }
+        
+        if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
+        this.gameWindow.enterFullscreen();
+        
         
         TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
-        //DebugUtils.log(this, asset.getStatus());
+        DebugUtils.log(this, asset.get());
         this.agMain.deload();
         
         this.gameWindow.moveMouse((int) (Math.random() * 640), (int) (Math.random() * 480));
