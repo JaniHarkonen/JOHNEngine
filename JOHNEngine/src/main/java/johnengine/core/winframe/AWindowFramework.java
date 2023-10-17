@@ -64,7 +64,6 @@ public abstract class AWindowFramework {
         public static final int DEFAULT_Y = 32;
         public static final String DEFAULT_TITLE = "Powered by JOHNEngine v.1.0.0";
         
-        public static final boolean DEFAULT_IS_FULLSCREEN = false;
         public static final boolean DEFAULT_HAS_BORDER = true;
         public static final boolean DEFAULT_LOCK_CURSOR_TO_CENTER = false;
         public static final boolean DEFAULT_IS_CURSOR_VISIBLE = true;
@@ -79,7 +78,6 @@ public abstract class AWindowFramework {
         public long fps;
         public String title;
         
-        public boolean isFullscreen;
         public boolean hasBorder;
         public boolean lockCursorToCenter;
         public boolean isCursorVisible;
@@ -98,7 +96,6 @@ public abstract class AWindowFramework {
             this.fps = 0;
             this.title = DEFAULT_TITLE;
             
-            this.isFullscreen = DEFAULT_IS_FULLSCREEN;
             this.hasBorder = DEFAULT_HAS_BORDER;
             this.lockCursorToCenter = DEFAULT_LOCK_CURSOR_TO_CENTER;
             this.isCursorVisible = DEFAULT_IS_CURSOR_VISIBLE;
@@ -119,7 +116,6 @@ public abstract class AWindowFramework {
             this.fps = source.fps;
             this.title = source.title;
             
-            this.isFullscreen = source.isFullscreen;
             this.hasBorder = source.hasBorder;
             this.lockCursorToCenter = source.lockCursorToCenter;
             this.isCursorVisible = source.isCursorVisible;
@@ -130,6 +126,9 @@ public abstract class AWindowFramework {
             this.windowState = source.windowState;
         }
     }
+    
+    
+    /******************************* AWindowFramework-class *****************************/
     
     protected final Properties updatingProperties;
     protected final Properties snapshotProperties;
@@ -156,6 +155,7 @@ public abstract class AWindowFramework {
         this.primaryMonitorID = MemoryUtil.NULL;
     }
     
+    
     /************************ LISTENERS ***************************/
     
     protected void focusListener(boolean isFocused) {
@@ -180,8 +180,6 @@ public abstract class AWindowFramework {
     
     
     /************************* REQUESTS ***************************/
-    
-    
     
     public AWindowFramework move(int x, int y) {
         this.requestManager.request(new RMove(x, y));
@@ -232,10 +230,9 @@ public abstract class AWindowFramework {
         this.requestManager.request(new RMoveMouse(x, y));
         return this;
     }
+
     
     /************************** SETTERS ***************************/
-    
-    
     
     protected void setPosition(int x, int y) {
         this.updatingProperties.x = x;
@@ -257,10 +254,6 @@ public abstract class AWindowFramework {
     
     protected void setTitle(String title) {
         this.updatingProperties.title = title;
-    }
-    
-    protected void setFullscreen(boolean isFullscreen) {
-        this.updatingProperties.isFullscreen = isFullscreen;
     }
     
     protected void setBorder(boolean hasBorder) {
@@ -294,8 +287,6 @@ public abstract class AWindowFramework {
     
     /************************** GETTERS ***************************/
     
-    
-    
     public int getX() {
         return this.snapshotProperties.x;
     }
@@ -326,10 +317,6 @@ public abstract class AWindowFramework {
     
     public String getTitle() {
         return this.snapshotProperties.title;
-    }
-    
-    public boolean isFullscreen() {
-        return this.snapshotProperties.isFullscreen;
     }
 
     public boolean hasBorder() {

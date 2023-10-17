@@ -101,7 +101,7 @@ public class Input {
         this.snapshotState = new State();
     }
     
-    public void attach() {
+    public void setup() {
         long windowID = this.hostWindow.getWindowID();
         GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
