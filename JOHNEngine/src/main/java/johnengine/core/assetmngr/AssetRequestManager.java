@@ -59,7 +59,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
     }
     
     
-    /*************************** CLASS STARTS ******************************/
+    /********************** AssetRequestManager-class ************************/
     
     protected final int numberOfThreads;
     protected int numberOfFinishedThreads;
@@ -113,6 +113,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
     protected void finishThread() {
         this.numberOfFinishedThreads++;
     }
+    
     
     /***************************** GETTERS *****************************/
     

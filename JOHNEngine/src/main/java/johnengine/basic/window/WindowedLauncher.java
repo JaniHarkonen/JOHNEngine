@@ -11,6 +11,7 @@ public class WindowedLauncher extends ALauncherFramework {
         this.window.start();
     }
 
+    
     @Override
     protected void configureEngine() {
         this.window = Window.setup();

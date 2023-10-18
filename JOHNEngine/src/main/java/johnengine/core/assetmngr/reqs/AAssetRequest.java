@@ -11,6 +11,7 @@ public abstract class AAssetRequest extends ARequest {
         this.asset = asset;
     }
     
+    
     public void queueAsset() {
         asset.queued();
     }

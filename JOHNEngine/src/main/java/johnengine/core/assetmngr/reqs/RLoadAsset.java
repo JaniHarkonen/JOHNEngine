@@ -9,6 +9,7 @@ public class RLoadAsset extends AAssetRequest {
         super(asset);
     }
 
+    
     @Override
     public void process(IRequestContext context) {
         this.asset.load();

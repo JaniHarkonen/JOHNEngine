@@ -64,13 +64,13 @@ public abstract class AAsset<T> implements IAsset {
         this.deloaded();
     }
     
-    protected abstract void loadImpl();
-    
-    protected abstract void deloadImpl();
-    
     protected T getDefault() {
         return null;
     }
+    
+    protected abstract void loadImpl();
+    
+    protected abstract void deloadImpl();
     
     
     /************************* GETTERS ************************/

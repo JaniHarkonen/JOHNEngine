@@ -35,6 +35,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
         );
     }
     
+    
         // Declares an asset and places a reference to it in the asset map
     public AssetManager declareAsset(AAsset<?> asset) {
         String assetName = asset.getName();

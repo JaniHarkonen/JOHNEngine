@@ -19,7 +19,6 @@ public abstract class ALauncherFramework {
         );
     }
 
-    protected abstract void configureEngine();
 
     protected void setupComponent(IEngineComponent component) {
         this.engineConfiguration.add(component);
@@ -28,4 +27,6 @@ public abstract class ALauncherFramework {
     protected void setupGame(AGame game) {
         this.game = game;
     }
+    
+    protected abstract void configureEngine();
 }

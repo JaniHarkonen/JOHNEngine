@@ -5,6 +5,7 @@ public class BufferedRequestManager extends ABufferedRequestManager {
     @Override
     public void processRequests() {
         RequestBuffer buffer;
+        
         while( (buffer = this.requestQueue.peek()) != null )
         {
             if( buffer.isReady() )

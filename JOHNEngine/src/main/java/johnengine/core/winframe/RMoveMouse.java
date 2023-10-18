@@ -13,9 +13,7 @@ public final class RMoveMouse extends ABasicWindowRequest {
 
 
     @Override
-    protected void setState(BasicWindowRequestContext context) {
-        //context.window.setPosition(x, y);
-    }
+    protected void setState(BasicWindowRequestContext context) { }
     
     @Override
     protected void setGLFW(BasicWindowRequestContext context) {

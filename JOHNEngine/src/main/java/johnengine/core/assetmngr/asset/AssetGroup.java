@@ -95,6 +95,8 @@ public class AssetGroup implements IAsset {
     }
     
     
+    /************************** GETTERS **************************/
+    
     public String getName() {
         return this.name;
     }

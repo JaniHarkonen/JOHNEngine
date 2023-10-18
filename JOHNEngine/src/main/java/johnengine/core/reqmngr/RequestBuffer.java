@@ -13,6 +13,7 @@ public class RequestBuffer {
         this.isReady = false;
     }
     
+    
     public void add(ARequest request) {
         this.requests.add(request);
     }
@@ -23,16 +24,21 @@ public class RequestBuffer {
     }
     
     
+    /************************** SETTERS ***************************/
+    
+    public void ready() {
+        this.isReady = true;
+    }
+    
+    
+    /************************** GETTERS ***************************/
+    
     public boolean isReady() {
         return this.isReady;
     }
     
     public int size() {
         return this.requests.size();
-    }
-    
-    public void ready() {
-        this.isReady = true;
     }
     
     public ARequest get(int index) {

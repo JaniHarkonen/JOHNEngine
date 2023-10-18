@@ -7,13 +7,6 @@ import johnengine.core.reqmngr.BufferedRequestManager;
 public abstract class AWindowFramework {
     
     /**
-     * State of the window.
-     * 
-     * @author User
-     *
-     */
-    
-    /**
      * Window is being initialized, and is not yet processing 
      * requests nor rendering anything. Some sub-components
      * may not be instantiated yet.
@@ -103,6 +96,7 @@ public abstract class AWindowFramework {
             
             this.windowState = STATE_INITIALIZING;
         }
+        
         
         public void copy(Properties source) {
             this.width = source.width;

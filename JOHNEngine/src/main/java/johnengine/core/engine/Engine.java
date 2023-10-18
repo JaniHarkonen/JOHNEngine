@@ -31,11 +31,6 @@ public final class Engine extends AThreadable {
     private float tickRate;
     private IEngineComponent[] engineComponents;
     private AGame game;
-
-    private Engine() {
-        this.state = STATE_STOPPED;
-        this.tickRate = TICK_SPEED_CAP;
-    }
     
     public static void run(AGame game, IEngineComponent[] engineComponents) {
         if( engineSingleton != null )
@@ -50,6 +45,12 @@ public final class Engine extends AThreadable {
         
         engineSingleton.start();
     }
+    
+    private Engine() {
+        this.state = STATE_STOPPED;
+        this.tickRate = TICK_SPEED_CAP;
+    }
+    
     
     @Override
     public void start() {
@@ -94,7 +95,7 @@ public final class Engine extends AThreadable {
     public void stop() {
         this.state = STATE_STOPPED;
     }
-
+    
     private void setEngineComponents(IEngineComponent... engineComponents) {
         this.engineComponents = engineComponents;
     }
@@ -103,15 +104,21 @@ public final class Engine extends AThreadable {
         this.game = game;
     }
     
+    
+    /*********************** SETTERS ************************/
+    
+    public void setTickRate(float tickRate) {
+        this.tickRate = tickRate;
+    }
+    
+    
+    /*********************** GETTERS ************************/
+    
     public boolean isRunning() {
         return (this.state == STATE_RUNNING);
     }
     
     public boolean isStopped() {
         return (this.state == STATE_STOPPED);
-    }
-    
-    public void setTickRate(float tickRate) {
-        this.tickRate = tickRate;
     }
 }

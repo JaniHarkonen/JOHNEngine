@@ -15,11 +15,10 @@ public abstract class ABufferedRequestManager {
         this.nextBuffer = new RequestBuffer();
     }
     
+    
     public ABufferedRequestManager() {
         this(null);
     }
-    
-    public abstract void processRequests();
     
     public void request(ARequest request) {
         this.nextBuffer.add(request);
@@ -33,6 +32,11 @@ public abstract class ABufferedRequestManager {
         this.requestQueue.add(this.nextBuffer);
         this.nextBuffer = new RequestBuffer();
     }
+    
+    public abstract void processRequests();
+    
+    
+    /************************* SETTERS *************************/
     
     public void setContext(IRequestContext context) {
         this.context = context;

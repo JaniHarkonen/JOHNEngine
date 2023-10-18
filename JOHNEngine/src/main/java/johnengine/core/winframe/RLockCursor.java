@@ -7,14 +7,12 @@ public final class RLockCursor extends ABasicWindowRequest {
         this.isCursorLockedToCenter = isCursorLockedToCenter;
     }
 
+    
     @Override
     protected void setState(BasicWindowRequestContext context) {
         context.window.setCursorLockedToCenter(this.isCursorLockedToCenter);
     }
 
     @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
-        // TODO Auto-generated method stub
-        
-    }
+    protected void setGLFW(BasicWindowRequestContext context) { }
 }
