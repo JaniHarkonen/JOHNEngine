@@ -21,9 +21,11 @@ public final class Engine extends AThreadable {
      * hasn't been started yet.
      */
     public static final int STATE_STOPPED = 3;
-
-        // Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
-    public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY;
+    
+    /**
+     * Default number of ticks to evaluate per second.
+     */
+    public static final float DEFAULT_TICK_RATE = 60.0f;
 
     public static Engine engineSingleton;
 
@@ -48,7 +50,7 @@ public final class Engine extends AThreadable {
     
     private Engine() {
         this.state = STATE_STOPPED;
-        this.tickRate = TICK_SPEED_CAP;
+        this.tickRate = DEFAULT_TICK_RATE;
     }
     
     
@@ -70,6 +72,7 @@ public final class Engine extends AThreadable {
         {
             long currentTime = System.nanoTime();
             deltaTime = (currentTime - lastTime) / 1000000000.0f;
+            lastTime = currentTime;
 
             if( deltaTime < tickInterval )
             continue;
@@ -85,7 +88,6 @@ public final class Engine extends AThreadable {
             }
 
             this.game.tick(deltaTime); // Run game logic
-            lastTime = currentTime;
         }
 
         this.game.onClose(); // Close the game and free memory
@@ -108,7 +110,16 @@ public final class Engine extends AThreadable {
     /*********************** SETTERS ************************/
     
     public void setTickRate(float tickRate) {
+        if( tickRate <= 0 )
+        tickRate = DEFAULT_TICK_RATE;
+        
         this.tickRate = tickRate;
+    }
+    
+    public void uncapTickRate() {
+        
+            // Positive infinity so that 1/this.tickRate = 0.0 -> loop() runs every iteration
+        this.tickRate = Float.POSITIVE_INFINITY;
     }
     
     

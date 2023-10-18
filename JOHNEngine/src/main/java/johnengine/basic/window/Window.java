@@ -72,7 +72,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         long fpsCounter = 0;
         
         while( this.updatingProperties.windowState != STATE_CLOSED )
-        {            
+        {
             this.requestManager.processRequests();
             GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
@@ -89,9 +89,10 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
                 );
             }
             
+                // FPS-counter
+            long currentTime = System.currentTimeMillis();
             fpsCounter++;
             
-            long currentTime = System.currentTimeMillis();
             if( currentTime - startTime >= 1000 )
             {
                 this.setFPS(fpsCounter);
@@ -122,7 +123,8 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     private long createWindow() {
         
             // Remove deocration (borders) when in fullscreen mode
-        GLFW.glfwWindowHint(GLFW.GLFW_DECORATED,
+        GLFW.glfwWindowHint(
+            GLFW.GLFW_DECORATED,
             ((WindowProperties) this.updatingProperties).isFullscreen ? 
             GLFW.GLFW_FALSE : 
             GLFW.GLFW_TRUE
@@ -137,12 +139,35 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
             MemoryUtil.NULL
         );
         
-            // Set callbacks
-        GLFW.glfwSetWindowFocusCallback(winID, (window, isFocused) -> focusListener(isFocused));    // Focus
-        GLFW.glfwSetWindowMaximizeCallback(winID, (window, isMaximized) -> maximizeListener(isMaximized));  // Maximize
-        GLFW.glfwSetWindowPosCallback(winID, (window, xpos, ypos) -> positionListener(xpos, ypos)); // Position
-        GLFW.glfwSetFramebufferSizeCallback(winID, (window, width, height) -> resizeListener(width, height));   // Size
-        GLFW.glfwSetWindowCloseCallback(winID, (window) -> closeListener());    // Close
+            // Setup focus listener
+        GLFW.glfwSetWindowFocusCallback(
+            winID, 
+            (window, isFocused) -> focusListener(isFocused)
+        );
+        
+            // Setup maximization listener
+        GLFW.glfwSetWindowMaximizeCallback(
+            winID, 
+            (window, isMaximized) -> maximizeListener(isMaximized)
+        );
+        
+            // Setup window position listener
+        GLFW.glfwSetWindowPosCallback(
+            winID, 
+            (window, xpos, ypos) -> positionListener(xpos, ypos)
+        );
+        
+            // Setup resize listener
+        GLFW.glfwSetFramebufferSizeCallback(
+            winID, 
+            (window, width, height) -> resizeListener(width, height)
+        );
+        
+            // Setup close listener
+        GLFW.glfwSetWindowCloseCallback(
+            winID, 
+            (window) -> closeListener()
+        );
         
             // Whether cursor is to be shown or hidden
         GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR,
@@ -165,6 +190,9 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     }
     
     private void setupRenderer() {
+        if( this.renderer != null )
+        return;
+        
         this.renderer = new Renderer();
         this.renderer.initialize();
     }
@@ -178,21 +206,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     }
     
     
-    public Renderer getRenderer() {
-        return this.renderer;
-    }
-    
-    public Input.State getInput() {
-        return this.input.getState();
-    }
-    
-    long getPrimaryMonitorID() {
-        return this.primaryMonitorID;
-    }
-    
-    
     /************************* REQUESTS ***************************/
-    
     
     public Window enterFullscreen() {
         this.requestManager.request(new RFullscreen(true));
@@ -207,13 +221,24 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     /*********************** GETTERS ****************************/
     
-    
     void setFullscreen(boolean isFullscreen) {
         ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
     }
     
     public boolean isFullscreen() {
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
+    }
+    
+    public Renderer getRenderer() {
+        return this.renderer;
+    }
+    
+    public Input.State getInput() {
+        return this.input.getState();
+    }
+    
+    long getPrimaryMonitorID() {
+        return this.primaryMonitorID;
     }
     
     

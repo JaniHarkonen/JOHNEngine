@@ -68,8 +68,23 @@ public abstract class AAsset<T> implements IAsset {
         return null;
     }
     
+    /**
+     * Each asset should have its own loading implementation 
+     * (loadImpl()-method) which will be called when load() is 
+     * called. This method should read the asset from an external 
+     * source and store a representation of it in the 
+     * <i>AAsset.asset</i> field.
+     */
     protected abstract void loadImpl();
     
+    /**
+     * Each asset should have its own deloading implementation 
+     * (deloadImpl()-method) which will be called when deload() is 
+     * called. This method should free up the memory consumed by
+     * the asset (stored in the <i>AAsset.asset</i> field. The
+     * field does not need to be reset as deload() already does
+     * this in order to inform the garbage collector.
+     */
     protected abstract void deloadImpl();
     
     

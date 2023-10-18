@@ -9,14 +9,14 @@ public abstract class ABufferedRequestManager {
     protected IRequestContext context;
     protected RequestBuffer nextBuffer;
     
-    public ABufferedRequestManager(IRequestContext context) {
+    protected ABufferedRequestManager(IRequestContext context) {
         this.requestQueue = new ConcurrentLinkedQueue<>();
         this.context = context;
         this.nextBuffer = new RequestBuffer();
     }
     
     
-    public ABufferedRequestManager() {
+    protected ABufferedRequestManager() {
         this(null);
     }
     
