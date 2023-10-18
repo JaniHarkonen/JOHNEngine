@@ -37,7 +37,11 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     
         // Declares an asset and places a reference to it in the asset map
     public AssetManager declareAsset(AAsset<?> asset) {
-        this.assetMap.put(asset.getName(), asset);
+        String assetName = asset.getName();
+        
+        if( this.assetMap.get(assetName) == null )
+        this.assetMap.put(assetName, asset);
+        
         return this;
     }
     
@@ -49,14 +53,20 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
         // Creates and schedules an asset loading request
     public AssetManager loadAsset(String assetName) {
         AAsset<?> asset = this.assetMap.get(assetName);
+        
+        if( asset != null )
         this.requestManager.request(new RLoadAsset(asset));
+        
         return this;
     }
     
         // Creates and schedules an asset de-loading request
     public AssetManager deloadAsset(String assetName) {
         AAsset<?> asset = this.assetMap.get(assetName);
+        
+        if( asset != null )
         this.requestManager.request(new RDeloadAsset(asset));
+        
         return this;
     }
     
@@ -77,11 +87,6 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     }
 
     @Override
-    public void start() {
-        this.startProcess();
-    }
-
-    @Override
     public void loop() {
         while( true )
         this.requestManager.processRequests();
@@ -93,7 +98,8 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
         {
             String key = en.getKey();
             this.assetMap.get(key).deload();
-            this.assetMap.remove(key);
         }
+        
+        this.assetMap.clear();
     }
 }

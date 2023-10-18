@@ -68,7 +68,7 @@ public class TestGame extends AGame {
         DebugUtils.log(this, asset.get());
         this.agMain.deload();
         
-        this.gameWindow.moveMouse((int) (Math.random() * 640), (int) (Math.random() * 480));
+        this.gameWindow.moveMouse((int) (Math.random() * this.gameWindow.getWidth()), (int) (Math.random() * this.gameWindow.getHeight()));
         
         this.timer.count();
     }

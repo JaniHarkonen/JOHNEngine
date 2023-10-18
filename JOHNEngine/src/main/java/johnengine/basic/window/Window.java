@@ -60,7 +60,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         
         GLFW.glfwMakeContextCurrent(this.windowID);
         this.setupRenderer();
-        this.setWindowState(STATE.OPEN);
+        this.setWindowState(STATE_OPEN);
         
         this.loop();
         this.stop();
@@ -71,7 +71,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
         
-        while( this.updatingProperties.windowState != STATE.CLOSED )
+        while( this.updatingProperties.windowState != STATE_CLOSED )
         {            
             this.requestManager.processRequests();
             GLFW.glfwPollEvents();
@@ -105,7 +105,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     public void stop() {
         GLFW.glfwTerminate();
         this.reset();
-        this.setWindowState(STATE.CLOSED);
+        this.setWindowState(STATE_CLOSED);
     }
 
     @Override
@@ -171,9 +171,9 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
-        this.setWindowState(STATE.INITIALIZING);
+        this.setWindowState(STATE_INITIALIZING);
         this.windowID = this.createWindow();
-        this.setWindowState(STATE.OPEN);
+        this.setWindowState(STATE_OPEN);
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
     

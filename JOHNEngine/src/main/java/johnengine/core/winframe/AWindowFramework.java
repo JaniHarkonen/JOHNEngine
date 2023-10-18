@@ -12,27 +12,25 @@ public abstract class AWindowFramework {
      * @author User
      *
      */
-    public enum STATE {
-        
-        /**
-         * Window is being initialized, and is not yet processing 
-         * requests nor rendering anything. Some sub-components
-         * may not be instantiated yet.
-         */
-        INITIALIZING,
-        
-        /**
-         * Window was closed and is no longer processing requests.
-         * All sub-components have been nullified.
-         */
-        CLOSED,
-        
-        /**
-         * Window has been initialized and is now open and ready 
-         * to process requests.
-         */
-        OPEN
-    }
+    
+    /**
+     * Window is being initialized, and is not yet processing 
+     * requests nor rendering anything. Some sub-components
+     * may not be instantiated yet.
+     */
+    public static final int STATE_INITIALIZING = 1;
+    
+    /**
+     * Window was closed and is no longer processing requests.
+     * All sub-components have been nullified.
+     */
+    public static final int STATE_CLOSED = 2;
+    
+    /**
+     * Window has been initialized and is now open and ready 
+     * to process requests.
+     */
+    public static final int STATE_OPEN = 3;
 
     /**
      * This class constitutes the public facing state of the window.
@@ -81,7 +79,7 @@ public abstract class AWindowFramework {
         public boolean hasBorder;
         public boolean lockCursorToCenter;
         public boolean isCursorVisible;
-        public STATE windowState;
+        public int windowState;
         public boolean useVSync;
         public boolean isFocused;
         public boolean isMaximized;
@@ -103,7 +101,7 @@ public abstract class AWindowFramework {
             this.isFocused = true;
             this.isMaximized = false;
             
-            this.windowState = STATE.INITIALIZING;
+            this.windowState = STATE_INITIALIZING;
         }
         
         public void copy(Properties source) {
@@ -175,7 +173,7 @@ public abstract class AWindowFramework {
     }
     
     protected void closeListener() {
-        this.setWindowState(STATE.CLOSED);
+        this.setWindowState(STATE_CLOSED);
     }
     
     
@@ -280,7 +278,7 @@ public abstract class AWindowFramework {
         this.updatingProperties.isMaximized = isMaximized;
     }
     
-    protected void setWindowState(AWindowFramework.STATE state) {
+    protected void setWindowState(int state) {
         this.updatingProperties.windowState = state;
     }
     
@@ -344,15 +342,15 @@ public abstract class AWindowFramework {
     }
     
     public boolean hasWindowClosed() {
-        return (this.snapshotProperties.windowState == STATE.CLOSED);
+        return (this.snapshotProperties.windowState == STATE_CLOSED);
     }
     
     public boolean isWindowInitializing() {
-        return (this.snapshotProperties.windowState == STATE.INITIALIZING);
+        return (this.snapshotProperties.windowState == STATE_INITIALIZING);
     }
     
     public boolean isWindowOpen() {
-        return (this.snapshotProperties.windowState == STATE.OPEN);
+        return (this.snapshotProperties.windowState == STATE_OPEN);
     }
     
     public long getWindowID() {

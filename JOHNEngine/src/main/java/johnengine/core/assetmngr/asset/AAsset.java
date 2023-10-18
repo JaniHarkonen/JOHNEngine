@@ -3,42 +3,36 @@ package johnengine.core.assetmngr.asset;
 public abstract class AAsset<T> implements IAsset {
     
     /**
-     * The status of the asset indicating with regards to (de)loading.
-     * 
-     * @author User
-     *
+     * This asset has been queued by the AssetManager for (de)loading.
      */
-    public enum STATUS {
-        /**
-         * This asset has been queued by the AssetManager for (de)loading.
-         */
-        QUEUED,
-        /**
-         * The asset has been deloaded (or it hasn't been loaded yet).
-         */
-        DELOADED,
-        
-        /**
-         * The asset is being deloaded (deload()-method has been called).
-         */
-        DELOADING,
-        
-        /**
-         * The asset is being loaded (load()-method has been called).
-         */
-        LOADING,
-        
-        /**
-         * The asset has been loaded and contains a reference to the 
-         * object that was loaded.
-         */
-        LOADED
-    }
+    public static final int STATUS_QUEUED = 1;
+    
+    /**
+     * The asset has been deloaded (or it hasn't been loaded yet).
+     */
+    public static final int STATUS_DELOADED = 2;
+    
+    /**
+     * The asset is being deloaded (deload()-method has been called).
+     */
+    public static final int STATUS_DELOADING = 3;
+    
+    /**
+     * The asset is being loaded (load()-method has been called).
+     */
+    public static final int STATUS_LOADING = 4;
+    
+    /**
+     * The asset has been loaded and contains a reference to the 
+     * object that was loaded.
+     */
+    public static final int STATUS_LOADED = 5;
+    
 
     protected final String name;
     protected final String path;
     protected T asset;
-    protected STATUS loadingStatus;
+    protected int loadingStatus;
     
     protected AAsset(String name, String path) {
         this.name = name;
@@ -97,49 +91,45 @@ public abstract class AAsset<T> implements IAsset {
     }
     
     public boolean isDeloaded() {
-        return (this.loadingStatus == STATUS.DELOADED);
+        return (this.loadingStatus == STATUS_DELOADED);
     }
     
     public boolean isDeloading() {
-        return (this.loadingStatus == STATUS.DELOADING); 
+        return (this.loadingStatus == STATUS_DELOADING); 
     }
     
     public boolean isLoading() {
-        return (this.loadingStatus == STATUS.LOADING);
+        return (this.loadingStatus == STATUS_LOADING);
     }
     
     public boolean isLoaded() {
-        return (this.loadingStatus == STATUS.LOADED);
+        return (this.loadingStatus == STATUS_LOADED);
     }
     
     public boolean isQueued() {
-        return (this.loadingStatus == STATUS.QUEUED);
-    }
-    
-    public STATUS getStatus() {
-        return this.loadingStatus;
+        return (this.loadingStatus == STATUS_QUEUED);
     }
     
     
     /************************* SETTERS ************************/
     
     public void deloaded() {
-        this.loadingStatus = STATUS.DELOADED;
+        this.loadingStatus = STATUS_DELOADED;
     }
     
     public void deloading() {
-        this.loadingStatus = STATUS.DELOADING;
+        this.loadingStatus = STATUS_DELOADING;
     }
     
     public void loading() {
-        this.loadingStatus = STATUS.LOADING;
+        this.loadingStatus = STATUS_LOADING;
     }
     
     public void loaded() {
-        this.loadingStatus = STATUS.LOADED;
+        this.loadingStatus = STATUS_LOADED;
     }
     
     public void queued() {
-        this.loadingStatus = STATUS.QUEUED;
+        this.loadingStatus = STATUS_QUEUED;
     }
 }
