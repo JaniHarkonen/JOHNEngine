@@ -6,4 +6,3 @@
 - remove cringe
 ???? new exception class??
 - ABufferedRequestManager should have a template
-(the appropriate level of null checking)

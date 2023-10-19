@@ -1,7 +1,6 @@
 package johnengine.core.reqmngr;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class ABufferedRequestManager {
     
@@ -9,15 +8,10 @@ public abstract class ABufferedRequestManager {
     protected IRequestContext context;
     protected RequestBuffer nextBuffer;
     
-    protected ABufferedRequestManager(IRequestContext context) {
-        this.requestQueue = new ConcurrentLinkedQueue<>();
+    protected ABufferedRequestManager(IRequestContext context, Queue<RequestBuffer> queue) {
+        this.requestQueue = queue;
         this.context = context;
         this.nextBuffer = new RequestBuffer();
-    }
-    
-    
-    protected ABufferedRequestManager() {
-        this(null);
     }
     
     public void request(ARequest request) {

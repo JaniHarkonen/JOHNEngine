@@ -1,6 +1,12 @@
 package johnengine.core.reqmngr;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class BufferedRequestManager extends ABufferedRequestManager {
+    
+    public BufferedRequestManager(IRequestContext context) {
+        super(context, new ConcurrentLinkedQueue<>());
+    }
 
     @Override
     public void processRequests() {
