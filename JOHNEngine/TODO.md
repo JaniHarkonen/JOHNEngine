@@ -1,8 +1,8 @@
 ### TODO
 
 - handle scrolling in Input
-- RequestManager doesn't handle requests until beforeTick() is called
-- RequestManager should queue all requests into a queue of ArrayLists 
-instead of ignoring while processing
-- set mouse pos
-- remove BufferedRequestManager2
+???? get information about the monitor from window
+??? should ABasicWindowRequests be implemented using lambdas instead???
+- remove cringe
+???? new exception class??
+- ABufferedRequestManager should have a template

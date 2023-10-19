@@ -1,5 +1,3 @@
 package johnengine.core.reqmngr;
 
-public interface IRequestContext {
-
-}
+public interface IRequestContext { }

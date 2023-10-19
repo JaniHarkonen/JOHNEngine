@@ -5,34 +5,34 @@ import johnengine.core.IEngineComponent;
 import johnengine.core.threadable.AThreadable;
 
 public final class Engine extends AThreadable {
-
+    
     /**
-     * State of the game engine.
-     * 
-     * @author User
-     *
+     * The engine failed to start the game.
      */
-    public enum STATE {
-        START_FAILED,
-        START_FAILED_NO_GAME,
-        RUNNING,
-        STOPPED
-    }
-
-        // Positive infinity so that 1/TICK_SPEED_CAP = 0.0, making the loop run faster
-    public static final float TICK_SPEED_CAP = Float.POSITIVE_INFINITY;
+    public static final int STATE_START_FAILED = 1;
+    
+    /**
+     * The engine is running a game.
+     */
+    public static final int STATE_RUNNING = 2;
+    
+    /**
+     * The engine has stopped running a game or the engine
+     * hasn't been started yet.
+     */
+    public static final int STATE_STOPPED = 3;
+    
+    /**
+     * Default number of ticks to evaluate per second.
+     */
+    public static final float DEFAULT_TICK_RATE = 60.0f;
 
     public static Engine engineSingleton;
 
-    private STATE state;
+    private int state;
     private float tickRate;
     private IEngineComponent[] engineComponents;
     private AGame game;
-
-    private Engine() {
-        this.state = Engine.STATE.STOPPED;
-        this.tickRate = TICK_SPEED_CAP;
-    }
     
     public static void run(AGame game, IEngineComponent[] engineComponents) {
         if( engineSingleton != null )
@@ -48,9 +48,15 @@ public final class Engine extends AThreadable {
         engineSingleton.start();
     }
     
+    private Engine() {
+        this.state = STATE_STOPPED;
+        this.tickRate = DEFAULT_TICK_RATE;
+    }
+    
+    
     @Override
     public void start() {
-        this.state = Engine.STATE.RUNNING;
+        this.state = STATE_RUNNING;
         this.startProcess();    // Enters thread
     }
 
@@ -62,14 +68,19 @@ public final class Engine extends AThreadable {
         float tickInterval = 1 / this.tickRate;
         float deltaTime;
 
-        while( this.state == Engine.STATE.RUNNING ) {
+        while( this.isRunning() )
+        {
             long currentTime = System.nanoTime();
             deltaTime = (currentTime - lastTime) / 1000000000.0f;
+            lastTime = currentTime;
 
             if( deltaTime < tickInterval )
             continue;
 
                 // Update engine components
+                // (both afterTick() and beforeTick() are ran here in
+                // said order in order to avoid a double loop; this
+                // may have some subtle implications)
             for( IEngineComponent ec : this.engineComponents )
             {
                 ec.afterTick(deltaTime);
@@ -77,7 +88,6 @@ public final class Engine extends AThreadable {
             }
 
             this.game.tick(deltaTime); // Run game logic
-            lastTime = currentTime;
         }
 
         this.game.onClose(); // Close the game and free memory
@@ -85,9 +95,9 @@ public final class Engine extends AThreadable {
 
     @Override
     public void stop() {
-        this.state = Engine.STATE.STOPPED;
+        this.state = STATE_STOPPED;
     }
-
+    
     private void setEngineComponents(IEngineComponent... engineComponents) {
         this.engineComponents = engineComponents;
     }
@@ -96,7 +106,30 @@ public final class Engine extends AThreadable {
         this.game = game;
     }
     
+    
+    /*********************** SETTERS ************************/
+    
     public void setTickRate(float tickRate) {
+        if( tickRate <= 0 )
+        tickRate = DEFAULT_TICK_RATE;
+        
         this.tickRate = tickRate;
+    }
+    
+    public void uncapTickRate() {
+        
+            // Positive infinity so that 1/this.tickRate = 0.0 -> loop() runs every iteration
+        this.tickRate = Float.POSITIVE_INFINITY;
+    }
+    
+    
+    /*********************** GETTERS ************************/
+    
+    public boolean isRunning() {
+        return (this.state == STATE_RUNNING);
+    }
+    
+    public boolean isStopped() {
+        return (this.state == STATE_STOPPED);
     }
 }

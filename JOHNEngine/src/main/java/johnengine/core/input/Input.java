@@ -1,8 +1,8 @@
-package johnengine.core.window.input;
+package johnengine.core.input;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.core.window.Window;
+import johnengine.basic.window.Window;
 
 public class Input {
     
@@ -28,9 +28,6 @@ public class Input {
             this.mouseY = 0;
         }
         
-        public static State createNullState() {
-            return new State();
-        }
         
         private void takeSnapshot(State dest) {
             for( int i = 0; i < KEY_MAP_SIZE; i++ )
@@ -101,7 +98,8 @@ public class Input {
         this.snapshotState = new State();
     }
     
-    public void attach() {
+    
+    public void setup() {
         long windowID = this.hostWindow.getWindowID();
         GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
         GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
@@ -111,10 +109,6 @@ public class Input {
     
     public void snapshot() {
         this.updatingState.takeSnapshot(this.snapshotState);
-    }
-    
-    public State getState() {
-        return this.snapshotState;
     }
     
     private void keyListener(int key, int action) {
@@ -131,5 +125,12 @@ public class Input {
     
     private void mouseListener(int button, int action) {
         this.updatingState.buttonMap[button] = action + 1;
+    }
+    
+    
+    /***************************** GETTERS ****************************/
+    
+    public State getState() {
+        return this.snapshotState;
     }
 }

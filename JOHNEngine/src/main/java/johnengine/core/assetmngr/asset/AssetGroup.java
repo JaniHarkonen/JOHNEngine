@@ -1,7 +1,9 @@
-package johnengine.core.assetmngr;
+package johnengine.core.assetmngr.asset;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import johnengine.core.assetmngr.AssetManager;
 
 public class AssetGroup implements IAsset {
 
@@ -13,8 +15,8 @@ public class AssetGroup implements IAsset {
     public AssetGroup(String name, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.name = name;
-        this.assets = new ArrayList<String>();
-        this.subGroups = new ArrayList<AssetGroup>();
+        this.assets = new ArrayList<>();
+        this.subGroups = new ArrayList<>();
     }
     
     
@@ -43,7 +45,7 @@ public class AssetGroup implements IAsset {
         return this;
     }
     
-    public AssetGroup putAndDeclare(AAsset asset) {
+    public AssetGroup putAndDeclare(AAsset<?> asset) {
         if( asset != null )
         {
             this.assetManager.declareAsset(asset);
@@ -58,11 +60,11 @@ public class AssetGroup implements IAsset {
         {
             for( int i = 0; i < this.assets.size(); i++ )
             {
-                if( this.assets.get(i) != assetName )
-                continue;
-                
-                this.assets.remove(i);
-                return this;
+                if( this.assets.get(i) == assetName )
+                {
+                    this.assets.remove(i);
+                    break;
+                }
             }
         }
         
@@ -82,16 +84,18 @@ public class AssetGroup implements IAsset {
             for( int i = 0; i < this.subGroups.size(); i++ )
             {
                 if( this.subGroups.get(i).getName() != assetGroupName )
-                continue;
-                
-                this.subGroups.remove(i);
-                return this;
+                {
+                    this.subGroups.remove(i);
+                    break;
+                }
             }
         }
         
         return this;
     }
     
+    
+    /************************** GETTERS **************************/
     
     public String getName() {
         return this.name;

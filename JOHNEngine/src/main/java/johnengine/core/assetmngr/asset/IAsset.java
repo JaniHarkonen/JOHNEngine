@@ -1,4 +1,4 @@
-package johnengine.core.assetmngr;
+package johnengine.core.assetmngr.asset;
 
 public interface IAsset {
 

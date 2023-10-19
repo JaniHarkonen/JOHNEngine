@@ -12,4 +12,9 @@ public abstract class AThreadable implements IThreadable {
     protected void startProcess() {
         (new Process()).start();
     }
+    
+    @Override
+    public void start() {
+        this.startProcess();
+    }
 }

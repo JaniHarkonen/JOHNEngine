@@ -1,21 +1,37 @@
-package johnengine.core.window;
+package johnengine.basic.window;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
+import johnengine.core.input.Input;
+import johnengine.core.renderer.Renderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
-import johnengine.core.window.framework.AWindowFramework;
-import johnengine.core.window.framework.BasicWindowRequestContext;
-import johnengine.core.window.input.Input;
-import johnengine.core.window.renderer.Renderer;
+import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.winframe.BasicWindowRequestContext;
 
-public class Window extends AWindowFramework implements IEngineComponent, IThreadable {
+public final class Window extends AWindowFramework implements IEngineComponent, IThreadable {
     
-    public static Window instance;
+    public static class WindowProperties extends Properties {
+        public static final boolean DEFAULT_IS_FULLSCREEN = false;
+        
+        public boolean isFullscreen;
+        
+        public WindowProperties() {
+            super();
+            this.isFullscreen = DEFAULT_IS_FULLSCREEN;
+        }
+        
+        
+        public void copy(WindowProperties source) {
+            super.copy(source);
+            this.isFullscreen = source.isFullscreen;
+        }
+    }
     
-    private static final Input.State NULL_STATE = Input.State.createNullState();
+    
+    /*************************** Window-class ****************************/
     
     private Renderer renderer;
     private Input input;
@@ -25,27 +41,27 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     }
     
     public Window() {
-        super(new Properties(), new Properties(), new BufferedRequestManager());
+        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
-        instance = this;
+        this.input = new Input(this);
     }
     
     
     @Override
     public void start() {
         GLFW.glfwInit();
+        
         this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
         this.windowID = this.createWindow();
-        this.input = new Input(this);
-        this.input.attach();
         GLFW.glfwShowWindow(this.windowID);
-        this.renderer = new Renderer();
-        this.setWindowState(STATE.OPEN);
-        GLFW.glfwMakeContextCurrent(this.windowID);
         
-        this.renderer.initialize();
+        this.input.setup();
+        
+        GLFW.glfwMakeContextCurrent(this.windowID);
         this.setupRenderer();
+        this.setWindowState(STATE_OPEN);
+        
         this.loop();
         this.stop();
     }
@@ -55,8 +71,8 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
         
-        while( this.updatingProperties.windowState != STATE.CLOSED )
-        {            
+        while( this.updatingProperties.windowState != STATE_CLOSED )
+        {
             this.requestManager.processRequests();
             GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
@@ -73,9 +89,10 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
                 );
             }
             
+                // FPS-counter
+            long currentTime = System.currentTimeMillis();
             fpsCounter++;
             
-            long currentTime = System.currentTimeMillis();
             if( currentTime - startTime >= 1000 )
             {
                 this.setFPS(fpsCounter);
@@ -88,32 +105,27 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
     @Override
     public void stop() {
         GLFW.glfwTerminate();
-        this.renderer = null;
-        this.input = null;
         this.reset();
-        this.setWindowState(STATE.CLOSED);
+        this.setWindowState(STATE_CLOSED);
     }
 
     @Override
     public void beforeTick(float deltaTime) {
-        if( this.input != null )
         this.input.snapshot();
-        
         this.snapshotProperties.copy(this.updatingProperties);
-        //this.requestManager.requestsStart();
     }
 
     @Override
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
-        //this.requestManager.requestsEnd();
     }
     
     private long createWindow() {
         
             // Remove deocration (borders) when in fullscreen mode
-        GLFW.glfwWindowHint(GLFW.GLFW_DECORATED,
-            this.updatingProperties.isFullscreen ? 
+        GLFW.glfwWindowHint(
+            GLFW.GLFW_DECORATED,
+            ((WindowProperties) this.updatingProperties).isFullscreen ? 
             GLFW.GLFW_FALSE : 
             GLFW.GLFW_TRUE
         );
@@ -127,12 +139,35 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
             MemoryUtil.NULL
         );
         
-            // Set callbacks
-        GLFW.glfwSetWindowFocusCallback(winID, (window, isFocused) -> focusListener(isFocused));    // Focus
-        GLFW.glfwSetWindowMaximizeCallback(winID, (window, isMaximized) -> maximizeListener(isMaximized));  // Maximize
-        GLFW.glfwSetWindowPosCallback(winID, (window, xpos, ypos) -> positionListener(xpos, ypos)); // Position
-        GLFW.glfwSetFramebufferSizeCallback(winID, (window, width, height) -> resizeListener(width, height));   // Size
-        GLFW.glfwSetWindowCloseCallback(winID, (window) -> closeListener());    // Close
+            // Setup focus listener
+        GLFW.glfwSetWindowFocusCallback(
+            winID, 
+            (window, isFocused) -> focusListener(isFocused)
+        );
+        
+            // Setup maximization listener
+        GLFW.glfwSetWindowMaximizeCallback(
+            winID, 
+            (window, isMaximized) -> maximizeListener(isMaximized)
+        );
+        
+            // Setup window position listener
+        GLFW.glfwSetWindowPosCallback(
+            winID, 
+            (window, xpos, ypos) -> positionListener(xpos, ypos)
+        );
+        
+            // Setup resize listener
+        GLFW.glfwSetFramebufferSizeCallback(
+            winID, 
+            (window, width, height) -> resizeListener(width, height)
+        );
+        
+            // Setup close listener
+        GLFW.glfwSetWindowCloseCallback(
+            winID, 
+            (window) -> closeListener()
+        );
         
             // Whether cursor is to be shown or hidden
         GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR,
@@ -147,28 +182,58 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         return winID;
     }
     
+    @Override
+    protected void reset() {
+        super.reset();
+        this.renderer = null;
+        this.input = null;
+    }
+    
     private void setupRenderer() {
+        if( this.renderer != null )
+        return;
+        
         this.renderer = new Renderer();
         this.renderer.initialize();
     }
     
     void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
-        this.setWindowState(STATE.INITIALIZING);
+        this.setWindowState(STATE_INITIALIZING);
         this.windowID = this.createWindow();
-        this.setWindowState(STATE.OPEN);
+        this.setWindowState(STATE_OPEN);
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
     
+    
+    /************************* REQUESTS ***************************/
+    
+    public Window enterFullscreen() {
+        this.requestManager.request(new RFullscreen(true));
+        return this;
+    }
+    
+    public Window exitFullscreen() {
+        this.requestManager.request(new RFullscreen(false));
+        return this;
+    }
+    
+    
+    /*********************** GETTERS ****************************/
+    
+    void setFullscreen(boolean isFullscreen) {
+        ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
+    }
+    
+    public boolean isFullscreen() {
+        return ((WindowProperties) this.snapshotProperties).isFullscreen;
+    }
     
     public Renderer getRenderer() {
         return this.renderer;
     }
     
     public Input.State getInput() {
-        if( this.input == null )
-        return NULL_STATE;
-        
         return this.input.getState();
     }
     
@@ -176,16 +241,12 @@ public class Window extends AWindowFramework implements IEngineComponent, IThrea
         return this.primaryMonitorID;
     }
     
+    
     /********************* HOISTED METHODS ************************/
     
     // Some inherited methods may have to be hoisted in order for them
     // to be visible inside the current package as AWindowFramework
     // and its protected methods are declared in another package.
-    
-    
-    protected void setFullscreen(boolean isFullscreen) {
-        super.setFullscreen(isFullscreen);
-    }
     
     protected void setPosition(int x, int y) {
         super.setPosition(x, y);

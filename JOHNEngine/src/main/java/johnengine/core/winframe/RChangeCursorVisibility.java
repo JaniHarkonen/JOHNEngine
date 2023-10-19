@@ -1,11 +1,11 @@
-package johnengine.core.window.framework;
+package johnengine.core.winframe;
 
 import org.lwjgl.glfw.GLFW;
 
 public final class RChangeCursorVisibility extends ABasicWindowRequest {
     private final boolean isVisible;
     
-    public RChangeCursorVisibility(long windowID, boolean isVisible) {
+    public RChangeCursorVisibility(boolean isVisible) {
         this.isVisible = isVisible;
     }
 

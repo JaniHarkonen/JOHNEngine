@@ -1,4 +1,4 @@
-package johnengine.core.window.renderer;
+package johnengine.core.renderer;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;

@@ -3,13 +3,13 @@ package johnengine.testing;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import johnengine.core.assetmngr.AAsset;
+import johnengine.core.assetmngr.asset.AAsset;
 
-public class TestAsset extends AAsset {
+public class TestAsset extends AAsset<String> {
     
     protected TestAsset(String name, String path) {
         super(name, path);
-        this.asset = "";
+        this.asset = this.getDefault();
     }
 
     @Override
@@ -33,5 +33,10 @@ public class TestAsset extends AAsset {
     protected void deloadImpl() {
         // TODO Auto-generated method stub
         
+    }
+    
+    @Override
+    protected String getDefault() {
+        return "";
     }
 }

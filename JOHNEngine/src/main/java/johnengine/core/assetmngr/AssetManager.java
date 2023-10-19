@@ -4,17 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import johnengine.core.IEngineComponent;
+import johnengine.core.assetmngr.asset.AAsset;
+import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.assetmngr.reqs.AssetRequestContext;
 import johnengine.core.assetmngr.reqs.RDeloadAsset;
 import johnengine.core.assetmngr.reqs.RLoadAsset;
 import johnengine.core.threadable.AThreadable;
-import johnengine.testing.DebugUtils;
 
 public final class AssetManager extends AThreadable implements IEngineComponent {
     
+    /**
+     * Default number of worker threads available for the AssetManager. 
+     */
     public static final int NUMBER_OF_THREADS = 4;
 
-    private final Map<String, AAsset> assetMap;
+    private final Map<String, AAsset<?>> assetMap;
     private final AssetRequestManager requestManager;
     
     public static AssetManager setup() {
@@ -24,43 +28,52 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     }
     
     public AssetManager() {
-        this.assetMap = new HashMap<String, AAsset>();
-        this.requestManager = new AssetRequestManager(NUMBER_OF_THREADS, new AssetRequestContext(this));
+        this.assetMap = new HashMap<>();
+        this.requestManager = new AssetRequestManager(
+            NUMBER_OF_THREADS, 
+            new AssetRequestContext(this)
+        );
     }
     
     
-    public AssetManager declareAsset(AAsset asset) {
-        this.assetMap.put(asset.getName(), asset);
+        // Declares an asset and places a reference to it in the asset map
+    public AssetManager declareAsset(AAsset<?> asset) {
+        String assetName = asset.getName();
+        
+        if( this.assetMap.get(assetName) == null )
+        this.assetMap.put(assetName, asset);
+        
         return this;
     }
     
+        // Creates an asset group and associates this asset manager with it
     public AssetGroup createAssetGroup(String groupName) {
         return new AssetGroup(groupName, this);
     }
     
+        // Creates and schedules an asset loading request
     public AssetManager loadAsset(String assetName) {
-        AAsset asset = this.assetMap.get(assetName);
+        AAsset<?> asset = this.assetMap.get(assetName);
+        
+        if( asset != null )
         this.requestManager.request(new RLoadAsset(asset));
+        
         return this;
     }
     
-    public AssetManager loadGroup(AssetGroup assetGroup) {
-        assetGroup.load();
-        return this;
-    }
-    
+        // Creates and schedules an asset de-loading request
     public AssetManager deloadAsset(String assetName) {
-        AAsset asset = this.assetMap.get(assetName);
+        AAsset<?> asset = this.assetMap.get(assetName);
+        
+        if( asset != null )
         this.requestManager.request(new RDeloadAsset(asset));
+        
         return this;
     }
     
-    public AssetManager deloadGroup(AssetGroup assetGroup) {
-        assetGroup.deload();
-        return this;
-    }
-    
-    public AAsset getAsset(String assetName) {
+        // Returns a reference to an asset from the asset map given its name
+        // or NULL, if no such asset has been declared
+    public AAsset<?> getAsset(String assetName) {
         return this.assetMap.get(assetName);
     }
 
@@ -75,11 +88,6 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     }
 
     @Override
-    public void start() {
-        this.startProcess();
-    }
-
-    @Override
     public void loop() {
         while( true )
         this.requestManager.processRequests();
@@ -87,11 +95,12 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
 
     @Override
     public void stop() {
-        for( Map.Entry<String, AAsset> en : this.assetMap.entrySet() )
+        for( Map.Entry<String, AAsset<?>> en : this.assetMap.entrySet() )
         {
             String key = en.getKey();
             this.assetMap.get(key).deload();
-            this.assetMap.remove(key);
         }
+        
+        this.assetMap.clear();
     }
 }

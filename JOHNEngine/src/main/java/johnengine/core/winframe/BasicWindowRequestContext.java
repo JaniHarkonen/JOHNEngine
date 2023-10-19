@@ -1,4 +1,4 @@
-package johnengine.core.window.framework;
+package johnengine.core.winframe;
 
 import johnengine.core.reqmngr.IRequestContext;
 
