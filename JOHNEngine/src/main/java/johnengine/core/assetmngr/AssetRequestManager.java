@@ -2,6 +2,7 @@ package johnengine.core.assetmngr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import johnengine.core.assetmngr.reqs.AAssetRequest;
 import johnengine.core.reqmngr.ABufferedRequestManager;
@@ -65,6 +66,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
     protected int numberOfFinishedThreads;
     
     protected AssetRequestManager(int numberOfThreads, IRequestContext context) {
+        super(context, new ConcurrentLinkedQueue<>());
         this.numberOfThreads = numberOfThreads;
         this.context = context;
         this.numberOfFinishedThreads = this.numberOfThreads;

@@ -41,7 +41,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     }
     
     public Window() {
-        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
+        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager(null));
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
         this.input = new Input(this);

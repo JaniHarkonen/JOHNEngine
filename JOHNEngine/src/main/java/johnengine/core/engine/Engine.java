@@ -72,7 +72,6 @@ public final class Engine extends AThreadable {
         {
             long currentTime = System.nanoTime();
             deltaTime = (currentTime - lastTime) / 1000000000.0f;
-            lastTime = currentTime;
 
             if( deltaTime < tickInterval )
             continue;
@@ -88,6 +87,7 @@ public final class Engine extends AThreadable {
             }
 
             this.game.tick(deltaTime); // Run game logic
+            lastTime = currentTime;
         }
 
         this.game.onClose(); // Close the game and free memory
