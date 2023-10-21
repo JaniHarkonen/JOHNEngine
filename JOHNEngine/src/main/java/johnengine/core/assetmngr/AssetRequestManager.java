@@ -92,7 +92,7 @@ public class AssetRequestManager extends ABufferedRequestManager {
         
         RequestBuffer buffer = this.requestQueue.poll();
         
-        if( buffer == null || buffer.size() <= 0)
+        if( buffer == null || buffer.size() <= 0 )
         return;
         
             // Create processor threads

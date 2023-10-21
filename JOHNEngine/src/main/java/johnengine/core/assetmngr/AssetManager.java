@@ -21,6 +21,8 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     private final Map<String, AAsset<?>> assetMap;
     private final AssetRequestManager requestManager;
     
+    private volatile boolean isRunning;
+    
     public static AssetManager setup() {
         AssetManager assetManager = new AssetManager();
         assetManager.start();
@@ -33,6 +35,7 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
             NUMBER_OF_THREADS, 
             new AssetRequestContext(this)
         );
+        this.isRunning = false;
     }
     
     
@@ -86,15 +89,23 @@ public final class AssetManager extends AThreadable implements IEngineComponent 
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
     }
+    
+    @Override
+    public void start() {
+        this.isRunning = true;
+        super.start();
+    }
 
     @Override
     public void loop() {
-        while( true )
+        while( !this.isRunning )
         this.requestManager.processRequests();
     }
 
     @Override
     public void stop() {
+        this.isRunning = false;
+        
         for( Map.Entry<String, AAsset<?>> en : this.assetMap.entrySet() )
         {
             String key = en.getKey();

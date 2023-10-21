@@ -30,13 +30,13 @@ public abstract class AAsset<T> implements IAsset {
     
 
     protected final String name;
-    protected final String path;
+    protected final String relativePath;
     protected T asset;
     protected int loadingStatus;
     
-    protected AAsset(String name, String path) {
+    protected AAsset(String name, String relativePath) {
         this.name = name;
-        this.path = path;
+        this.relativePath = relativePath;
         this.asset = null;
         
         this.deloaded();
@@ -95,14 +95,26 @@ public abstract class AAsset<T> implements IAsset {
     }
     
     public String getPath() {
-        return this.path;
+        return this.relativePath;
     }
     
     public T get() {
-        if( this.asset != null )
+        if( this.isLoaded() )
         return this.asset;
         
         return this.getDefault();
+    }
+    
+    public T loadAndGet() {
+        
+            // Blocking
+        this.load();
+        
+        while( true )
+        {
+            if( this.isLoaded() )
+            return this.get();
+        }
     }
     
     public boolean isDeloaded() {

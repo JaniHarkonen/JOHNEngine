@@ -1,23 +1,26 @@
-package johnengine.testing;
+package johnengine.basic.assets;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 
 import johnengine.core.assetmngr.asset.AAsset;
+import johnengine.testing.DebugUtils;
 
-public class TestAsset extends AAsset<String> {
-    
-    protected TestAsset(String name, String path) {
-        super(name, path);
-        this.asset = this.getDefault();
+public class TextAsset extends AAsset<String> {
+
+    public TextAsset(String name, String relativePath) {
+        super(name, relativePath);
     }
 
+    
     @Override
     protected void loadImpl() {
         try
         {
             BufferedReader br = new BufferedReader(new FileReader(this.getPath()));
-            String line;
+            this.asset = "";
+            
+            String line = null;
             while( (line = br.readLine()) != null )
             this.asset += line;
             
@@ -25,13 +28,12 @@ public class TestAsset extends AAsset<String> {
         }
         catch( Exception e )
         {
-            DebugUtils.log(this, "lol failure xdDDDD");
+            DebugUtils.log(this, "Error loading text file!");
         }
     }
 
     @Override
     protected void deloadImpl() {
-        // TODO Auto-generated method stub
         
     }
     

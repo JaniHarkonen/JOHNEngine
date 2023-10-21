@@ -1,21 +1,21 @@
 package johnengine.testing;
 
-import org.lwjgl.glfw.GLFW;
-
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.engine.Engine;
-import johnengine.core.networker.Networker;
+import johnengine.core.renderer.shdprog.FragmentShader;
+import johnengine.core.renderer.shdprog.ShaderProgram;
+import johnengine.core.renderer.shdprog.VertexShader;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {
 
     private Window gameWindow;
     private AssetManager assetManager;
-    private Networker networker;
+    //private Networker networker;
     private Engine engine;
     private MilliCounter timer;
     private AssetGroup agMain;
@@ -25,35 +25,31 @@ public class TestGame extends AGame {
         this.engine         = engine;
         this.gameWindow     = (Window)          engineComponents[0];
         this.assetManager   = (AssetManager)    engineComponents[1];
-        this.networker      = (Networker)       engineComponents[2];
         
-            // Engine settings
-        this.engine.setTickRate(60);
+        FragmentShader fsDefault = new FragmentShader("shader-fragment", "shaders/fragmentShader.frag");
+        VertexShader vsDefault = new VertexShader("shader-vertex", "shaders/vertexShader.vert");
         
-            // Game window settings
-        this.gameWindow
-        .changeTitle("ezzzzpzzz B)")
-        .disableVSync();
+        AssetGroup agShaders = this.assetManager
+        .createAssetGroup("shaders")
+        .putAndDeclare(fsDefault)
+        .putAndDeclare(vsDefault);
+        agShaders.load();
         
-            // Asset declarations/loading
-        this.agMain = this.assetManager
-        .createAssetGroup("main")
-        .putAndDeclare(new TestAsset("test", "C:/Users/User/Desktop/copemax.txt"));
-        this.agMain.load();
+        ShaderProgram defaultProgram = new ShaderProgram();
+        defaultProgram.setFragmentShader(fsDefault);
+        defaultProgram.setVertexShader(vsDefault);
         
-        //this.gameWindow.resize(1000, 1000);
-        //this.gameWindow.lockCursorToCenter();
-        //this.gameWindow.resize(640, 480);
-        //this.gameWindow.setCursorVisibility(true);
-        this.timer = new MilliCounter(1000) {
+        ((Renderer3D) this.gameWindow.getRenderer()).
+        
+        
+        //this.networker      = (Networker)       engineComponents[2];
+        
+        /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {
-                //gameWindow.changeTitle(""+this.getLastCount());
-                //gameWindow.changeTitle("FPS: "+gameWindow.getFPS() + " | Tick rate: " + this.getLastCount());
-                //gameWindow.changeTitle(""+gameWindow.getFPS());
-                gameWindow.changeTitle("(" + gameWindow.getInput().getMouseX() + ", " + gameWindow.getInput().getMouseY() + ")");
+                
             }
-        };
+        };*/
     }
 
     @Override
@@ -61,20 +57,13 @@ public class TestGame extends AGame {
         if( this.gameWindow.hasWindowClosed() )
         this.engine.stop();
         
-        if( this.gameWindow.getInput().isKeyReleased(GLFW.GLFW_KEY_A) )
-        this.gameWindow.enterFullscreen();
         
-        TestAsset asset = (TestAsset) this.assetManager.getAsset("test");
-        DebugUtils.log(this, asset.get());
-        this.agMain.deload();
-        
-        this.gameWindow.moveMouse((int) (Math.random() * this.gameWindow.getWidth()), (int) (Math.random() * this.gameWindow.getHeight()));
-        
-        this.timer.count();
+        //this.timer.count();
     }
 
     @Override
     public void onClose() {
+        this.assetManager.stop();
         DebugUtils.log(this, "BYEEEE");
     }
 }

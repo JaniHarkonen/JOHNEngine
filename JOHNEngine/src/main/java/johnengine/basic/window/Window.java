@@ -5,7 +5,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
 import johnengine.core.input.Input;
-import johnengine.core.renderer.Renderer;
+import johnengine.core.renderer.Renderer3D;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
@@ -33,7 +33,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     /*************************** Window-class ****************************/
     
-    private Renderer renderer;
+    private Renderer3D renderer;
     private Input input;
     
     public static Window setup() {
@@ -41,7 +41,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     }
     
     public Window() {
-        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager(null));
+        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
         this.input = new Input(this);
@@ -193,7 +193,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         if( this.renderer != null )
         return;
         
-        this.renderer = new Renderer();
+        this.renderer = new Renderer3D(this);
         this.renderer.initialize();
     }
     
@@ -227,10 +227,6 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     public boolean isFullscreen() {
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
-    }
-    
-    public Renderer getRenderer() {
-        return this.renderer;
     }
     
     public Input.State getInput() {

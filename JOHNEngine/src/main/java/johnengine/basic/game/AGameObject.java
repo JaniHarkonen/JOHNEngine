@@ -1,14 +1,14 @@
-package johnengine.game;
+package johnengine.basic.game;
 
 import johnengine.core.IHasTick;
 
-public abstract class JGameObject implements IHasTick {
+public abstract class AGameObject implements IHasTick {
 
     private long id;
     private boolean isActive;
     private boolean isDestroyed;
 
-    protected JGameObject(long id) {
+    protected AGameObject(long id) {
         this.id = id;
         this.isActive = true;
         this.isDestroyed = false;
