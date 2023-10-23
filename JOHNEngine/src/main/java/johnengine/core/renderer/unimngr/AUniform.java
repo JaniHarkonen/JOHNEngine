@@ -19,7 +19,7 @@ public abstract class AUniform<T> {
     public abstract void set();
     
     public void set(T value) {
-        this.set(value);
+        this.setValue(value);
         this.set();
     }
     

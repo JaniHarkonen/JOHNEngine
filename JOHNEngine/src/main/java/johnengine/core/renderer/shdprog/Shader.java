@@ -4,16 +4,16 @@ import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.TextAsset;
 
-public abstract class AShader extends TextAsset {
+public class Shader extends TextAsset {
 
-    private final int type;
+    protected final int type;
     
-    private int shaderProgram;
-    private int handle;
+    protected int shaderProgram;
+    protected int handle;
     
-    protected AShader(String name, String relativePath) {
+    protected Shader(String name, String relativePath, int type) {
         super(name, relativePath);
-        this.type = this.getType();
+        this.type = type;
     }
     
     
@@ -41,6 +41,4 @@ public abstract class AShader extends TextAsset {
         this.handle = 0;
         this.shaderProgram = 0;
     }
-    
-    public abstract int getType();
 }

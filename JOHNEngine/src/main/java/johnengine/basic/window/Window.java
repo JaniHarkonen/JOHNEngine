@@ -11,7 +11,8 @@ import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
 import johnengine.core.winframe.BasicWindowRequestContext;
 
-public final class Window extends AWindowFramework implements IEngineComponent, IThreadable {
+public final class Window extends AWindowFramework 
+    implements IEngineComponent, IThreadable {
     
     public static class WindowProperties extends Properties {
         public static final boolean DEFAULT_IS_FULLSCREEN = false;
@@ -33,14 +34,20 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     /*************************** Window-class ****************************/
     
-    private Renderer3D renderer;
-    private Input input;
+    protected Input input;
     
-    public static Window setup() {
-        return new Window();
+    public static Window setup3D() {
+        Window instance = new Window();
+        instance.setRenderer(new Renderer3D(instance));
+        return instance;
     }
     
-    public Window() {
+        // TO BE IMPLEMENTED
+    /*public static Window setup2D() {
+        return null;
+    }*/
+    
+    protected Window() {
         super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
@@ -59,7 +66,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         this.input.setup();
         
         GLFW.glfwMakeContextCurrent(this.windowID);
-        this.setupRenderer();
+        this.renderer.initialize();
         this.setWindowState(STATE_OPEN);
         
         this.loop();
@@ -120,7 +127,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         this.requestManager.newBuffer();
     }
     
-    private long createWindow() {
+    protected long createWindow() {
         
             // Remove deocration (borders) when in fullscreen mode
         GLFW.glfwWindowHint(
@@ -187,14 +194,6 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         super.reset();
         this.renderer = null;
         this.input = null;
-    }
-    
-    private void setupRenderer() {
-        if( this.renderer != null )
-        return;
-        
-        this.renderer = new Renderer3D(this);
-        this.renderer.initialize();
     }
     
     void rebuildWindow() {

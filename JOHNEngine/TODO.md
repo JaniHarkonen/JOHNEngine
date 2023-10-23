@@ -13,17 +13,17 @@ work in real time
 ### Renderer structure
 
 === setting up the shader program
-- create shader program
+x create shader program
 - declare uniforms
-- create shaders
-	-- create x
-	-- set source x
-	-- compile x
-	-- attach to shader program x
-- link shader program
-- deload shaders
-	-- detach
-	-- delete
+x create shaders
+	xx create
+	xx set source
+	xx compile
+	xx attach to shader program x
+x link shader program
+x deload shaders
+	xx detach
+	xx delete
 
 === rendering
 - bind shader program

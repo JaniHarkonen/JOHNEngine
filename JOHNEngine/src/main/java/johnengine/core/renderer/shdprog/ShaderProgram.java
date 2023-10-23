@@ -2,36 +2,53 @@ package johnengine.core.renderer.shdprog;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.lwjgl.opengl.GL30;
+
+import johnengine.core.renderer.unimngr.AUniform;
+import johnengine.core.renderer.unimngr.UniformManager;
 
 public class ShaderProgram {
     
     public static final String FRAGMENT_SHADER = "fragment-shader";
     public static final String VERTEX_SHADER = "vertex-shader";
     
-    private final Map<String, AShader> shaders;
+    private Map<String, Shader> shaders;
+    private String[] uniformNames;
+    private AUniform<?>[] uniformCache;
     private int programHandle;
 
-    public ShaderProgram() {
-        this.shaders = new HashMap<String, AShader>();
+    public ShaderProgram(String... uniformNames) {
+        this.shaders = new HashMap<String, Shader>();
+        this.uniformNames = uniformNames;
+        this.uniformCache = new AUniform<?>[this.uniformNames.length];
     }
     
     
-    public void setup() {
+    public void setup(UniformManager uniformManager) {
+        Set<Entry<String, Shader>> entrySet = this.shaders.entrySet();
         this.programHandle = GL30.glCreateProgram();
         
-        for( Map.Entry<String, AShader> en : this.shaders.entrySet() )
+            // Cache the uniforms that will be used by this shader program
+        for( int i = 0; i < this.uniformNames.length; i++ )
+        this.uniformCache[i] = uniformManager.getUniform(this.uniformNames[i]);
+        
+        for( Entry<String, Shader> en : entrySet )
         this.shaders.get(en.getKey()).attach(this.programHandle);
         
         GL30.glLinkProgram(this.programHandle);
         
-        for( Map.Entry<String, AShader> en : this.shaders.entrySet() )
+        for( Entry<String, Shader> en : entrySet )
         this.shaders.get(en.getKey()).deload();
     }
     
     public void bind() {
         GL30.glUseProgram(this.programHandle);
+        
+        for( AUniform<?> uniform : this.uniformCache )
+        uniform.set();
     }
     
     public void unbind() {
@@ -41,22 +58,26 @@ public class ShaderProgram {
     public void dispose() {
         this.unbind();
         GL30.glDeleteProgram(this.programHandle);
+        this.programHandle = 0;
+        this.uniformNames = null;
+        this.uniformCache = null;
+        this.shaders = null;
     }
     
     
-    public void setShader(String shaderAlias, AShader shader) {
+    public void setShader(String shaderAlias, Shader shader) {
         this.shaders.put(shaderAlias, shader);
     }
     
-    public void setFragmentShader(FragmentShader shader) {
+    public void setFragmentShader(Shader shader) {
         this.setShader(FRAGMENT_SHADER, shader);
     }
     
-    public void setVertexShader(VertexShader shader) {
+    public void setVertexShader(Shader shader) {
         this.setShader(VERTEX_SHADER, shader);
     }
     
-    public AShader getShader(String shaderAlias) {
+    public Shader getShader(String shaderAlias) {
         return this.shaders.get(shaderAlias);
     }
 }

@@ -2,11 +2,11 @@ package johnengine.basic.window;
 
 import johnengine.core.ALauncherFramework;
 
-public class WindowedLauncher extends ALauncherFramework {
+public class Window3DLauncher extends ALauncherFramework {
     
     protected Window window;
     
-    public WindowedLauncher() {
+    public Window3DLauncher() {
         super();
         this.window.start();
     }
@@ -14,7 +14,7 @@ public class WindowedLauncher extends ALauncherFramework {
     
     @Override
     protected void configureEngine() {
-        this.window = Window.setup();
+        this.window = Window.setup3D();
         this.setupComponent(this.window);
     }
 }

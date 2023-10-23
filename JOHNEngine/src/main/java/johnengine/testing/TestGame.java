@@ -6,9 +6,6 @@ import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.engine.Engine;
-import johnengine.core.renderer.shdprog.FragmentShader;
-import johnengine.core.renderer.shdprog.ShaderProgram;
-import johnengine.core.renderer.shdprog.VertexShader;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {
@@ -26,7 +23,7 @@ public class TestGame extends AGame {
         this.gameWindow     = (Window)          engineComponents[0];
         this.assetManager   = (AssetManager)    engineComponents[1];
         
-        FragmentShader fsDefault = new FragmentShader("shader-fragment", "shaders/fragmentShader.frag");
+        /*FragmentShader fsDefault = new FragmentShader("shader-fragment", "shaders/fragmentShader.frag");
         VertexShader vsDefault = new VertexShader("shader-vertex", "shaders/vertexShader.vert");
         
         AssetGroup agShaders = this.assetManager
@@ -39,7 +36,7 @@ public class TestGame extends AGame {
         defaultProgram.setFragmentShader(fsDefault);
         defaultProgram.setVertexShader(vsDefault);
         
-        ((Renderer3D) this.gameWindow.getRenderer()).
+        ((Renderer3D) this.gameWindow.getRenderer())*/
         
         
         //this.networker      = (Networker)       engineComponents[2];
