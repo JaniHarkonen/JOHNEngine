@@ -5,6 +5,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import johnengine.core.IEngineComponent;
 import johnengine.core.input.Input;
+import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.Renderer3D;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
@@ -224,6 +225,10 @@ public final class Window extends AWindowFramework
         ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
     }
     
+    long getPrimaryMonitorID() {
+        return this.primaryMonitorID;
+    }
+    
     public boolean isFullscreen() {
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
@@ -232,8 +237,8 @@ public final class Window extends AWindowFramework
         return this.input.getState();
     }
     
-    long getPrimaryMonitorID() {
-        return this.primaryMonitorID;
+    public ARenderer getRenderer() {
+        return this.renderer;
     }
     
     

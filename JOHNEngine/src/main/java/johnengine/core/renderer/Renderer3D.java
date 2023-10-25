@@ -1,6 +1,5 @@
 package johnengine.core.renderer;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -14,29 +13,27 @@ import johnengine.core.winframe.AWindowFramework;
 
 public class Renderer3D extends ARenderer {
     
-    private final Matrix4f projectionMatrix;
     private final ShaderProgram defaultShaderProgram;
     private JCamera activeCamera;
-    private final UniformManager uniformManager;
     private ShaderProgram activeShaderProgram;
     
     public Renderer3D(AWindowFramework hostWindow) {
-        super(hostWindow);
+        super(hostWindow, new UniformManager());
         
-        this.projectionMatrix = (new Matrix4f()).setPerspective(
-            (float) Math.toRadians(90.0f), 
-            this.hostWindow.getWidth() / this.hostWindow.getHeight(), 
-            0.01f,
-            1000.0f
-        );
-        this.uniformManager = new UniformManager();
-        this.uniformManager.declareUniform(new UNIMatrix4f("projectionMatrix", this.projectionMatrix));
-        this.uniformManager.getUniform("projectionMatrix").set();
+        this.uniformManager.declareUniform(new UNIMatrix4f("cameraOrientationMatrix", null));
+        this.uniformManager.declareUniform(new UNIMatrix4f("cameraProjectionMatrix", null));
         
             // Default shader program with the hardcoded, default shaders
-        this.defaultShaderProgram = new ShaderProgram("viewMatrix", "projectionMatrix");
-        this.defaultShaderProgram.setFragmentShader(new PersistentShader(GL30.GL_FRAGMENT_SHADER, ""));
-        this.defaultShaderProgram.setVertexShader(new PersistentShader(GL30.GL_VERTEX_SHADER, ""));
+        this.defaultShaderProgram = new ShaderProgram(
+            "cameraOrientationMatrix",
+            "cameraProjectionMatrix"
+        );
+        this.defaultShaderProgram.setFragmentShader(new PersistentShader(GL30.GL_FRAGMENT_SHADER, 
+            ""
+        ));
+        this.defaultShaderProgram.setVertexShader(new PersistentShader(GL30.GL_VERTEX_SHADER, 
+            ""
+        ));
     }
     
 
@@ -58,10 +55,22 @@ public class Renderer3D extends ARenderer {
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
+        this.activeCamera.render(this); // Set camera uniforms
         this.activeShaderProgram.bind();
         
         
         
         this.activeShaderProgram.unbind();
+    }
+    
+    
+    public void setActiveCamera(JCamera camera) {
+        if( camera != null )
+        this.activeCamera = camera;
+    }
+    
+    
+    public JCamera getActiveCamera() {
+        return this.activeCamera;
     }
 }

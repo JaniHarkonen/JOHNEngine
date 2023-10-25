@@ -3,9 +3,12 @@ package johnengine.basic.game;
 import org.joml.Matrix4f;
 
 import johnengine.basic.window.Window;
-import johnengine.core.AGame;
+import johnengine.core.renderer.ARenderer;
+import johnengine.core.renderer.unimngr.UNIMatrix4f;
+import johnengine.core.renderer.unimngr.UniformManager;
+import johnengine.core.winframe.AWindowFramework;
 
-public class JCamera extends AGameObject {
+public class JCamera extends AWorldObject {
 
     public static final float DEFAULT_NEAR = 0.001f;
     public static final float DEFAULT_FAR = 1000.0f;
@@ -19,8 +22,8 @@ public class JCamera extends AGameObject {
     private Matrix4f projectionMatrix;
     private Matrix4f orientationMatrix;
     
-    protected JCamera(long id) {
-        super(id);
+    public JCamera(JWorld world) {
+        super(world);
         this.near = DEFAULT_NEAR;
         this.far = DEFAULT_FAR;
         this.viewWidth = Window.WindowProperties.DEFAULT_WIDTH;
@@ -32,13 +35,23 @@ public class JCamera extends AGameObject {
     
     @Override
     public void tick(float deltaTime) {
-        Window win = AGame.getWindow();
-        int width = win.getWidth();
-        int height = win.getHeight();
         
-            // Fix viewport if window dimensions have changed
+    }
+    
+    @Override
+    public void render(ARenderer renderer) {
+        AWindowFramework window = renderer.getWindow();
+        int width = window.getWidth();
+        int height = window.getHeight();
+        
         if( this.viewWidth != width || this.viewHeight != height )
         this.setViewDimensions(width, height);
+        
+        UniformManager uniformManager = renderer.getUniformManager();
+        ((UNIMatrix4f) uniformManager.getUniform("cameraProjectionMatrix"))
+        .set(this.projectionMatrix);
+        ((UNIMatrix4f) uniformManager.getUniform("cameraProjectionMatrix"))
+        .set(this.orientationMatrix);
     }
     
     private void recalculateProjectionMatrix() {

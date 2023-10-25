@@ -1,4 +1,7 @@
 ## TODO
+- NEXT
+	-- iterator of InstanceManager doesn't work
+	-- figure out instance deletion
 
 - handle scrolling in Input
 ???? get information about the monitor from window
@@ -9,6 +12,13 @@
 - MAJOR: instead of spawning threads each time there are new load requests,
 AssetRequestManager should spawn the threads once and then distribute the 
 work in real time
+- consider if game instance needs to be stored in AGame's static field
+- some abstract classes should be declared within the "core"-package
+	-- "core" should only contain the basic "scaffolding" for the components
+	of the game engine as well as the basic engine components without which
+	the engine cannot run
+- BIG CHANGE??: AGame/ARenderer/JWorld should be passed in as tick()/render()
+is called to avoid extra memory usage
 
 ### Renderer structure
 
@@ -19,15 +29,15 @@ x create shaders
 	xx create
 	xx set source
 	xx compile
-	xx attach to shader program x
+	xx attach to shader program
 x link shader program
 x deload shaders
 	xx detach
 	xx delete
 
 === rendering
-- bind shader program
+x bind shader program
 
 === disposing
-- unbind shader program
-- delete shader program
+x unbind shader program
+x delete shader program

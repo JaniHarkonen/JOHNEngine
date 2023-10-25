@@ -1,5 +1,6 @@
 package johnengine.core.reqmngr;
 
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BufferedRequestManager extends ABufferedRequestManager {
@@ -11,7 +12,12 @@ public class BufferedRequestManager extends ABufferedRequestManager {
     public BufferedRequestManager() {
         this(null);
     }
+    
+    protected BufferedRequestManager(IRequestContext context, Queue<RequestBuffer> queue) {
+        super(context, queue);
+    }
 
+    
     @Override
     public void processRequests() {
         RequestBuffer buffer;

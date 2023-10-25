@@ -1,19 +1,23 @@
 package johnengine.basic.game;
 
-import johnengine.core.IHasTick;
+import johnengine.core.AGame;
+import johnengine.core.ITickable;
 
-public abstract class AGameObject implements IHasTick {
+public abstract class AGameObject implements ITickable {
 
+    private final AGame game;
     private long id;
     private boolean isActive;
     private boolean isDestroyed;
-
-    protected AGameObject(long id) {
+    
+    protected AGameObject(AGame game, long id) {
+        this.game = game;
         this.id = id;
         this.isActive = true;
         this.isDestroyed = false;
     }
-
+    
+    
     public void destroy() {
         this.isDestroyed = true;
     }
@@ -24,6 +28,10 @@ public abstract class AGameObject implements IHasTick {
 
     public void deactivate() {
         this.isActive = false;
+    }
+    
+    void setID(long id) {
+        this.id = id;
     }
 
     public boolean isDestroyed() {
@@ -36,5 +44,9 @@ public abstract class AGameObject implements IHasTick {
 
     public long getID() {
         return this.id;
+    }
+    
+    public AGame getGame() {
+        return this.game;
     }
 }

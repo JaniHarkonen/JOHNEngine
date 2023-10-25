@@ -1,6 +1,6 @@
 package johnengine.core;
 
-public interface IHasTick {
+public interface ITickable {
 
     public void tick(float deltaTime);
 }
