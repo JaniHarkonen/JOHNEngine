@@ -3,10 +3,10 @@ package johnengine.basic.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+import johnengine.basic.renderer.Renderer3D;
 import johnengine.core.IEngineComponent;
 import johnengine.core.input.Input;
 import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.Renderer3D;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;

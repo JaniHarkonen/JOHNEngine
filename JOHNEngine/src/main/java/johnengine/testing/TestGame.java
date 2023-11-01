@@ -1,14 +1,16 @@
 package johnengine.testing;
 
+import johnengine.basic.assets.SceneObjectAsset;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
+import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.engine.Engine;
-import johnengine.core.renderer.Renderer3D;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {
@@ -29,6 +31,10 @@ public class TestGame extends AGame {
         wMain.createInstance(cam);
         
         Renderer3D.class.cast(this.window.getRenderer()).setActiveCamera(cam);
+        
+        SceneObjectAsset scene = new SceneObjectAsset("trolled", "xd")
+        .addMesh(new Mesh("mesh-getRIGHT"))
+        .addMesh(new Mesh("mesh-man"));
         
         /*FragmentShader fsDefault = new FragmentShader("shader-fragment", "shaders/fragmentShader.frag");
         VertexShader vsDefault = new VertexShader("shader-vertex", "shaders/vertexShader.vert");

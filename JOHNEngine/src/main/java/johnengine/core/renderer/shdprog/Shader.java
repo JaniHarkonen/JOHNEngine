@@ -11,9 +11,13 @@ public class Shader extends TextAsset {
     protected int shaderProgram;
     protected int handle;
     
-    protected Shader(String name, String relativePath, int type) {
-        super(name, relativePath);
+    public Shader(String name, String relativePath, int type, boolean isPersistent, String preloadedAsset) {
+        super(name, relativePath, isPersistent, preloadedAsset);
         this.type = type;
+    }
+    
+    public Shader(String name, String relativePath, int type) {
+        this(name, relativePath, type, false, null);
     }
     
     
@@ -35,7 +39,7 @@ public class Shader extends TextAsset {
         }
     }
     
-    public void deload() {
+    public void detach() {
         GL30.glDetachShader(this.shaderProgram, this.handle);
         GL30.glDeleteShader(this.handle);
         this.handle = 0;

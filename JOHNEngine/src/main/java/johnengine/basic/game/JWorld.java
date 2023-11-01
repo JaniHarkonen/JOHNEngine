@@ -13,7 +13,16 @@ public class JWorld extends AGameObject implements IDrawable {
         super(game, id);
         this.worldManager = new InstanceManager<>();
     }
+    
+    public JWorld(AGame game) {
+        this(game, 0);
+    }
 
+    
+    @Override
+    public void render(ARenderer renderer) {
+        
+    }
     
     @Override
     public void tick(float deltaTime) {
@@ -25,11 +34,6 @@ public class JWorld extends AGameObject implements IDrawable {
         AWorldObject inst;
         while( (inst = this.worldManager.nextInstance()) != null )
         inst.tick(deltaTime);
-    }
-    
-    @Override
-    public void render(ARenderer renderer) {
-        
     }
     
     public void createInstance(AWorldObject instance) {

@@ -1,4 +1,4 @@
-package johnengine.core.renderer;
+package johnengine.basic.renderer;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.PersistentShader;
 import johnengine.basic.game.JCamera;
+import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.shdprog.ShaderProgram;
 import johnengine.core.renderer.unimngr.UNIMatrix4f;
 import johnengine.core.renderer.unimngr.UniformManager;
@@ -68,7 +69,6 @@ public class Renderer3D extends ARenderer {
         if( camera != null )
         this.activeCamera = camera;
     }
-    
     
     public JCamera getActiveCamera() {
         return this.activeCamera;

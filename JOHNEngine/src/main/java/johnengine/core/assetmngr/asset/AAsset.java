@@ -28,18 +28,22 @@ public abstract class AAsset<T> implements IAsset {
      */
     public static final int STATUS_LOADED = 5;
     
-
+    protected final boolean isPersistent;
     protected final String name;
     protected final String relativePath;
     protected T asset;
     protected int loadingStatus;
     
-    protected AAsset(String name, String relativePath) {
+    protected AAsset(String name, String relativePath, boolean isPersistent, T preloadedAsset) {
+        this.isPersistent = isPersistent;
         this.name = name;
         this.relativePath = relativePath;
-        this.asset = null;
+        this.asset = preloadedAsset;
         
+        if( preloadedAsset == null )
         this.deloaded();
+        else
+        this.loaded();
     }
     
     
@@ -55,13 +59,13 @@ public abstract class AAsset<T> implements IAsset {
     
     @Override
     public void deload() {
-        if( this.isDeloaded() )
+        if( this.isDeloaded() || this.isPersistent )
         return;
         
         this.deloading();
         this.deloadImpl();
-        this.asset = null;
         this.deloaded();
+        this.asset = null;
     }
     
     protected T getDefault() {
@@ -103,18 +107,6 @@ public abstract class AAsset<T> implements IAsset {
         return this.asset;
         
         return this.getDefault();
-    }
-    
-    public T loadAndGet() {
-        
-            // Blocking
-        this.load();
-        
-        while( true )
-        {
-            if( this.isLoaded() )
-            return this.get();
-        }
     }
     
     public boolean isDeloaded() {

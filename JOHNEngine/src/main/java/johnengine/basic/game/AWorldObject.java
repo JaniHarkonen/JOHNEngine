@@ -15,6 +15,8 @@ public abstract class AWorldObject extends AGameObject implements IDrawable {
     @Override
     public void destroy() {
         super.destroy();
+        
+        if( this.world != null )
         this.world.destroyInstance(this);
     }
     
