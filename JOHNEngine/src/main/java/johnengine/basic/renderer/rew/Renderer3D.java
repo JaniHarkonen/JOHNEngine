@@ -1,13 +1,13 @@
-/*package johnengine.basic.renderer;
+package johnengine.basic.renderer.rew;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import johnengine.basic.assets.PersistentShader;
 import johnengine.basic.game.JCamera;
 import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.shdprog.ShaderProgram;
+import johnengine.core.renderer.shdprog.rew.Shader;
+import johnengine.core.renderer.shdprog.rew.ShaderProgram;
 import johnengine.core.renderer.unimngr.UNIMatrix4f;
 import johnengine.core.renderer.unimngr.UniformManager;
 import johnengine.core.winframe.AWindowFramework;
@@ -29,12 +29,18 @@ public class Renderer3D extends ARenderer {
             "cameraOrientationMatrix",
             "cameraProjectionMatrix"
         );
-        this.defaultShaderProgram.setFragmentShader(new PersistentShader(GL30.GL_FRAGMENT_SHADER, 
+        this.defaultShaderProgram.setFragmentShader(
+            new Shader(GL30.GL_FRAGMENT_SHADER,
+            "default-fragment-shader",
+            true,
             ""
         ));
-        this.defaultShaderProgram.setVertexShader(new PersistentShader(GL30.GL_VERTEX_SHADER, 
-            ""
-        ));
+        this.defaultShaderProgram.setVertexShader(
+                new Shader(GL30.GL_VERTEX_SHADER,
+                "default-vertex-shader",
+                true,
+                ""
+            ));
     }
     
 
@@ -74,4 +80,3 @@ public class Renderer3D extends ARenderer {
         return this.activeCamera;
     }
 }
-*/

@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.asset;
+/*package johnengine.basic.renderer.asset;
 
 import org.lwjgl.assimp.AIAnimation;
 
@@ -23,3 +23,4 @@ public class Animation extends ARendererAsset<AIAnimation> {
         
     }
 }
+*/

@@ -16,16 +16,46 @@ work in real time
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
 	having opt-in components
-- consider if there should be a functionality for marking AAssets as "preloaded"
+x consider if there should be a functionality for marking AAssets as "preloaded"
 and/or to make AAssets persistent (non-deloadable)
 - requests should always be in the same package as the class using them
-	-> for example, core.assetmngr.reqs.* should be in core.assetmngr instead
+	! NOTICE: core.assetmngr.reqs contains the AssetRequestManager which uses
+	the requests contained in the same package, AssetManager does not use these
+	requests
+- maybe AssetManager should also hold a map of AAssetLoaders
+- add disposing/destruction methods to all relevant classes
+- WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
+THIS IS NOT ALLOWED -> REFACTOR
+	
+### New asset structure
+v Each asset should have a loader class
+	-> this is because the loading process may (and does often) produce more 
+	than a single asset
+	-> loaders will be sent to the AssetManager when issuing requests
+	-- loading
+		o option1: loaders can be used to poll assets once the loading process has 
+		completed
+		o option2: assets created by loaders will be immediately declared in the
+		Asset Manager
+		o option3: assets that are to be created will be passed onto the loader and
+		the structure of the loader fills in the data
+		v option4: option3 + option1 (both can be implemented in this architecture) 
+	? impact on AssetGroups
+		?? how will the groups be loaded now
+		?? what about deloading
+- because AssetManager is to be seen as a central hub for all assets used in the
+game, even the assets that are to be "loaded" by other engine components must 
+be declared in the AssetManager (for example, assets "loaded" by OpenGL)
+	-> some assets are specific to engine components, such as the ARendererAssets,
+	however, they must still be declared in the AssetManager as AGameObjects will
+	also reference these assets
+	-> engine components should still be kept separated to ensure modularity, for
+	example, Renderer3D must NOT reference AssetManager, even though in most cases
+	it uses the assets loaded in by the AssetManager when rendering
 
 ### Renderer structure
 
 === importing loaded AAssets to OpenGL
-? ARequests should also hold a AResponse which can be used to track
-the state of the request 
 v create ARenderableAsset
 v create a SceneObject-asset and pass it ARenderableAssets that are expected
 to be extracted from the AIScene

@@ -1,6 +1,7 @@
 package johnengine.testing;
 
 import johnengine.basic.assets.SceneObjectAsset;
+import johnengine.basic.assets.rew.textasset.TextAsset;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.renderer.Renderer3D;
@@ -8,8 +9,8 @@ import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
-import johnengine.core.assetmngr.AssetManager;
-import johnengine.core.assetmngr.asset.AssetGroup;
+import johnengine.core.assetmngr.asset.rew.AssetManager;
+import johnengine.core.assetmngr.asset.rew.asset.AssetGroup;
 import johnengine.core.engine.Engine;
 import johnengine.utils.counter.MilliCounter;
 
@@ -25,6 +26,14 @@ public class TestGame extends AGame {
         this.engine = engine;
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
+        
+        AssetGroup ag = this.assetManager.createAssetGroup("main");
+        ag.putAndDeclare(new TextAsset("shader", true, null));
+        
+        this.assetManager.declareAsset(new TextAsset("shader", true, null));
+        this.assetManager.load(loader)
+        
+        this.assetManager.load(new TextAsset.Loader("shader.exe", this.assetManager.getAsset("shader")));
         
         JWorld wMain = new JWorld(this, 0);
         JCamera cam = new JCamera(wMain);

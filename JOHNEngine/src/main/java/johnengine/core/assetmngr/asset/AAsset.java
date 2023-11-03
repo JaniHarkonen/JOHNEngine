@@ -1,32 +1,32 @@
 package johnengine.core.assetmngr.asset;
 
-public abstract class AAsset<T> implements IAsset {
+//public abstract class AAsset<T> implements IAsset {
     
     /**
      * This asset has been queued by the AssetManager for (de)loading.
      */
-    public static final int STATUS_QUEUED = 1;
+    //public static final int STATUS_QUEUED = 1;
     
     /**
      * The asset has been deloaded (or it hasn't been loaded yet).
      */
-    public static final int STATUS_DELOADED = 2;
+    //public static final int STATUS_DELOADED = 2;
     
     /**
      * The asset is being deloaded (deload()-method has been called).
      */
-    public static final int STATUS_DELOADING = 3;
+    //public static final int STATUS_DELOADING = 3;
     
     /**
      * The asset is being loaded (load()-method has been called).
      */
-    public static final int STATUS_LOADING = 4;
+    //public static final int STATUS_LOADING = 4;
     
     /**
      * The asset has been loaded and contains a reference to the 
      * object that was loaded.
      */
-    public static final int STATUS_LOADED = 5;
+    /*public static final int STATUS_LOADED = 5;
     
     protected final boolean isPersistent;
     protected final String name;
@@ -71,7 +71,7 @@ public abstract class AAsset<T> implements IAsset {
     protected T getDefault() {
         return null;
     }
-    
+    */
     /**
      * Each asset should have its own loading implementation 
      * (loadImpl()-method) which will be called when load() is 
@@ -79,7 +79,7 @@ public abstract class AAsset<T> implements IAsset {
      * source and store a representation of it in the 
      * <i>AAsset.asset</i> field.
      */
-    protected abstract void loadImpl();
+    //protected abstract void loadImpl();
     
     /**
      * Each asset should have its own deloading implementation 
@@ -89,12 +89,12 @@ public abstract class AAsset<T> implements IAsset {
      * field does not need to be reset as deload() already does
      * this in order to inform the garbage collector.
      */
-    protected abstract void deloadImpl();
+    //protected abstract void deloadImpl();
     
     
     /************************* GETTERS ************************/
     
-    public String getName() {
+    /*public String getName() {
         return this.name;
     }
     
@@ -127,12 +127,12 @@ public abstract class AAsset<T> implements IAsset {
     
     public boolean isQueued() {
         return (this.loadingStatus == STATUS_QUEUED);
-    }
+    }*/
     
     
     /************************* SETTERS ************************/
     
-    public void deloaded() {
+    /*public void deloaded() {
         this.loadingStatus = STATUS_DELOADED;
     }
     
@@ -151,4 +151,4 @@ public abstract class AAsset<T> implements IAsset {
     public void queued() {
         this.loadingStatus = STATUS_QUEUED;
     }
-}
+}*/

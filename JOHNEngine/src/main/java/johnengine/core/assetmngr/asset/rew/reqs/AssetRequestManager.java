@@ -1,10 +1,9 @@
-/*package johnengine.core.assetmngr;
+package johnengine.core.assetmngr.asset.rew.reqs;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import johnengine.core.assetmngr.reqs.AAssetRequest;
 import johnengine.core.reqmngr.ABufferedRequestManager;
 import johnengine.core.reqmngr.ARequest;
 import johnengine.core.reqmngr.IRequestContext;
@@ -58,14 +57,14 @@ public class AssetRequestManager extends ABufferedRequestManager {
             this.manager.finishThread();
         }
     }
-    */
+    
     
     /********************** AssetRequestManager-class ************************/
     
-    /*protected final int numberOfThreads;
+    protected final int numberOfThreads;
     protected int numberOfFinishedThreads;
     
-    protected AssetRequestManager(int numberOfThreads, IRequestContext context) {
+    public AssetRequestManager(int numberOfThreads, IRequestContext context) {
         super(context, new ConcurrentLinkedQueue<>());
         this.numberOfThreads = numberOfThreads;
         this.context = context;
@@ -115,12 +114,11 @@ public class AssetRequestManager extends ABufferedRequestManager {
     protected void finishThread() {
         this.numberOfFinishedThreads++;
     }
-    */
+    
     
     /***************************** GETTERS *****************************/
     
-    /*public boolean hasFinished() {
+    public boolean hasFinished() {
         return (this.numberOfFinishedThreads == this.numberOfThreads);
     }
 }
-*/

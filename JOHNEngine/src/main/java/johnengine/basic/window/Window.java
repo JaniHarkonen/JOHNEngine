@@ -59,6 +59,9 @@ public final class Window extends AWindowFramework
     @Override
     public void start() {
         GLFW.glfwInit();
+        //GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, value);
+        //GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, value);
+        
         
         this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
         this.windowID = this.createWindow();

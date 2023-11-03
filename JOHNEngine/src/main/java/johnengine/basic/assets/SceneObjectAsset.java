@@ -1,4 +1,4 @@
-package johnengine.basic.assets;
+/*package johnengine.basic.assets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,3 +96,4 @@ public class SceneObjectAsset extends AAsset<AIScene> {
         return this;
     }
 }
+*/

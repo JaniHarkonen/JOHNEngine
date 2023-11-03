@@ -1,4 +1,4 @@
-package johnengine.basic.assets;
+/*package johnengine.basic.assets;
 
 import org.lwjgl.opengl.GL30;
 
@@ -17,3 +17,4 @@ public class PersistentShader extends Shader {
         GL30.glDetachShader(this.shaderProgram, this.handle);
     }
 }
+*/

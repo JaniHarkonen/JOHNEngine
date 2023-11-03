@@ -1,4 +1,4 @@
-package johnengine.basic.assets;
+/*package johnengine.basic.assets;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -46,3 +46,4 @@ public class TextAsset extends AAsset<String> {
         return "";
     }
 }
+*/

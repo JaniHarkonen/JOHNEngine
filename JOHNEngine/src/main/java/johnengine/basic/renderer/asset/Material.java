@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.asset;
+/*package johnengine.basic.renderer.asset;
 
 import org.lwjgl.assimp.AIMaterial;
 
@@ -23,3 +23,4 @@ public class Material extends ARendererAsset<AIMaterial> {
         
     }
 }
+*/

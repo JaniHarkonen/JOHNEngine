@@ -1,4 +1,4 @@
-/*package johnengine.core.renderer.shdprog;
+package johnengine.core.renderer.shdprog.rew;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,4 +81,3 @@ public class ShaderProgram {
         return this.shaders.get(shaderAlias);
     }
 }
-*/

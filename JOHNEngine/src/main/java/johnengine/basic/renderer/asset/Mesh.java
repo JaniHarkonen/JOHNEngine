@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.asset;
+/*package johnengine.basic.renderer.asset;
 
 import org.lwjgl.assimp.AIMesh;
 
@@ -21,3 +21,4 @@ public class Mesh extends ARendererAsset<AIMesh> {
         this.asset.free();
     }
 }
+*/

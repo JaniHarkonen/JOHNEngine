@@ -1,4 +1,4 @@
-package johnengine.basic.renderer;
+/*package johnengine.basic.renderer;
 
 import johnengine.core.assetmngr.asset.AAsset;
 
@@ -13,3 +13,4 @@ public abstract class ARendererAsset<T> extends AAsset<T> {
         this.asset = asset;
     }
 }
+*/

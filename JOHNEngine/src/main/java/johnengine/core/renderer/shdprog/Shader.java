@@ -1,4 +1,4 @@
-package johnengine.core.renderer.shdprog;
+/*package johnengine.core.renderer.shdprog;
 
 import org.lwjgl.opengl.GL30;
 
@@ -46,3 +46,4 @@ public class Shader extends TextAsset {
         this.shaderProgram = 0;
     }
 }
+*/
