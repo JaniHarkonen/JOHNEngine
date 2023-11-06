@@ -1,13 +1,11 @@
 package johnengine.basic.renderer.asset.rew;
 
-import johnengine.core.assetmngr.asset.rew.asset.IAsset;
+import johnengine.core.assetmngr.asset.rew.asset.AAsset;
+import johnengine.core.renderer.IDrawable;
 
-public abstract class ARendererAsset<T> implements IAsset {
+public abstract class ARendererAsset<T> extends AAsset<T> implements IDrawable {
 
-    protected T asset;
-    
-    
-    public void setAsset(T asset) {
-        this.asset = asset;
+    protected ARendererAsset(String name, boolean isPersistent) {
+        super(name, isPersistent, null);
     }
 }

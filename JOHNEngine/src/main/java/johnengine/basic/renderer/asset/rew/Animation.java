@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.asset.rew;
+/*package johnengine.basic.renderer.asset.rew;
 
 public class Animation extends ARendererAsset {
     
@@ -20,3 +20,4 @@ public class Animation extends ARendererAsset {
     }
 
 }
+*/

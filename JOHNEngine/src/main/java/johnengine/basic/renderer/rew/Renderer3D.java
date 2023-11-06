@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JWorld;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.shdprog.rew.Shader;
 import johnengine.core.renderer.shdprog.rew.ShaderProgram;
@@ -15,7 +15,7 @@ import johnengine.core.winframe.AWindowFramework;
 public class Renderer3D extends ARenderer {
     
     private final ShaderProgram defaultShaderProgram;
-    private JCamera activeCamera;
+    private JWorld activeWorld;
     private ShaderProgram activeShaderProgram;
     
     public Renderer3D(AWindowFramework hostWindow) {
@@ -36,11 +36,11 @@ public class Renderer3D extends ARenderer {
             ""
         ));
         this.defaultShaderProgram.setVertexShader(
-                new Shader(GL30.GL_VERTEX_SHADER,
-                "default-vertex-shader",
-                true,
-                ""
-            ));
+            new Shader(GL30.GL_VERTEX_SHADER,
+            "default-vertex-shader",
+            true,
+            ""
+        ));
     }
     
 
@@ -62,21 +62,25 @@ public class Renderer3D extends ARenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
-        this.activeCamera.render(this); // Set camera uniforms
         this.activeShaderProgram.bind();
-        
-        
-        
+        this.activeWorld.render(this);
         this.activeShaderProgram.unbind();
     }
     
-    
-    public void setActiveCamera(JCamera camera) {
-        if( camera != null )
-        this.activeCamera = camera;
+    @Override
+    public void newBuffer() {
+        this.activeWorld.render(this);
+        this.renderRequestManager.newBuffer();
+        this.renderRequestManager.processRequests();
     }
     
-    public JCamera getActiveCamera() {
-        return this.activeCamera;
+    
+    public void setActiveWorld(JWorld world) {
+        if( world != null )
+        this.activeWorld = world;
+    }
+    
+    public JWorld getActiveWorld() {
+        return this.activeWorld;
     }
 }

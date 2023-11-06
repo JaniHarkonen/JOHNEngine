@@ -1,17 +1,54 @@
 package johnengine.basic.game;
 
 import johnengine.basic.InstanceManager;
+import johnengine.basic.renderer.rew.ARenderStrategy;
 import johnengine.core.AGame;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.IDrawable;
 
 public class JWorld extends AGameObject implements IDrawable {
 
+    public static class DefaultRenderStrategy extends ARenderStrategy<JWorld> {
+
+        private InstanceManager<AWorldObject> worldManager;
+        private JCamera activeCamera;
+        
+        public DefaultRenderStrategy(InstanceManager<AWorldObject> worldManager) {
+            this.worldManager = worldManager;
+        }
+        
+        
+        @Override
+        public void render(ARenderer renderer) {
+            this.worldManager.resetIterator();
+            this.activeCamera.render(renderer);
+            
+                // Use InstanceManager's iterator instead of requesting a 
+                // list of all available instances
+            AWorldObject inst;
+            while( (inst = this.worldManager.nextInstance()) != null )
+            inst.render(renderer);
+        }
+        
+        
+        public void setActiveCamera(JCamera activeCamera) {
+            this.activeCamera = activeCamera;
+        }
+    }
+    
+    
+    /********************* JWorld-class *********************/
+    
     private final InstanceManager<AWorldObject> worldManager;
+    private ARenderStrategy<JWorld> renderStrategy;
     
     public JWorld(AGame game, long id) {
         super(game, id);
+        
+            // WorldManager must be instantiated before resetting the render strategy
+            // as the DefaultRenderStrategy must be instantiated with the WorldManager
         this.worldManager = new InstanceManager<>();
+        this.resetRenderStrategy();
     }
     
     public JWorld(AGame game) {
@@ -21,7 +58,7 @@ public class JWorld extends AGameObject implements IDrawable {
     
     @Override
     public void render(ARenderer renderer) {
-        
+        this.renderStrategy.render(renderer);
     }
     
     @Override
@@ -47,5 +84,9 @@ public class JWorld extends AGameObject implements IDrawable {
     
     public void destroyInstance(long instanceID) {
         this.worldManager.deleteInstance(instanceID);
+    }
+    
+    public void resetRenderStrategy() {
+        this.renderStrategy = new DefaultRenderStrategy(this.worldManager);
     }
 }

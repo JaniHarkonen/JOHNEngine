@@ -1,6 +1,6 @@
 package johnengine.core.assetmngr.asset.rew.asset;
 
-public abstract class AAsset<T, L extends AAssetLoader> implements IAsset {
+public abstract class AAsset<T> implements IAsset {
 
     protected final String name;
     protected final boolean isPersistent;
@@ -38,6 +38,11 @@ public abstract class AAsset<T, L extends AAssetLoader> implements IAsset {
     
     protected abstract void deloadImpl();
     
+    
+    public void setAsset(T asset) {
+        if( asset == null )
+        this.asset = asset;
+    }
     
     public T getAssetUnchecked() {
         return this.asset;

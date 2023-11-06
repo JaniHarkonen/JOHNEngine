@@ -24,6 +24,21 @@ and/or to make AAssets persistent (non-deloadable)
 	requests
 - maybe AssetManager should also hold a map of AAssetLoaders
 - add disposing/destruction methods to all relevant classes
+- create getDefault()-methods for ARenderAssets
+- Mesh.populateMeshWithAIMesh() may be able to initialize an array using the 
+Buffer.sizeof() with Buffer.limit to calculate the number of elements inside
+a buffer
+	-> doing this allows us to bypass the creation and "arrayfication" of an
+	ArrayList
+	-> NOTICEEEE!: Actually you can just use mNumVertices to get the buffer
+	"size"
+- rethink asset system again to get rid of all the casting
+	-> currently you have to cast each time you call AssetManager.getAsset()
+- it probably makes more sense to have a UUID-class that has static methods for
+	obtaining instance IDs so that all AGameObjects will instantly have a 
+	unique ID without the risk of the developer forgetting to set it
+	-> this way weird setter methods that may be suseptible to inter-package 
+	visiblity errors can be avoided as well
 - WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
 THIS IS NOT ALLOWED -> REFACTOR
 	

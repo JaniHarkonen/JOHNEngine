@@ -1,7 +1,7 @@
 package johnengine.testing;
 
 import johnengine.basic.window.Window3DLauncher;
-import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.assetmngr.asset.rew.AssetManager;
 import johnengine.core.networker.Networker;
 
 public final class Launcher extends Window3DLauncher {

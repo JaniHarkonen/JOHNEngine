@@ -7,7 +7,7 @@ import johnengine.core.assetmngr.asset.rew.asset.AAsset;
 import johnengine.core.assetmngr.asset.rew.asset.AAssetLoader;
 import johnengine.testing.DebugUtils;
 
-public class TextAsset extends AAsset<String, TextAsset.Loader> {
+public class TextAsset extends AAsset<String> {
 
     public static class Loader extends AAssetLoader {
         protected String text;
@@ -36,7 +36,7 @@ public class TextAsset extends AAsset<String, TextAsset.Loader> {
                 this.text += line;
                 
                 br.close();
-                this.targetAsset.asset = this.text;
+                this.targetAsset.setAsset(this.text);
             }
             catch( Exception e )
             {

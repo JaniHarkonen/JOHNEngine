@@ -1,16 +1,17 @@
 package johnengine.testing;
 
-import johnengine.basic.assets.SceneObjectAsset;
-import johnengine.basic.assets.rew.textasset.TextAsset;
+import johnengine.basic.assets.rew.imgasset.AImageAsset;
+import johnengine.basic.assets.rew.imgasset.Texture;
+import johnengine.basic.assets.rew.sceneobj.SceneObjectLoader;
+import johnengine.basic.game.CModel;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
-import johnengine.basic.renderer.Renderer3D;
-import johnengine.basic.renderer.asset.Mesh;
+import johnengine.basic.renderer.asset.rew.Mesh;
+import johnengine.basic.renderer.rew.Renderer3D;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.asset.rew.AssetManager;
-import johnengine.core.assetmngr.asset.rew.asset.AssetGroup;
 import johnengine.core.engine.Engine;
 import johnengine.utils.counter.MilliCounter;
 
@@ -19,7 +20,7 @@ public class TestGame extends AGame {
     //private Networker networker;
 
     private MilliCounter timer;
-    private AssetGroup agMain;
+    private JWorld worldMain;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -27,7 +28,34 @@ public class TestGame extends AGame {
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
         
-        AssetGroup ag = this.assetManager.createAssetGroup("main");
+            // Declare assets
+        AssetManager am = this.assetManager;
+        am.declareAsset(new Mesh("defaultMesh"));   // Mesh
+        am.declareAsset(new Texture("defaultTexture")); // Texture
+        
+            // Load Assimp scene (including mesh)
+        SceneObjectLoader sl = new SceneObjectLoader();
+        sl.expectMesh((Mesh) am.getAsset("defaultMesh"));
+        am.loadFrom("", sl);
+        
+            // Load an image asset (texture)
+        AImageAsset.Loader il = new AImageAsset.Loader((Texture) am.getAsset("defaultTexture"));
+        am.loadFrom("", il);
+        
+            // Create a model with the mesh and the texture
+        CModel modelDefault = new CModel();
+        modelDefault.setMesh((Mesh) am.getAsset("defaultMesh"));
+        modelDefault.setTexture((Texture) am.getAsset("defaultTexture"));
+        
+            // Create the game world and create the camera and the
+            // test box (with the created model)
+        this.worldMain = new JWorld(this);
+        this.worldMain.createInstance(new JCamera(this.worldMain));
+        this.worldMain.createInstance(new JTestBox(this.worldMain, modelDefault));
+        
+            // Update the active world of the renderer
+        Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
+        /*AssetGroup ag = this.assetManager.createAssetGroup("main");
         ag.putAndDeclare(new TextAsset("shader", true, null));
         
         this.assetManager.declareAsset(new TextAsset("shader", true, null));
@@ -44,6 +72,8 @@ public class TestGame extends AGame {
         SceneObjectAsset scene = new SceneObjectAsset("trolled", "xd")
         .addMesh(new Mesh("mesh-getRIGHT"))
         .addMesh(new Mesh("mesh-man"));
+        
+        Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(wMain);*/
         
         /*FragmentShader fsDefault = new FragmentShader("shader-fragment", "shaders/fragmentShader.frag");
         VertexShader vsDefault = new VertexShader("shader-vertex", "shaders/vertexShader.vert");
@@ -76,6 +106,7 @@ public class TestGame extends AGame {
         if( this.window.hasWindowClosed() )
         this.engine.stop();
         
+        this.worldMain.tick(deltaTime);
         
         //this.timer.count();
     }
