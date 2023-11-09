@@ -1,7 +1,7 @@
 package johnengine.core;
 
 import johnengine.basic.window.Window;
-import johnengine.core.assetmngr.asset.rew.AssetManager;
+import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 
 public abstract class AGame {

@@ -3,6 +3,7 @@ package johnengine.core.engine;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.threadable.AThreadable;
+import johnengine.testing.DebugUtils;
 
 public final class Engine extends AThreadable {
     

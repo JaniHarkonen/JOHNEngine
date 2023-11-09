@@ -1,42 +1,56 @@
-/*package johnengine.core.renderer.shdprog;
+package johnengine.core.renderer.shdprog;
 
 import org.lwjgl.opengl.GL30;
 
-import johnengine.basic.assets.TextAsset;
+import johnengine.basic.assets.textasset.TextAsset;
 
 public class Shader extends TextAsset {
-
+    
+    public static class Loader extends TextAsset.Loader {
+        public boolean poll(Shader targetAsset) {
+            if( !this.isLoaded() )
+            return false;
+            
+            targetAsset.asset = this.text;
+            return true;            
+        }
+    }
+    
     protected final int type;
     
     protected int shaderProgram;
     protected int handle;
-    
-    public Shader(String name, String relativePath, int type, boolean isPersistent, String preloadedAsset) {
-        super(name, relativePath, isPersistent, preloadedAsset);
+
+    public Shader(int type, String name, boolean isPersistent, String preloadedAsset) {
+        super(name, isPersistent, preloadedAsset);
         this.type = type;
     }
     
-    public Shader(String name, String relativePath, int type) {
-        this(name, relativePath, type, false, null);
+    public Shader(int type, String name) {
+        this(type, name, false, null);
     }
     
     
-    public void attach(int shaderProgram) {
+    public boolean attach(int shaderProgram) {
+        return this.attach(shaderProgram, true);
+    }
+    
+    public boolean attach(int shaderProgram, boolean allowBlocking) {
         this.handle = GL30.glCreateShader(this.type);
         
-            // Attach once the source code has been loaded in (blocking)
-        while( true )
+            // Block until the shader source code is loaded (if blocking is allowed)
+        while( this.asset == null )
         {
-            if( this.isLoaded() )
-            {
-                GL30.glShaderSource(this.handle, this.asset);
-                GL30.glCompileShader(this.handle);
-                GL30.glAttachShader(this.shaderProgram, this.handle);
-                this.shaderProgram = shaderProgram;
-                
-                break;
-            }
+            if( !allowBlocking )
+            return false;
         }
+        
+        GL30.glShaderSource(this.handle, this.asset);
+        GL30.glCompileShader(this.handle);
+        GL30.glAttachShader(this.shaderProgram, this.handle);
+        this.shaderProgram = shaderProgram;
+
+        return true;
     }
     
     public void detach() {
@@ -46,4 +60,3 @@ public class Shader extends TextAsset {
         this.shaderProgram = 0;
     }
 }
-*/

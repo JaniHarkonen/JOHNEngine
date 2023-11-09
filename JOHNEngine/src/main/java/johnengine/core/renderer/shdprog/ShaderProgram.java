@@ -1,4 +1,4 @@
-/*package johnengine.core.renderer.shdprog;
+package johnengine.core.renderer.shdprog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +41,14 @@ public class ShaderProgram {
         GL30.glLinkProgram(this.programHandle);
         
         for( Entry<String, Shader> en : entrySet )
-        this.shaders.get(en.getKey()).deload();
+        this.shaders.get(en.getKey()).detach();
     }
     
     public void bind() {
         GL30.glUseProgram(this.programHandle);
         
-        for( AUniform<?> uniform : this.uniformCache )
-        uniform.set();
+        //for( AUniform<?> uniform : this.uniformCache )
+        //uniform.set();
     }
     
     public void unbind() {
@@ -81,4 +81,3 @@ public class ShaderProgram {
         return this.shaders.get(shaderAlias);
     }
 }
-*/

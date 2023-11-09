@@ -1,26 +1,24 @@
-/*package johnengine.basic.renderer.asset;
+package johnengine.basic.renderer.asset;
+/*package johnengine.basic.renderer.asset.rew;
 
-import org.lwjgl.assimp.AIMaterial;
-
-import johnengine.basic.renderer.ARendererAsset;
-
-public class Material extends ARendererAsset<AIMaterial> {
-
-    public Material(String name) {
-        super(name);
-    }
-
+public class Material extends ARendererAsset {
     
+    private String name;
+    
+    public Material(String name) {
+        this.name = name;
+    }
+
     @Override
-    protected void loadImpl() {
-        // TODO Auto-generated method stub
+    public void deload() {
         
     }
 
     @Override
-    protected void deloadImpl() {
+    public String getName() {
         // TODO Auto-generated method stub
-        
+        return null;
     }
+
 }
 */

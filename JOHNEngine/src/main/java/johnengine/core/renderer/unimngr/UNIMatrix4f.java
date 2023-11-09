@@ -4,6 +4,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
+import johnengine.testing.DebugUtils;
+
 public class UNIMatrix4f extends AUniform<Matrix4f> {
 
     public UNIMatrix4f(String name, Matrix4f value) {

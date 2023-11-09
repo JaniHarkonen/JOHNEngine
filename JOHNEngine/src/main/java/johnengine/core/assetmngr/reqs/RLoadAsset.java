@@ -1,23 +1,22 @@
-/*package johnengine.core.assetmngr.reqs;
+package johnengine.core.assetmngr.reqs;
 
-import johnengine.core.assetmngr.asset.AAsset;
+import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.core.reqmngr.IRequestContext;
 
 public class RLoadAsset extends AAssetRequest {
 
-    public RLoadAsset(AAsset<?> asset) {
-        super(asset);
+    public RLoadAsset(AAssetLoader loader) {
+        super(loader);
     }
 
     
     @Override
     public void process(IRequestContext context) {
-        this.asset.load();
+        this.loader.load();
     }
     
     @Override
     public boolean canQueue() {
-        return this.asset.isDeloaded();
+        return this.loader.isInactive();
     }
 }
-*/

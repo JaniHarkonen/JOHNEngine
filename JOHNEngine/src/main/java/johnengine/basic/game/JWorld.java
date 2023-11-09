@@ -1,7 +1,7 @@
 package johnengine.basic.game;
 
 import johnengine.basic.InstanceManager;
-import johnengine.basic.renderer.rew.ARenderStrategy;
+import johnengine.basic.renderer.ARenderStrategy;
 import johnengine.core.AGame;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.IDrawable;
@@ -11,7 +11,7 @@ public class JWorld extends AGameObject implements IDrawable {
     public static class DefaultRenderStrategy extends ARenderStrategy<JWorld> {
 
         private InstanceManager<AWorldObject> worldManager;
-        private JCamera activeCamera;
+        private JCamera camera;
         
         public DefaultRenderStrategy(InstanceManager<AWorldObject> worldManager) {
             this.worldManager = worldManager;
@@ -21,7 +21,7 @@ public class JWorld extends AGameObject implements IDrawable {
         @Override
         public void render(ARenderer renderer) {
             this.worldManager.resetIterator();
-            this.activeCamera.render(renderer);
+            this.camera.render(renderer);
             
                 // Use InstanceManager's iterator instead of requesting a 
                 // list of all available instances
@@ -31,8 +31,8 @@ public class JWorld extends AGameObject implements IDrawable {
         }
         
         
-        public void setActiveCamera(JCamera activeCamera) {
-            this.activeCamera = activeCamera;
+        public void setCamera(JCamera camera) {
+            this.camera = camera;
         }
     }
     
@@ -41,6 +41,7 @@ public class JWorld extends AGameObject implements IDrawable {
     
     private final InstanceManager<AWorldObject> worldManager;
     private ARenderStrategy<JWorld> renderStrategy;
+    private JCamera activeCamera;
     
     public JWorld(AGame game, long id) {
         super(game, id);
@@ -48,6 +49,7 @@ public class JWorld extends AGameObject implements IDrawable {
             // WorldManager must be instantiated before resetting the render strategy
             // as the DefaultRenderStrategy must be instantiated with the WorldManager
         this.worldManager = new InstanceManager<>();
+        this.activeCamera = null;
         this.resetRenderStrategy();
     }
     
@@ -58,6 +60,7 @@ public class JWorld extends AGameObject implements IDrawable {
     
     @Override
     public void render(ARenderer renderer) {
+        DefaultRenderStrategy.class.cast(this.renderStrategy).setCamera(this.activeCamera);
         this.renderStrategy.render(renderer);
     }
     
@@ -88,5 +91,9 @@ public class JWorld extends AGameObject implements IDrawable {
     
     public void resetRenderStrategy() {
         this.renderStrategy = new DefaultRenderStrategy(this.worldManager);
+    }
+    
+    public void setActiveCamera(JCamera activeCamera) {
+        this.activeCamera = activeCamera;
     }
 }

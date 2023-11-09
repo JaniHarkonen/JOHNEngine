@@ -1,26 +1,24 @@
-/*package johnengine.basic.renderer.asset;
+package johnengine.basic.renderer.asset;
+/*package johnengine.basic.renderer.asset.rew;
 
-import org.lwjgl.assimp.AIAnimation;
-
-import johnengine.basic.renderer.ARendererAsset;
-
-public class Animation extends ARendererAsset<AIAnimation> {
-
-    public Animation(String name) {
-        super(name);
-    }
-
+public class Animation extends ARendererAsset {
     
+    private String name;
+    
+    public Animation(String name) {
+        this.name = name;
+    }
+
     @Override
-    protected void loadImpl() {
-        // TODO Auto-generated method stub
+    public void deload() {
         
     }
 
     @Override
-    protected void deloadImpl() {
+    public String getName() {
         // TODO Auto-generated method stub
-        
+        return null;
     }
+
 }
 */

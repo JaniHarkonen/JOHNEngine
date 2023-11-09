@@ -1,7 +1,7 @@
 package johnengine.basic.game;
 
-import johnengine.basic.assets.rew.imgasset.Texture;
-import johnengine.basic.renderer.asset.rew.Mesh;
+import johnengine.basic.assets.imgasset.Texture;
+import johnengine.basic.renderer.asset.Mesh;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.IDrawable;
 

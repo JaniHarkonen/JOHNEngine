@@ -50,7 +50,7 @@ public class JCamera extends AWorldObject {
         UniformManager uniformManager = renderer.getUniformManager();
         ((UNIMatrix4f) uniformManager.getUniform("cameraProjectionMatrix"))
         .set(this.projectionMatrix);
-        ((UNIMatrix4f) uniformManager.getUniform("cameraProjectionMatrix"))
+        ((UNIMatrix4f) uniformManager.getUniform("cameraOrientationMatrix"))
         .set(this.orientationMatrix);
     }
     

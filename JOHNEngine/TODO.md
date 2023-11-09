@@ -39,6 +39,21 @@ a buffer
 	unique ID without the risk of the developer forgetting to set it
 	-> this way weird setter methods that may be suseptible to inter-package 
 	visiblity errors can be avoided as well
+- all ARenderAssets should have a Data-object which will store the concurrent
+information including
+	-- OpenGL handle
+	-- asset metadata
+- in order to do indirect rendering do this:
+	-- each rendered instance must produce an entry in a map before being 
+	rendered
+		o the map will pair meshes with maps of textures
+		o maps of textures will pair textures with lists of "orientations"
+		that combine rotation and position vectors
+	-- the renderer will go through the mesh-texture-orientation data structures
+	iteratively and render them
+	-- ARenderAssets should have bind()- and generate()-methods instead of a
+	render()-method (they should not implement IDrawable)
+- consider if RCursorLockToCenter is needed
 - WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
 THIS IS NOT ALLOWED -> REFACTOR
 	
