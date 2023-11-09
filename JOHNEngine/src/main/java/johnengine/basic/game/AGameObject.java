@@ -2,6 +2,7 @@ package johnengine.basic.game;
 
 import johnengine.core.AGame;
 import johnengine.core.ITickable;
+import johnengine.core.UUID;
 
 public abstract class AGameObject implements ITickable {
 
@@ -10,9 +11,9 @@ public abstract class AGameObject implements ITickable {
     private boolean isActive;
     private boolean isDestroyed;
     
-    protected AGameObject(AGame game, long id) {
+    protected AGameObject(AGame game) {
         this.game = game;
-        this.id = id;
+        this.id = UUID.newLongUUID();   // Assign a unique ID using the global UUID-class
         this.isActive = true;
         this.isDestroyed = false;
     }
@@ -28,10 +29,6 @@ public abstract class AGameObject implements ITickable {
 
     public void deactivate() {
         this.isActive = false;
-    }
-    
-    void setID(long id) {
-        this.id = id;
     }
 
     public boolean isDestroyed() {

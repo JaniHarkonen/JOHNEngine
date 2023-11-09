@@ -43,18 +43,14 @@ public class JWorld extends AGameObject implements IDrawable {
     private ARenderStrategy<JWorld> renderStrategy;
     private JCamera activeCamera;
     
-    public JWorld(AGame game, long id) {
-        super(game, id);
+    public JWorld(AGame game) {
+        super(game);
         
             // WorldManager must be instantiated before resetting the render strategy
             // as the DefaultRenderStrategy must be instantiated with the WorldManager
         this.worldManager = new InstanceManager<>();
         this.activeCamera = null;
         this.resetRenderStrategy();
-    }
-    
-    public JWorld(AGame game) {
-        this(game, 0);
     }
 
     
@@ -77,7 +73,6 @@ public class JWorld extends AGameObject implements IDrawable {
     }
     
     public void createInstance(AWorldObject instance) {
-        instance.setID(this.worldManager.nextUniqueID());
         this.worldManager.addInstance(instance);
     }
     

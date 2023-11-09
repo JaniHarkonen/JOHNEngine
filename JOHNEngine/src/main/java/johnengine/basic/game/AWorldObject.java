@@ -8,7 +8,7 @@ public abstract class AWorldObject extends AGameObject implements IDrawable {
     protected boolean isVisible;
 
     protected AWorldObject(JWorld world) {
-        super(world.getGame(), 0);
+        super(world.getGame());
         this.world = world;
         this.isVisible = true;
     }
