@@ -36,7 +36,7 @@ public class Mesh extends ARendererAsset<VertexArrayObject> {
     }
     
     
-    /********************** Mesh-class **********************/ 
+    /********************** Mesh-class **********************/
     
     public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
         if( dest == null || src == null )
@@ -129,6 +129,7 @@ public class Mesh extends ARendererAsset<VertexArrayObject> {
     public VertexArrayObject getDefault() {
         return Renderer3D.DEFAULT_VAO;
     }
+    
 
     @Override
     public void render(ARenderer renderer) {

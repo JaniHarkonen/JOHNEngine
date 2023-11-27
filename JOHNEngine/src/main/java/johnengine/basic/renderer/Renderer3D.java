@@ -19,6 +19,7 @@ import johnengine.core.renderer.unimngr.UNIMatrix4f;
 import johnengine.core.renderer.unimngr.UniformManager;
 import johnengine.core.winframe.AWindowFramework;
 import johnengine.testing.DebugUtils;
+import johnengine.testing.rendertests.TestShaderProgram;
 
 public class Renderer3D extends ARenderer {
     
@@ -29,6 +30,7 @@ public class Renderer3D extends ARenderer {
     private final ShaderProgram defaultShaderProgram;
     private JWorld activeWorld;
     private ShaderProgram activeShaderProgram;
+    private TestShaderProgram TEEEST;
     
     public Renderer3D(AWindowFramework hostWindow) {
         super(hostWindow, new UniformManager());
@@ -51,12 +53,12 @@ public class Renderer3D extends ARenderer {
         
             // Default vertex shader
         try {
-            this.defaultShaderProgram.setVertexShader(
+            /*this.defaultShaderProgram.setVertexShader(
                 new Shader(GL30.GL_VERTEX_SHADER,
                 "default-vertex-shader",
                 true,
                 Files.readAllBytes(Path.of("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\default.vert")).toString()
-            ));
+            ));*/
             
             this.defaultShaderProgram.setFragmentShader(
                 new Shader(GL30.GL_FRAGMENT_SHADER,
@@ -81,10 +83,12 @@ public class Renderer3D extends ARenderer {
         //GL13.glEnable(GL13.GL_MULTISAMPLE);
         //GL11.glCullFace(GL11.GL_BACK);
         
-        this.defaultShaderProgram.setup(this.uniformManager);
+        //this.defaultShaderProgram.setup(this.uniformManager);
         this.activeShaderProgram = this.defaultShaderProgram;
         
         this.test = new Mesh("lol");
+        this.TEEEST = new TestShaderProgram();
+        
     }
     
     @Override
@@ -93,11 +97,12 @@ public class Renderer3D extends ARenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
-        this.uniformManager.getUniform("textureSampler").set();
-        this.activeShaderProgram.bind();
-        this.activeWorld.render(this);
-        this.test.render(this);
-        this.activeShaderProgram.unbind();
+        //this.uniformManager.getUniform("textureSampler").set();
+        //this.activeShaderProgram.bind();
+        //this.activeWorld.render(this);
+        /*this.test.render(this);
+        this.activeShaderProgram.unbind();*/
+        this.TEEEST.render();
     }
     
     

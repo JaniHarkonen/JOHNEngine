@@ -16,13 +16,4 @@ public class CModel implements IDrawable {
         this.texture.render(renderer);
         this.mesh.render(renderer);
     }
-    
-    
-    public void setMesh(Mesh mesh) {
-        this.mesh = mesh;
-    }
-    
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
 }

@@ -59,9 +59,6 @@ public final class Window extends AWindowFramework
     @Override
     public void start() {
         GLFW.glfwInit();
-        //GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, value);
-        //GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, value);
-        
         
         this.primaryMonitorID = GLFW.glfwGetPrimaryMonitor();
         this.windowID = this.createWindow();
@@ -85,7 +82,6 @@ public final class Window extends AWindowFramework
         while( this.updatingProperties.windowState != STATE_CLOSED )
         {
             this.requestManager.processRequests();
-            GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
@@ -110,6 +106,8 @@ public final class Window extends AWindowFramework
                 fpsCounter = 0;
                 startTime = currentTime;
             }
+            
+            GLFW.glfwPollEvents();
         }
     }
     

@@ -54,34 +54,46 @@ information including
 	-- ARenderAssets should have bind()- and generate()-methods instead of a
 	render()-method (they should not implement IDrawable)
 - consider if RCursorLockToCenter is needed
+- OpenGL crashes when the window is closed because the renderer still continues
+to render (using OpenGL-commands) after window.stop() has been called
+	-> GLFWterminate() is called upon window.stop()
+- avoid using public static classes when the class in question is meant to be 
+abstract
+- create an interface that can be implemented by OpenGL-assets as they often 
+define the following methods:
+	-- boolean : bind
+	-- boolean : unbind
+	-- boolean : generate
+	-- boolean : dispose
+	-- int : getHandle
+	-> most methods should return a boolean indicating whether they succeeded
+	-> this will avoid having to refactor or to create alternate types of 
+	implementations 
+- change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
+as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
+of the game world 
 - WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
 THIS IS NOT ALLOWED -> REFACTOR
-	
-### New asset structure
-v Each asset should have a loader class
-	-> this is because the loading process may (and does often) produce more 
-	than a single asset
-	-> loaders will be sent to the AssetManager when issuing requests
-	-- loading
-		o option1: loaders can be used to poll assets once the loading process has 
-		completed
-		o option2: assets created by loaders will be immediately declared in the
-		Asset Manager
-		o option3: assets that are to be created will be passed onto the loader and
-		the structure of the loader fills in the data
-		v option4: option3 + option1 (both can be implemented in this architecture) 
-	? impact on AssetGroups
-		?? how will the groups be loaded now
-		?? what about deloading
-- because AssetManager is to be seen as a central hub for all assets used in the
-game, even the assets that are to be "loaded" by other engine components must 
-be declared in the AssetManager (for example, assets "loaded" by OpenGL)
-	-> some assets are specific to engine components, such as the ARendererAssets,
-	however, they must still be declared in the AssetManager as AGameObjects will
-	also reference these assets
-	-> engine components should still be kept separated to ensure modularity, for
-	example, Renderer3D must NOT reference AssetManager, even though in most cases
-	it uses the assets loaded in by the AssetManager when rendering
+
+
+### New renderer structure
+v ARenderer takes in generation-requests and deload-requests
+
+v ARendererAssets will be packaged with the specific renderer
+v ARendererAssets do not implement IDrawable as they are not 
+rendered the same way that AWorldObjects are rendered
+
+- there are specific components that function as the final "nodes"
+in the rendering hierarchy, that are responsible for filling the 
+render buffer when the render()-method is called
+	-- these components must invoke the ARenderer.getRenderBufferStrategy()-
+	method using their own class as the argument
+	-- ARenderer.getRenderBufferStrategy(Class<?>) returns a drawing strategy
+	instance associated with the given class
+	-- the drawing strategy will be used by the ARenderer to determine
+	which aspects of the component are copied, and in what way, to form
+	the render buffer
+	-- the render buffer will be iterated over 
 
 ### Renderer structure
 

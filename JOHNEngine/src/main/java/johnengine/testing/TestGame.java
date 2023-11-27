@@ -13,6 +13,7 @@ import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
+import johnengine.core.winframe.AWindowFramework;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {
@@ -27,7 +28,7 @@ public class TestGame extends AGame {
         this.engine = engine;
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
-        
+        /*
             // Declare assets
         AssetManager am = this.assetManager;
         am.declareAsset(new Mesh("defaultMesh"));   // Mesh
@@ -56,6 +57,10 @@ public class TestGame extends AGame {
         this.worldMain.createInstance(new JTestBox(this.worldMain, modelDefault));
         this.worldMain.setActiveCamera(camMain);
         
+        this.window.disableVSync();
+        */
+        
+        
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
         /*this.timer = new MilliCounter(1000) {
@@ -64,6 +69,7 @@ public class TestGame extends AGame {
                 
             }
         };*/
+        
     }
 
     @Override
@@ -72,6 +78,7 @@ public class TestGame extends AGame {
         this.engine.stop();
         
         this.worldMain.tick(deltaTime);
+        this.window.changeTitle(""+this.window.getFPS());
         
         //this.timer.count();
     }
