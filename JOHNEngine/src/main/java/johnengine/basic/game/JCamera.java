@@ -4,8 +4,6 @@ import org.joml.Matrix4f;
 
 import johnengine.basic.window.Window;
 import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.unimngr.UNIMatrix4f;
-import johnengine.core.renderer.unimngr.UniformManager;
 import johnengine.core.winframe.AWindowFramework;
 
 public class JCamera extends AWorldObject {
@@ -46,12 +44,6 @@ public class JCamera extends AWorldObject {
         
         if( this.viewWidth != width || this.viewHeight != height )
         this.setViewDimensions(width, height);
-        
-        UniformManager uniformManager = renderer.getUniformManager();
-        ((UNIMatrix4f) uniformManager.getUniform("cameraProjectionMatrix"))
-        .set(this.projectionMatrix);
-        ((UNIMatrix4f) uniformManager.getUniform("cameraOrientationMatrix"))
-        .set(this.orientationMatrix);
     }
     
     private void recalculateProjectionMatrix() {

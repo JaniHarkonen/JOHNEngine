@@ -9,16 +9,13 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.opengl.GL30;
 
-import johnengine.basic.renderer.Renderer3D;
 import johnengine.basic.renderer.components.VBOIndices;
 import johnengine.basic.renderer.components.VBOTextureCoordinates;
 import johnengine.basic.renderer.components.VBOVertices;
-import johnengine.basic.renderer.components.VertexArrayObject;
 import johnengine.core.renderer.ARenderer;
 
-public class Mesh extends ARendererAsset<VertexArrayObject> {
+public class Mesh extends ARendererAsset<Mesh.Data> {
     
     public static class Face {
         public static final int INDICES_PER_FACE = 3;
@@ -30,13 +27,131 @@ public class Mesh extends ARendererAsset<VertexArrayObject> {
         }
         
         
-        public int get(int position) {
+        public int getIndex(int position) {
             return this.indices[position];
+        }
+    }
+    
+    public static class Data extends ARendererAsset.Data {
+        private Vector3f[] vertices;
+        private Vector2f[] uvs;
+        private Face[] faces;
+        private VBOContainer vbos;
+        
+        public Data(Vector3f[] vertices, Vector2f[] uvs, Face[] faces) {
+            this.vertices = vertices;
+            this.uvs = uvs;
+            this.faces = faces;
+            this.vbos = null;
+        }
+        
+        public Data() {
+            this(new Vector3f[0], new Vector2f[0], new Face[0]);
+        }
+        
+        
+        @Override
+        public void generate() {
+            Data data = this;
+            
+            VBOVertices vboVertices = new VBOVertices(0);
+            vboVertices.generate(data.vertices);
+            
+            VBOTextureCoordinates vboUVs = new VBOTextureCoordinates(1);
+            vboUVs.generate(data.uvs);
+            
+            VBOIndices vboIndices = new VBOIndices(2);
+            vboIndices.generate(data.faces);
+            
+            data.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);
+        }
+        
+        @Override
+        public void dispose() {
+            this.vbos.getVerticesVBO().delete();
+            this.vbos.getTextureCoordinatesVBO().delete();
+            this.vbos.getIndicesVBO().delete();
+        }
+
+        public int getVertexCount() {
+            return this.vertices.length;
+        }
+        
+        public int getUVCount() {
+            return this.uvs.length;
+        }
+        
+        public int getFaceCount() {
+            return this.faces.length;
+        }
+        
+        public VBOContainer getVBOs() {
+            return this.vbos;
+        }
+    }
+    
+    public static class VBOContainer {
+        private VBOVertices vboVertices;
+        private VBOTextureCoordinates vboUVs;
+        private VBOIndices vboIndices;
+        
+        public VBOContainer(
+            VBOVertices vboVertices, 
+            VBOTextureCoordinates vboUVs, 
+            VBOIndices vboIndices
+        ) {
+            this.vboVertices = vboVertices;
+            this.vboUVs = vboUVs;
+            this.vboIndices = vboIndices;
+        }
+        
+        
+        public VBOVertices getVerticesVBO() {
+            return this.vboVertices;
+        }
+        
+        public VBOTextureCoordinates getTextureCoordinatesVBO() {
+            return this.vboUVs;
+        }
+        
+        public VBOIndices getIndicesVBO() {
+            return this.vboIndices;
         }
     }
     
     
     /********************** Mesh-class **********************/
+    
+    public static Data DEFAULT_DATA = null;
+    
+    public static void generateDefault() {
+        if( DEFAULT_DATA != null )
+        return;
+        
+        DEFAULT_DATA = new Mesh.Data(
+                // Vertices
+            new Vector3f[] {
+                new Vector3f(-0.5f, 0.5f, 0.0f),        // top left
+                new Vector3f(-0.5f, -0.5f, 0.0f),       // bottom left
+                new Vector3f(0.5f, -0.5f, 0.0f),        // bottom right
+                new Vector3f(0.5f, 0.5f, 0.0f)          // top right
+            }, 
+                // UVs
+            new Vector2f[] {
+                new Vector2f(0.0f, 1.0f), 
+                new Vector2f(0.0f, 0.0f), 
+                new Vector2f(1.0f, 0.0f), 
+                new Vector2f(1.0f, 1.0f),
+            }, 
+                // Faces
+            new Mesh.Face[] {
+                new Mesh.Face(new int[] {0, 1, 3}),
+                new Mesh.Face(new int[] {3, 1, 2})
+            }
+        );
+        
+        DEFAULT_DATA.generate();
+    }
     
     public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
         if( dest == null || src == null )
@@ -79,89 +194,68 @@ public class Mesh extends ARendererAsset<VertexArrayObject> {
         }
         
             // Populate
-        dest.vertices = vertexList.toArray(new Vector3f[vertexList.size()]);
-        dest.uvs = uvs;
-        dest.faces = faces.toArray(new Face[faces.size()]);
+        dest.asset = new Data(
+            vertexList.toArray(new Vector3f[vertexList.size()]),
+            uvs,
+            faces.toArray(new Face[faces.size()])
+        );
+        
+        dest.loadingFinished();
     }
     
     /********************** Class body **********************/
-    
-    private Vector3f[] vertices;
-    private Vector2f[] uvs;
-    private Face[] faces;
 
-    public Mesh(String name, boolean isPersistent) {
-        super(name, isPersistent);
-        /*this.vertices = new Vector3f[0];
-        this.uvs = new Vector2f[0];
-        this.faces = new Face[0];*/
-        
-        this.vertices = new Vector3f[] {
-            new Vector3f(-0.5f, 0.5f, 0.0f),
-            new Vector3f(-0.5f, -0.5f, 0.0f),
-            new Vector3f(0.5f, -0.5f, 0.0f)
-        };
-        
-        this.uvs = new Vector2f[] {
-            new Vector2f(0.0f, 0.0f),
-            new Vector2f(1.0f, 0.0f),
-            new Vector2f(0.0f, 1.0f)
-        };
-        
-        this.faces = new Face[] {
-            new Face(new int[] {0, 1, 2})
-        };
+    public Mesh(String name, boolean isPersistent, ARenderer renderer) {
+        super(name, isPersistent, renderer);
     }
     
     public Mesh(String name) {
-        this(name, false);
+        this(name, false, null);
     }
 
+    
+    @Override
+    public void generate() {
+    /*    Data data = this.get();
+        
+        VBOVertices vboVertices = new VBOVertices(0);
+        vboVertices.generate(data.vertices);
+        
+        VBOTextureCoordinates vboUVs = new VBOTextureCoordinates(1);
+        vboUVs.generate(data.uvs);
+        
+        VBOIndices vboIndices = new VBOIndices(2);
+        vboIndices.generate(data.faces);
+        
+        data.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);*/
+    }
     
     @Override
     protected void deloadImpl() {
-        if( this.asset != null )
-        this.asset.free();
-    }
-
-    
-    @Override
-    public VertexArrayObject getDefault() {
-        return Renderer3D.DEFAULT_VAO;
-    }
-    
-
-    @Override
-    public void render(ARenderer renderer) {
         if( this.asset == null )
         return;
         
-        VertexArrayObject vao = this.get();
+        this.renderer.disposeAssetData(this.get());
+    }
+    
+    @Override
+    public void bind() {
         
-        if( !vao.wasGenerated() )
-        {
-            vao.addVBO(new VBOVertices(this.vertices));
-            vao.addVBO(new VBOTextureCoordinates(this.uvs));
-            vao.addVBO(new VBOIndices(this.faces));
-            vao.generate();
-        }
+    }
+    
+    @Override
+    public void unbind() {
         
-        vao.bind();
-        //DebugUtils.log(this, "vertices: " + this.getVertexCount() + " | uvs: " + this.getUVCount() + " | faces: " + this.getFaceCount());
-        GL30.glDrawElements(GL30.GL_TRIANGLES, this.getVertexCount(), GL30.GL_UNSIGNED_INT, 0);
-        vao.unbind();
+    }
+
+    
+    @Override
+    public Mesh.Data getDefault() {
+        return DEFAULT_DATA;
     }
     
     
-    public int getVertexCount() {
-        return this.vertices.length;
-    }
-    
-    public int getUVCount() {
-        return this.uvs.length;
-    }
-    
-    public int getFaceCount() {
-        return this.faces.length;
+    public Data getData() {
+        return this.get();
     }
 }

@@ -1,19 +1,13 @@
 package johnengine.testing;
 
-import johnengine.basic.assets.imgasset.AImageAsset;
-import johnengine.basic.assets.imgasset.Texture;
-import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.CModel;
-import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.renderer.Renderer3D;
-import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
-import johnengine.core.winframe.AWindowFramework;
 import johnengine.utils.counter.MilliCounter;
 
 public class TestGame extends AGame {
@@ -60,6 +54,11 @@ public class TestGame extends AGame {
         this.window.disableVSync();
         */
         
+        this.window.disableVSync();
+        
+        
+        this.worldMain = new JWorld(this);
+        this.worldMain.createInstance(new JTestBox(this.worldMain, new CModel()));
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
@@ -77,6 +76,7 @@ public class TestGame extends AGame {
         if( this.window.hasWindowClosed() )
         this.engine.stop();
         
+        //this.worldMain.tick(deltaTime);
         this.worldMain.tick(deltaTime);
         this.window.changeTitle(""+this.window.getFPS());
         

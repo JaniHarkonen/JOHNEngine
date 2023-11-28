@@ -21,7 +21,7 @@ public class JWorld extends AGameObject implements IDrawable {
         @Override
         public void render(ARenderer renderer) {
             this.worldManager.resetIterator();
-            this.camera.render(renderer);
+            //this.camera.render(renderer);
             
                 // Use InstanceManager's iterator instead of requesting a 
                 // list of all available instances
@@ -68,8 +68,8 @@ public class JWorld extends AGameObject implements IDrawable {
             // Use InstanceManager's iterator instead of requesting a 
             // list of all available instances
         AWorldObject inst;
-        while( (inst = this.worldManager.nextInstance()) != null )
-        inst.tick(deltaTime);
+        //while( (inst = this.worldManager.nextInstance()) != null )
+        //inst.tick(deltaTime);
     }
     
     public void createInstance(AWorldObject instance) {

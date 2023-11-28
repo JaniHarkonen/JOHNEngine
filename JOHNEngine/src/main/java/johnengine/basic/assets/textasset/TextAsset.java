@@ -33,7 +33,7 @@ public class TextAsset extends AAsset<String> {
                 
                 String line = null;
                 while( (line = br.readLine()) != null )
-                this.text += line;
+                this.text += line + "\n";
                 
                 br.close();
                 this.targetAsset.setAsset(this.text);
@@ -50,6 +50,11 @@ public class TextAsset extends AAsset<String> {
             
             targetAsset.asset = this.text;
             return true;            
+        }
+        
+        
+        public void setTarget(TextAsset targetAsset) {
+            this.targetAsset = targetAsset;
         }
     }
     

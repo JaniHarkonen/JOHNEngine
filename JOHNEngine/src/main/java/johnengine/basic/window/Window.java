@@ -127,6 +127,7 @@ public final class Window extends AWindowFramework
     @Override
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
+        this.renderer.generateRenderBuffer();
     }
     
     protected long createWindow() {

@@ -9,7 +9,6 @@ import org.lwjgl.assimp.Assimp;
 
 import johnengine.basic.renderer.asset.ARendererAsset;
 import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.components.VertexArrayObject;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 
 public class SceneObjectLoader extends AAssetLoader {
@@ -51,7 +50,6 @@ public class SceneObjectLoader extends AAssetLoader {
             Mesh expectedMesh = this.expectedMeshes.get(i);
             AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(i));
             Mesh.populateMeshWithAIMesh(expectedMesh, aiMesh);
-            expectedMesh.setAsset(new VertexArrayObject());
         }
         
             // Extract materials

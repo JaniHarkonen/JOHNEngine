@@ -1,7 +1,5 @@
 package johnengine.core.assetmngr.asset;
 
-import johnengine.testing.DebugUtils;
-
 public abstract class AAsset<T> implements IAsset {
 
     protected final String name;
