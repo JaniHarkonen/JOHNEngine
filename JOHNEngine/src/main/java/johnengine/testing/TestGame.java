@@ -1,8 +1,10 @@
 package johnengine.testing;
 
+import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
@@ -22,6 +24,18 @@ public class TestGame extends AGame {
         this.engine = engine;
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
+        
+        AssetManager am = this.assetManager;
+        Mesh mesh = new Mesh("mesh");
+        mesh.setRenderer(this.window.getRenderer());
+        am.declareAsset(mesh);
+        
+        SceneObjectLoader objLoader = new SceneObjectLoader();
+        objLoader.expectMesh(mesh);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
+        
+        CModel model = new CModel();
+        //model.setMesh(mesh);
         /*
             // Declare assets
         AssetManager am = this.assetManager;
@@ -58,7 +72,7 @@ public class TestGame extends AGame {
         
         
         this.worldMain = new JWorld(this);
-        this.worldMain.createInstance(new JTestBox(this.worldMain, new CModel()));
+        this.worldMain.createInstance(new JTestBox(this.worldMain, model));
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

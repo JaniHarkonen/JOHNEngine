@@ -269,7 +269,7 @@ public class Texture extends ARendererAsset<Texture.Data> {
             IntBuffer bh = memoryStack.mallocInt(1);
             IntBuffer bc = memoryStack.mallocInt(1);
             pixels = STBImage.stbi_load(
-                "C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", 
+                "C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\default_texture.png", 
                 bw, bh, bc,
                 4
             );

@@ -30,4 +30,9 @@ public abstract class ARendererAsset<T extends ARendererAsset.Data> extends AAss
     public void loadingFinished() {
         this.renderer.generateAsset(this.get());
     }
+    
+    
+    public void setRenderer(ARenderer renderer) {
+        this.renderer = renderer;
+    }
 }

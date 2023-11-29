@@ -10,8 +10,8 @@ public final class VBOIndices extends AVBO<Mesh.Face[]> {
 
     public static final int SIZE = 3;
     
-    public VBOIndices(int attributeIndex) {
-        super(GL30.GL_ELEMENT_ARRAY_BUFFER, SIZE, attributeIndex);
+    public VBOIndices() {
+        super(GL30.GL_ELEMENT_ARRAY_BUFFER, SIZE);
     }
 
     

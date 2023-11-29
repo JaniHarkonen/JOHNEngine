@@ -1,17 +1,13 @@
 package johnengine.basic.renderer.strvaochc;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Mesh.VBOContainer;
-import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.components.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
@@ -22,49 +18,20 @@ import johnengine.core.renderer.shader.ShaderProgram;
 import johnengine.core.renderer.shader.uniforms.UNIInteger;
 
 public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
-    
-    public static class RenderUnit {
-        private Mesh mesh;
-        private Texture texture;
-        private Vector3f position;
-        
-        public RenderUnit(Mesh mesh, Texture texture, Vector3f position) {
-            this.mesh = mesh;
-            this.texture = texture;
-            this.position = position;
-        }
-        
-        
-        Mesh getMesh() {
-            return this.mesh;
-        }
-        
-        Texture getTexture() {
-            return this.texture;
-        }
-        
-        Vector3f getPosition() {
-            return this.position;
-        }
-    }
-    
-    
-    /************************* CachedVAORenderBufferStrategy-class *************************/
-    
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     
     private final TimedCache<Mesh, VAO> vaoCache;
     private final ShaderProgram shaderProgram;
-    private final ConcurrentLinkedQueue<List<RenderUnit>> renderBufferQueue;
-    private List<RenderUnit> currentRenderBuffer;
-    private List<RenderUnit> lastRenderBuffer;
+    private final ConcurrentLinkedQueue<RenderBuffer> renderBufferQueue;
+    private RenderBuffer currentRenderBuffer;
+    private RenderBuffer lastRenderBuffer;
     private boolean isPrepared;
 
     public CachedVAORenderBufferStrategy() {
         super();
         this.vaoCache = new TimedCache<Mesh, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
-        this.renderBufferQueue = new ConcurrentLinkedQueue<List<RenderUnit>>();
+        this.renderBufferQueue = new ConcurrentLinkedQueue<RenderBuffer>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
         this.isPrepared = false;
@@ -107,7 +74,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         //.declareUniform(cameraProjectionMatrix)
         .declareUniform(textureSampler);
         
-        this.currentRenderBuffer = new ArrayList<RenderUnit>();
+        this.currentRenderBuffer = new RenderBuffer();
         this.isPrepared = true;
     }
     
@@ -118,7 +85,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         
         world.render(this.renderer);
         this.renderBufferQueue.add(this.currentRenderBuffer);
-        this.currentRenderBuffer = new ArrayList<RenderUnit>();
+        this.currentRenderBuffer = new RenderBuffer();
     }
     
     @Override
@@ -128,8 +95,8 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     @Override
     public void render(ARenderer renderer) {
-        List<RenderUnit> renderBuffer = this.lastRenderBuffer;
-        List<RenderUnit> nextRenderBuffer = this.renderBufferQueue.poll();
+        RenderBuffer renderBuffer = this.lastRenderBuffer;
+        RenderBuffer nextRenderBuffer = this.renderBufferQueue.poll();
         
         if( nextRenderBuffer != null )
         renderBuffer = nextRenderBuffer;
@@ -140,9 +107,10 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
             // Draw render units of all buffers
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("texSampler").set();
+        
         do
         {
-            for( RenderUnit unit : renderBuffer )
+            for( RenderUnit unit : renderBuffer.getBuffer() )
             {
                 Mesh mesh = unit.getMesh();
                 VAO vao = this.vaoCache.get(mesh);
@@ -185,6 +153,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     
     public void addRenderUnit(RenderUnit unit) {
-        this.currentRenderBuffer.add(unit);
+        this.currentRenderBuffer.addUnit(unit);
     }
 }

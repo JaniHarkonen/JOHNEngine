@@ -11,12 +11,10 @@ public abstract class AVBO<T> {
     protected int handle;
     protected int target;
     protected int size;
-    protected int attributeIndex;
     
-    protected AVBO(int target, int size, int attributeIndex) {
+    protected AVBO(int target, int size) {
         this.target = target;
         this.size = size;
-        this.attributeIndex = attributeIndex;
     }
     
     public abstract void generate(T data);

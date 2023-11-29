@@ -10,7 +10,6 @@ import johnengine.basic.renderer.strvaochc.CachedVAORenderBufferStrategy;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.winframe.AWindowFramework;
-import johnengine.testing.DebugUtils;
 
 public class Renderer3D extends ARenderer {
     private JWorld activeWorld;

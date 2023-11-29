@@ -9,8 +9,8 @@ public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
 
     public static final int SIZE = 2;
     
-    public VBOTextureCoordinates(int attributeIndex) {  
-        super(GL30.GL_ARRAY_BUFFER, SIZE, attributeIndex);
+    public VBOTextureCoordinates() {  
+        super(GL30.GL_ARRAY_BUFFER, SIZE);
     }
 
     
@@ -29,8 +29,6 @@ public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
         uvBuffer.flip();
         
         GL30.glBufferData(this.target, uvBuffer, GL30.GL_STATIC_DRAW);
-        //GL30.glEnableVertexAttribArray(this.attributeIndex);
-        //GL30.glVertexAttribPointer(this.attributeIndex, this.size, GL30.GL_FLOAT, false, 0, 0);
         
         this.freeAllocation(uvBuffer);
         this.unbind();

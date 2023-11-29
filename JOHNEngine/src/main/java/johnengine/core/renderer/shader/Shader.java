@@ -3,7 +3,6 @@ package johnengine.core.renderer.shader;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.textasset.TextAsset;
-import johnengine.testing.DebugUtils;
 
 public final class Shader extends TextAsset {
     protected final int type;
@@ -26,7 +25,6 @@ public final class Shader extends TextAsset {
         this.handle = GL30.glCreateShader(this.type);
         GL30.glShaderSource(this.handle, this.asset);
         GL30.glCompileShader(this.handle);
-        DebugUtils.log(this, this.asset);
         return true;
     }
     

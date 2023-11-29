@@ -54,13 +54,13 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
         public void generate() {
             Data data = this;
             
-            VBOVertices vboVertices = new VBOVertices(0);
+            VBOVertices vboVertices = new VBOVertices();
             vboVertices.generate(data.vertices);
             
-            VBOTextureCoordinates vboUVs = new VBOTextureCoordinates(1);
+            VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
             vboUVs.generate(data.uvs);
             
-            VBOIndices vboIndices = new VBOIndices(2);
+            VBOIndices vboIndices = new VBOIndices();
             vboIndices.generate(data.faces);
             
             data.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);
