@@ -3,7 +3,14 @@ package johnengine.core.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ARenderBufferStrategy implements IRenderBufferStrategy, IDrawable {
+import johnengine.core.assetmngr.asset.ILoaderMonitor;
+import johnengine.core.renderer.rewrite.IRenderAsset;
+
+public abstract class ARenderBufferStrategy implements 
+    IRenderBufferStrategy, 
+    IDrawable, 
+    ILoaderMonitor<IRenderAsset> 
+{
     
     protected final Map<Class<?>, ARenderBufferStrategoid<?, ? extends ARenderBufferStrategy>> strategoidMap;
     protected ARenderer renderer; // to be removed
@@ -16,6 +23,9 @@ public abstract class ARenderBufferStrategy implements IRenderBufferStrategy, ID
     protected void addStrategoid(Class<?> clazz, ARenderBufferStrategoid<?, ? extends ARenderBufferStrategy> renderBufferStrategoid) {
         this.strategoidMap.put(clazz, renderBufferStrategoid);
     }
+    
+    
+    public abstract void disposeAsset(IRenderAsset asset);
     
     @Override
     @SuppressWarnings("unchecked")

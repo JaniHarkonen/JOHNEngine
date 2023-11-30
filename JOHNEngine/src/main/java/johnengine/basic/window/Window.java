@@ -3,7 +3,7 @@ package johnengine.basic.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.rewrite.Renderer3D;
 import johnengine.core.IEngineComponent;
 import johnengine.core.input.Input;
 import johnengine.core.renderer.ARenderer;

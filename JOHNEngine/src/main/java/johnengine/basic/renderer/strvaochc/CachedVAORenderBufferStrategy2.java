@@ -1,47 +1,69 @@
 package johnengine.basic.renderer.strvaochc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lwjgl.opengl.GL30;
 
+import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
-import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.asset.Mesh.VBOContainer;
+import johnengine.basic.renderer.asset.rewrite.Mesh;
+import johnengine.basic.renderer.asset.rewrite.MeshGL;
+import johnengine.basic.renderer.asset.rewrite.MeshGL.VBOContainer;
+import johnengine.basic.renderer.asset.rewrite.Texture;
+import johnengine.basic.renderer.asset.rewrite.TextureGL;
 import johnengine.basic.renderer.components.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.IDrawable;
+import johnengine.core.renderer.rewrite.IRenderAsset;
 import johnengine.core.renderer.shader.Shader;
 import johnengine.core.renderer.shader.ShaderProgram;
 import johnengine.core.renderer.shader.uniforms.UNIInteger;
 
-public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
+public class CachedVAORenderBufferStrategy2 extends ARenderBufferStrategy {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     
     private final TimedCache<Mesh, VAO> vaoCache;
     private final ShaderProgram shaderProgram;
+    private final Map<Class<? extends IRenderAsset>, IGraphicsAsset<?>> graphicsAssetMap; 
     private final ConcurrentLinkedQueue<RenderBuffer> renderBufferQueue;
+    private final ConcurrentLinkedQueue<IRenderAsset> assetGenerationQueue;
+    private final ConcurrentLinkedQueue<IRenderAsset> assetDisposalQueue;
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
     private boolean isPrepared;
 
-    public CachedVAORenderBufferStrategy() {
+    public CachedVAORenderBufferStrategy2() {
         super();
         this.vaoCache = new TimedCache<Mesh, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferQueue = new ConcurrentLinkedQueue<RenderBuffer>();
+        this.graphicsAssetMap = new HashMap<Class<? extends IRenderAsset>, IGraphicsAsset<?>>();
+        this.assetGenerationQueue = new ConcurrentLinkedQueue<IRenderAsset>();
+        this.assetDisposalQueue = new ConcurrentLinkedQueue<IRenderAsset>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
         this.isPrepared = false;
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
+        
+        this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL(null)));
+        this.addGraphicsAsset(Texture.class, (IGraphicsAsset<?>) (new TextureGL(null)));
     }
     
     
+    private void addGraphicsAsset(Class<? extends IRenderAsset> renderAssetClass, IGraphicsAsset<?> graphicsAsset) {
+        this.graphicsAssetMap.put(renderAssetClass, graphicsAsset);
+    }
+    
     @Override
     public void prepare() {
+        if( this.isPrepared )
+        return;
         
             // Load shaders
         Shader vertexShader = new Shader(GL30.GL_VERTEX_SHADER, "vertex-shader", true, null);
@@ -76,6 +98,29 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         
         this.currentRenderBuffer = new RenderBuffer();
         this.isPrepared = true;
+    }
+    
+    @Override
+    public void assetLoaded(IRenderAsset asset) {
+        this.assetGenerationQueue.add(asset);
+    }
+    
+    @Override
+    public void disposeAsset(IRenderAsset asset) {
+        this.assetDisposalQueue.add(asset);
+    }
+
+    @Override
+    public void processLoadedAssets() {
+        IRenderAsset asset;
+        while( (asset = this.assetGenerationQueue.poll()) != null )
+        {
+            IGraphicsAsset<?> graphicsAsset = this.graphicsAssetMap.get(asset.getClass());
+            graphicsAsset.createInstance(asset).generate();
+        }
+        
+        while( (asset = this.assetDisposalQueue.poll()) != null )
+        asset.getGraphics().dispose();
     }
     
     @Override

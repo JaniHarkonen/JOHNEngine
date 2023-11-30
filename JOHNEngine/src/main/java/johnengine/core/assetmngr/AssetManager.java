@@ -11,7 +11,6 @@ import johnengine.core.assetmngr.reqs.AssetRequestContext;
 import johnengine.core.assetmngr.reqs.AssetRequestManager;
 import johnengine.core.assetmngr.reqs.RLoadAsset;
 import johnengine.core.threadable.AThreadable;
-import johnengine.testing.DebugUtils;
 
 public final class AssetManager extends AThreadable implements IEngineComponent {
     

@@ -1,7 +1,7 @@
 package johnengine.testing;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.CModel;
+import johnengine.basic.game.rewrite.CModel;
 import johnengine.basic.game.JWorld;
 import johnengine.core.renderer.ARenderer;
 
