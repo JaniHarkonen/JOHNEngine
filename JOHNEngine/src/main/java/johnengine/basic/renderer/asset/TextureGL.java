@@ -1,11 +1,11 @@
-package johnengine.basic.renderer.asset.rewrite;
+package johnengine.basic.renderer.asset;
 
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGraphicsAsset;
+import johnengine.basic.assets.IRenderAsset;
 import johnengine.basic.assets.ITexture;
-import johnengine.basic.renderer.asset.rewrite.Mesh.Data;
-import johnengine.core.renderer.rewrite.IRenderAsset;
+import johnengine.basic.renderer.asset.Mesh.Data;
 
 public class TextureGL implements ITexture<Integer> {
     public static final int TARGET = GL30.GL_TEXTURE_2D;

@@ -1,8 +1,8 @@
 package johnengine.testing;
 
-import johnengine.basic.game.rewrite.CModel;
+import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
-import johnengine.basic.renderer.rewrite.Renderer3D;
+import johnengine.basic.renderer.Renderer3D;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;

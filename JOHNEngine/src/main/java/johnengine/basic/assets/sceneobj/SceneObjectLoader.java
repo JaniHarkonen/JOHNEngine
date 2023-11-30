@@ -7,9 +7,11 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
-import johnengine.basic.renderer.asset.ARendererAsset;
+import johnengine.basic.assets.IRenderAsset;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.IAsset;
+import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
 public class SceneObjectLoader extends AAssetLoader {
     
@@ -24,6 +26,7 @@ public class SceneObjectLoader extends AAssetLoader {
     //private final List<Animation> expectedAnimations;
     
     private int importFlags;
+    private ILoaderMonitor<IRenderAsset> monitor;
 
     public SceneObjectLoader(String path) {
         super(path);
@@ -31,6 +34,7 @@ public class SceneObjectLoader extends AAssetLoader {
         //this.expectedMaterials = new ArrayList<>();
         //this.expectedAnimations = new ArrayList<>();
         this.importFlags = DEFAULT_IMPORT_FLAGS;
+        this.monitor = null;
     }
     
     public SceneObjectLoader() {
@@ -50,6 +54,9 @@ public class SceneObjectLoader extends AAssetLoader {
             Mesh expectedMesh = this.expectedMeshes.get(i);
             AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(i));
             Mesh.populateMeshWithAIMesh(expectedMesh, aiMesh);
+            
+            if( this.monitor != null )
+            this.monitor.assetLoaded(expectedMesh);
         }
         
             // Extract materials
@@ -66,7 +73,7 @@ public class SceneObjectLoader extends AAssetLoader {
     }
     
     
-    private <T extends ARendererAsset<?>> void expect(T asset, List<T> list) {
+    private <T extends IAsset> void expect(T asset, List<T> list) {
         list.add(asset);
     }
     

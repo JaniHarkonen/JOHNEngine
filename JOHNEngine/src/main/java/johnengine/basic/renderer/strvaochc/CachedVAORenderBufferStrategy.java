@@ -7,27 +7,27 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGraphicsAsset;
+import johnengine.basic.assets.IRenderAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
-import johnengine.basic.renderer.asset.rewrite.Mesh;
-import johnengine.basic.renderer.asset.rewrite.MeshGL;
-import johnengine.basic.renderer.asset.rewrite.MeshGL.VBOContainer;
-import johnengine.basic.renderer.asset.rewrite.Texture;
-import johnengine.basic.renderer.asset.rewrite.TextureGL;
+import johnengine.basic.renderer.asset.Mesh;
+import johnengine.basic.renderer.asset.MeshGL;
+import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.renderer.asset.TextureGL;
+import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.components.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.renderer.IDrawable;
-import johnengine.core.renderer.rewrite.IRenderAsset;
 import johnengine.core.renderer.shader.Shader;
 import johnengine.core.renderer.shader.ShaderProgram;
 import johnengine.core.renderer.shader.uniforms.UNIInteger;
 
-public class CachedVAORenderBufferStrategy2 extends ARenderBufferStrategy {
+public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     
-    private final TimedCache<Mesh, VAO> vaoCache;
+    private final TimedCache<MeshGL, VAO> vaoCache;
     private final ShaderProgram shaderProgram;
     private final Map<Class<? extends IRenderAsset>, IGraphicsAsset<?>> graphicsAssetMap; 
     private final ConcurrentLinkedQueue<RenderBuffer> renderBufferQueue;
@@ -37,9 +37,9 @@ public class CachedVAORenderBufferStrategy2 extends ARenderBufferStrategy {
     private RenderBuffer lastRenderBuffer;
     private boolean isPrepared;
 
-    public CachedVAORenderBufferStrategy2() {
+    public CachedVAORenderBufferStrategy() {
         super();
-        this.vaoCache = new TimedCache<Mesh, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
+        this.vaoCache = new TimedCache<MeshGL, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferQueue = new ConcurrentLinkedQueue<RenderBuffer>();
         this.graphicsAssetMap = new HashMap<Class<? extends IRenderAsset>, IGraphicsAsset<?>>();
@@ -50,9 +50,8 @@ public class CachedVAORenderBufferStrategy2 extends ARenderBufferStrategy {
         this.isPrepared = false;
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
-        
-        this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL(null)));
-        this.addGraphicsAsset(Texture.class, (IGraphicsAsset<?>) (new TextureGL(null)));
+        this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL()));
+        this.addGraphicsAsset(Texture.class, (IGraphicsAsset<?>) (new TextureGL()));
     }
     
     
@@ -158,30 +157,33 @@ public class CachedVAORenderBufferStrategy2 extends ARenderBufferStrategy {
             for( RenderUnit unit : renderBuffer.getBuffer() )
             {
                 Mesh mesh = unit.getMesh();
-                VAO vao = this.vaoCache.get(mesh);
-                Mesh.Data meshData = mesh.getData();
+                Texture texture = unit.getTexture();
+                
+                MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
+                TextureGL textureGraphics = (TextureGL) texture.getGraphics();
+                VAO vao = this.vaoCache.get(meshGraphics);
                 
                     // If a cache for the VAO of this mesh cannot be found, create it and
                     // store it
                 if( vao == null )
                 {
                     vao = new VAO();
-                    VBOContainer vbos = meshData.getVBOs();
+                    VBOContainer vbos = meshGraphics.getData();
                     vao.addVBO(vbos.getVerticesVBO());
                     vao.addVBO(vbos.getTextureCoordinatesVBO());
                     vao.setIndicesVBO(vbos.getIndicesVBO());
                     vao.generate();
                     
-                    this.vaoCache.cacheItem(mesh, vao);
+                    this.vaoCache.cacheItem(meshGraphics, vao);
                 }
                 
                     // Bind texture
                 GL30.glActiveTexture(GL30.GL_TEXTURE0);
-                unit.getTexture().bind();
+                textureGraphics.bind();
                 
                     // Bind mesh and draw
                 vao.bind();
-                GL30.glDrawElements(GL30.GL_TRIANGLES, meshData.getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
+                GL30.glDrawElements(GL30.GL_TRIANGLES, mesh.getData().getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
             }
             
             this.lastRenderBuffer = renderBuffer;

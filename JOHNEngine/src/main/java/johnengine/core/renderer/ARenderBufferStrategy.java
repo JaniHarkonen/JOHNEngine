@@ -3,8 +3,8 @@ package johnengine.core.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
+import johnengine.basic.assets.IRenderAsset;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
-import johnengine.core.renderer.rewrite.IRenderAsset;
 
 public abstract class ARenderBufferStrategy implements 
     IRenderBufferStrategy, 

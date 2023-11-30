@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import johnengine.basic.game.JWorld;
-import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.renderer.asset.MeshGL;
+import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.strvaochc.CachedVAORenderBufferStrategy;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
@@ -29,8 +29,9 @@ public class Renderer3D extends ARenderer {
     public void generateDefaults() {
         
             // Generate default assets that use OpenGL
-        Mesh.generateDefault();
-        Texture.generateDefault();
+        //Mesh.generateDefault();
+        MeshGL.generateDefault();
+        TextureGL.generateDefault();
     }
 
     @Override

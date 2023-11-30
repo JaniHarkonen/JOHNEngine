@@ -1,6 +1,5 @@
-package johnengine.core.renderer.rewrite;
+package johnengine.basic.assets;
 
-import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.core.assetmngr.asset.IAsset;
 
 public interface IRenderAsset extends IAsset {

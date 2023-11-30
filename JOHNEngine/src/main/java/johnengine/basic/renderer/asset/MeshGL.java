@@ -1,11 +1,11 @@
-package johnengine.basic.renderer.asset.rewrite;
+package johnengine.basic.renderer.asset;
 
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IMesh;
-import johnengine.basic.renderer.components.rewrite.VBOIndices;
+import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.renderer.components.VBOIndices;
 import johnengine.basic.renderer.components.VBOTextureCoordinates;
 import johnengine.basic.renderer.components.VBOVertices;
-import johnengine.core.renderer.rewrite.IRenderAsset;
 
 public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     

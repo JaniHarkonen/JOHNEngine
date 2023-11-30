@@ -10,13 +10,10 @@ import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
-import johnengine.basic.renderer.components.VBOIndices;
-import johnengine.basic.renderer.components.VBOTextureCoordinates;
-import johnengine.basic.renderer.components.VBOVertices;
-import johnengine.core.renderer.ARenderer;
+import johnengine.basic.assets.IMesh;
+import johnengine.basic.assets.IRenderAsset;
 
-public class Mesh extends ARendererAsset<Mesh.Data> {
-    
+public class Mesh implements IRenderAsset {    
     public static class Face {
         public static final int INDICES_PER_FACE = 3;
         
@@ -32,17 +29,15 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
         }
     }
     
-    public static class Data extends ARendererAsset.Data {
+    public static class Data {
         private Vector3f[] vertices;
         private Vector2f[] uvs;
         private Face[] faces;
-        private VBOContainer vbos;
         
         public Data(Vector3f[] vertices, Vector2f[] uvs, Face[] faces) {
             this.vertices = vertices;
             this.uvs = uvs;
             this.faces = faces;
-            this.vbos = null;
         }
         
         public Data() {
@@ -50,27 +45,16 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
         }
         
         
-        @Override
-        public void generate() {
-            Data data = this;
-            
-            VBOVertices vboVertices = new VBOVertices();
-            vboVertices.generate(data.vertices);
-            
-            VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
-            vboUVs.generate(data.uvs);
-            
-            VBOIndices vboIndices = new VBOIndices();
-            vboIndices.generate(data.faces);
-            
-            data.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);
+        public Vector3f[] getVertices() {
+            return this.vertices;
         }
         
-        @Override
-        public void dispose() {
-            this.vbos.getVerticesVBO().delete();
-            this.vbos.getTextureCoordinatesVBO().delete();
-            this.vbos.getIndicesVBO().delete();
+        public Vector2f[] getUVs() {
+            return this.uvs;
+        }
+        
+        public Face[] getFaces() {
+            return this.faces;
         }
 
         public int getVertexCount() {
@@ -84,51 +68,16 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
         public int getFaceCount() {
             return this.faces.length;
         }
-        
-        public VBOContainer getVBOs() {
-            return this.vbos;
-        }
-    }
-    
-    public static class VBOContainer {
-        private VBOVertices vboVertices;
-        private VBOTextureCoordinates vboUVs;
-        private VBOIndices vboIndices;
-        
-        public VBOContainer(
-            VBOVertices vboVertices, 
-            VBOTextureCoordinates vboUVs, 
-            VBOIndices vboIndices
-        ) {
-            this.vboVertices = vboVertices;
-            this.vboUVs = vboUVs;
-            this.vboIndices = vboIndices;
-        }
-        
-        
-        public VBOVertices getVerticesVBO() {
-            return this.vboVertices;
-        }
-        
-        public VBOTextureCoordinates getTextureCoordinatesVBO() {
-            return this.vboUVs;
-        }
-        
-        public VBOIndices getIndicesVBO() {
-            return this.vboIndices;
-        }
     }
     
     
     /********************** Mesh-class **********************/
     
-    public static Data DEFAULT_DATA = null;
+    public static Mesh DEFAULT_INSTANCE;
     
-    public static void generateDefault() {
-        if( DEFAULT_DATA != null )
-        return;
-        
-        DEFAULT_DATA = new Mesh.Data(
+    static {
+        DEFAULT_INSTANCE = new Mesh("default-mesh", true);
+        DEFAULT_INSTANCE.data = new Mesh.Data(
                 // Vertices
             new Vector3f[] {
                 new Vector3f(-0.5f, 0.5f, 0.0f),        // top left
@@ -149,8 +98,6 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
                 new Mesh.Face(new int[] {3, 1, 2})
             }
         );
-        
-        DEFAULT_DATA.generate();
     }
     
     public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
@@ -194,68 +141,68 @@ public class Mesh extends ARendererAsset<Mesh.Data> {
         }
         
             // Populate
-        dest.asset = new Data(
+        dest.data = new Data(
             vertexList.toArray(new Vector3f[vertexList.size()]),
             uvs,
             faces.toArray(new Face[faces.size()])
         );
-        
-        dest.loadingFinished();
     }
     
     /********************** Class body **********************/
 
-    public Mesh(String name, boolean isPersistent, ARenderer renderer) {
-        super(name, isPersistent, renderer);
+    IMesh<?> graphics;
+    
+    private Data data;
+    private String name;
+    private boolean isPersistent;
+    
+    public Mesh(String name, boolean isPersistent) {
+        this.name = name;
+        this.data = null;
+        this.graphics = null;
+        this.isPersistent = isPersistent;
     }
     
     public Mesh(String name) {
-        this(name, false, null);
+        this(name, false);
     }
 
     
     @Override
-    public void generate() {
-    /*    Data data = this.get();
-        
-        VBOVertices vboVertices = new VBOVertices(0);
-        vboVertices.generate(data.vertices);
-        
-        VBOTextureCoordinates vboUVs = new VBOTextureCoordinates(1);
-        vboUVs.generate(data.uvs);
-        
-        VBOIndices vboIndices = new VBOIndices(2);
-        vboIndices.generate(data.faces);
-        
-        data.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);*/
-    }
-    
-    @Override
-    protected void deloadImpl() {
-        if( this.asset == null )
+    public void deload() {
+        if( this.isPersistent )
         return;
         
-        this.renderer.disposeAssetData(this.get());
+        if( this.graphics != null )
+        this.graphics.dispose();
     }
     
-    @Override
-    public void bind() {
-        
-    }
     
-    @Override
-    public void unbind() {
-        
-    }
-
-    
-    @Override
     public Mesh.Data getDefault() {
-        return DEFAULT_DATA;
+        return DEFAULT_INSTANCE.data;
     }
-    
     
     public Data getData() {
-        return this.get();
+        if( this.data == null )
+        return this.getDefault();
+        
+        return this.data;
+    }
+    
+    Data getDataDirect() {
+        return this.data;
+    }
+    
+    @Override
+    public IMesh<?> getGraphics() {
+        if( this.graphics == null )
+        return DEFAULT_INSTANCE.graphics;
+        
+        return this.graphics;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }
