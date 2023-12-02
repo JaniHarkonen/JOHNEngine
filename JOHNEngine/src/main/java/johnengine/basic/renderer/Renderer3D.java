@@ -13,15 +13,18 @@ import johnengine.core.winframe.AWindowFramework;
 
 public class Renderer3D extends ARenderer {
     private JWorld activeWorld;
+    private IRenderStrategy renderStrategy;
+    private ARenderBufferStrategy renderBufferStrategy;
     
     public Renderer3D(AWindowFramework hostWindow, ARenderBufferStrategy renderBufferStrategy) {
-        super(hostWindow, renderBufferStrategy);
+        super(hostWindow);
         this.activeWorld = null;
+        this.renderStrategy = new DefaultRenderStrategy();
+        this.renderBufferStrategy = renderBufferStrategy;
     }
     
     public Renderer3D(AWindowFramework hostWindow) {
         this(hostWindow, new CachedVAORenderBufferStrategy());
-        this.renderBufferStrategy.setRenderer(this);
     }
     
     
@@ -29,7 +32,6 @@ public class Renderer3D extends ARenderer {
     public void generateDefaults() {
         
             // Generate default assets that use OpenGL
-        //Mesh.generateDefault();
         MeshGL.generateDefault();
         TextureGL.generateDefault();
     }
@@ -47,7 +49,7 @@ public class Renderer3D extends ARenderer {
     
     @Override
     public void generateRenderBuffer() {
-        this.renderBufferStrategy.execute(this.activeWorld);
+        this.renderStrategy.execute(this.activeWorld, this.renderBufferStrategy);
     }
     
     @Override
@@ -56,12 +58,6 @@ public class Renderer3D extends ARenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         this.renderBufferStrategy.render(this);
-        
-        //this.uniformManager.getUniform("textureSampler").set();
-        //this.activeShaderProgram.bind();
-        //this.activeWorld.render(this);
-        /*this.test.render(this);
-        this.activeShaderProgram.unbind();*/
     }
     
     

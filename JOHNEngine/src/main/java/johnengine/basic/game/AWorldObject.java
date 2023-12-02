@@ -1,8 +1,8 @@
 package johnengine.basic.game;
 
-import johnengine.core.renderer.IDrawable;
+import johnengine.core.IRenderable;
 
-public abstract class AWorldObject extends AGameObject implements IDrawable {
+public abstract class AWorldObject extends AGameObject implements IRenderable {
     
     protected JWorld world;
     protected boolean isVisible;

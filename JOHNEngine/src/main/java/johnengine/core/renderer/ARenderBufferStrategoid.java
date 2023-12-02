@@ -1,6 +1,8 @@
 package johnengine.core.renderer;
 
-public abstract class ARenderBufferStrategoid<T, ST extends ARenderBufferStrategy> {
+import johnengine.core.IRenderable;
+
+public abstract class ARenderBufferStrategoid<I extends IRenderable, ST extends ARenderBufferStrategy> {
     
     protected ST strategy;
     
@@ -9,7 +11,5 @@ public abstract class ARenderBufferStrategoid<T, ST extends ARenderBufferStrateg
     }
 
     
-    public abstract void execute(T instance);
-    
-    public abstract ARenderBufferStrategoid<T, ST> newInstance();
+    public abstract void execute(I instance);
 }

@@ -3,7 +3,7 @@ package johnengine.testing;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
-import johnengine.core.renderer.ARenderer;
+import johnengine.core.IRenderBufferStrategy;
 
 public class JTestBox extends AWorldObject {
 
@@ -16,12 +16,12 @@ public class JTestBox extends AWorldObject {
     
 
     @Override
-    public void render(ARenderer renderer) {
-        this.model.render(renderer);
+    public void render(IRenderBufferStrategy renderBufferStrategy) {
+        this.model.render(renderBufferStrategy);
     }
 
     @Override
     public void tick(float deltaTime) {
-        
+        DebugUtils.log(this, "bernie will win Y_Y");
     }
 }

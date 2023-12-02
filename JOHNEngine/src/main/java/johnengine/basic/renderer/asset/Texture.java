@@ -7,12 +7,11 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-import johnengine.basic.assets.IRenderAsset;
 import johnengine.basic.assets.ITexture;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.testing.DebugUtils;
 
-public class Texture implements IRenderAsset {
+public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
 
     /********************** Loader-class **********************/
     
@@ -234,58 +233,22 @@ public class Texture implements IRenderAsset {
     }
     
 
-    ITexture<?> graphics;
-    
-    private Data data;
-    private String name;
-    private boolean isPersistent;
-    
     public Texture(String name, boolean isPersistent) {
-        this.name = name;
-        this.data = null;
-        this.graphics = null;
-        this.isPersistent = isPersistent;
+        super(name, isPersistent);
     }
     
     public Texture(String name) {
         this(name, false);
     }
     
-
-    @Override
-    public void deload() {
-        if( this.isPersistent )
-        return;
-        
-        if( this.graphics != null )
-        this.graphics.dispose();
-    }
     
+    @Override
     public Data getDefault() {
         return DEFAULT_INSTANCE.data;
     }
     
-    public Data getData() {
-        if( this.data == null )
-        return this.getDefault();
-        
-        return this.data;
-    }
-    
-    Data getDataDirect() {
-        return this.data;
-    }
-    
     @Override
-    public ITexture<?> getGraphics() {
-        if( this.graphics == null )
-        return DEFAULT_INSTANCE.graphics;        
-        
-        return this.graphics;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
+    public ITexture<?> getDefaultGraphics() {
+        return DEFAULT_INSTANCE.graphics;
     }
 }

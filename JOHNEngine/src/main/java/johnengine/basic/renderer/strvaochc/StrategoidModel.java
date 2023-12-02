@@ -19,9 +19,4 @@ public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORe
         
         this.strategy.addRenderUnit(unit);
     }
-
-    @Override
-    public ARenderBufferStrategoid<CModel, CachedVAORenderBufferStrategy> newInstance() {
-        return new StrategoidModel(this.strategy);
-    }
 }

@@ -12,14 +12,13 @@ import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.MeshGL;
+import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
-import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.components.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.IDrawable;
 import johnengine.core.renderer.shader.Shader;
 import johnengine.core.renderer.shader.ShaderProgram;
 import johnengine.core.renderer.shader.uniforms.UNIInteger;
@@ -35,7 +34,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     private final ConcurrentLinkedQueue<IRenderAsset> assetDisposalQueue;
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
-    private boolean isPrepared;
 
     public CachedVAORenderBufferStrategy() {
         super();
@@ -47,7 +45,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.assetDisposalQueue = new ConcurrentLinkedQueue<IRenderAsset>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
-        this.isPrepared = false;
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
         this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL()));
@@ -61,8 +58,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     @Override
     public void prepare() {
-        if( this.isPrepared )
-        return;
         
             // Load shaders
         Shader vertexShader = new Shader(GL30.GL_VERTEX_SHADER, "vertex-shader", true, null);
@@ -95,8 +90,17 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         //.declareUniform(cameraProjectionMatrix)
         .declareUniform(textureSampler);
         
+        //this.currentRenderBuffer = new RenderBuffer();
+    }
+    
+    @Override
+    public void startBuffer() {
         this.currentRenderBuffer = new RenderBuffer();
-        this.isPrepared = true;
+    }
+    
+    @Override
+    public void endBuffer() {
+        this.renderBufferQueue.add(this.currentRenderBuffer);
     }
     
     @Override
@@ -123,21 +127,10 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     @Override
-    public void execute(IDrawable world) {
-        if( !this.isPrepared )
-        return;
-        
-        world.render(this.renderer);
-        this.renderBufferQueue.add(this.currentRenderBuffer);
-        this.currentRenderBuffer = new RenderBuffer();
-    }
-    
-    @Override
     public void dispose() {
         this.shaderProgram.dispose();
     }
     
-    @Override
     public void render(ARenderer renderer) {
         RenderBuffer renderBuffer = this.lastRenderBuffer;
         RenderBuffer nextRenderBuffer = this.renderBufferQueue.poll();

@@ -11,9 +11,8 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
 import johnengine.basic.assets.IMesh;
-import johnengine.basic.assets.IRenderAsset;
 
-public class Mesh implements IRenderAsset {    
+public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {    
     public static class Face {
         public static final int INDICES_PER_FACE = 3;
         
@@ -149,60 +148,23 @@ public class Mesh implements IRenderAsset {
     }
     
     /********************** Class body **********************/
-
-    IMesh<?> graphics;
-    
-    private Data data;
-    private String name;
-    private boolean isPersistent;
     
     public Mesh(String name, boolean isPersistent) {
-        this.name = name;
-        this.data = null;
-        this.graphics = null;
-        this.isPersistent = isPersistent;
+        super(name, isPersistent);
     }
     
     public Mesh(String name) {
         this(name, false);
     }
 
-    
+
     @Override
-    public void deload() {
-        if( this.isPersistent )
-        return;
-        
-        if( this.graphics != null )
-        this.graphics.dispose();
-    }
-    
-    
     public Mesh.Data getDefault() {
         return DEFAULT_INSTANCE.data;
     }
     
-    public Data getData() {
-        if( this.data == null )
-        return this.getDefault();
-        
-        return this.data;
-    }
-    
-    Data getDataDirect() {
-        return this.data;
-    }
-    
     @Override
-    public IMesh<?> getGraphics() {
-        if( this.graphics == null )
+    public IMesh<?> getDefaultGraphics() {
         return DEFAULT_INSTANCE.graphics;
-        
-        return this.graphics;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 }

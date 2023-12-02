@@ -2,10 +2,10 @@ package johnengine.basic.game;
 
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
-import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.IDrawable;
+import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.IRenderable;
 
-public class CModel implements IDrawable {
+public class CModel implements IRenderable {
     
     private Mesh mesh;
     private Texture texture;
@@ -22,10 +22,10 @@ public class CModel implements IDrawable {
         this(new CPosition());
     }
     
-
+    
     @Override
-    public void render(ARenderer renderer) {
-        renderer.getRenderBufferStrategoid(this).execute(this);
+    public void render(IRenderBufferStrategy renderBufferStrategy) {
+        renderBufferStrategy.executeStrategoid(this);
     }
     
     

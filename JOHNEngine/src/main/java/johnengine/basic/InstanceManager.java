@@ -11,26 +11,18 @@ import java.util.Set;
 import johnengine.basic.game.AGameObject;
 
 public class InstanceManager<T extends AGameObject> {
-    
-    public static final int DEFAULT_FIRST_ID = 1;
 
-    private long nextUniqueID;
     private Map<Long, T> instances;
     private final List<T> additionRequests;
     private final List<Long> deletionRequests;
     private Iterator<Entry<Long, T>> iterator;
     
-    public InstanceManager(long nextID) {
-        this.nextUniqueID = nextID;
+    public InstanceManager() {
         this.instances = new LinkedHashMap<>();
         this.additionRequests = new ArrayList<>();
         this.deletionRequests = new ArrayList<>();
         
         this.resetIterator();
-    }
-    
-    public InstanceManager() {
-        this(DEFAULT_FIRST_ID);
     }
     
     public void processRequests() {
@@ -61,14 +53,6 @@ public class InstanceManager<T extends AGameObject> {
     
     public void deleteInstance(long id) {
         this.deletionRequests.add(id);
-    }
-    
-    public long nextUniqueID() {
-        return this.nextUniqueID++;
-    }
-    
-    public long peekID() {
-        return this.nextUniqueID;
     }
     
     public void resetIterator() {

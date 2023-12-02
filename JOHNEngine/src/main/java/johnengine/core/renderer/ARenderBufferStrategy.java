@@ -4,37 +4,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 import johnengine.basic.assets.IRenderAsset;
+import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.IRenderable;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
 public abstract class ARenderBufferStrategy implements 
-    IRenderBufferStrategy, 
-    IDrawable, 
+    IRenderBufferStrategy,
     ILoaderMonitor<IRenderAsset> 
 {
     
-    protected final Map<Class<?>, ARenderBufferStrategoid<?, ? extends ARenderBufferStrategy>> strategoidMap;
-    protected ARenderer renderer; // to be removed
+    protected final Map<Class<?>, ARenderBufferStrategoid<? extends IRenderable, ? extends ARenderBufferStrategy>> strategoidMap;
     
     protected ARenderBufferStrategy() {
-        this.strategoidMap = new HashMap<Class<?>, ARenderBufferStrategoid<?, ? extends ARenderBufferStrategy>>();
+        this.strategoidMap = new HashMap<Class<?>, ARenderBufferStrategoid<? extends IRenderable, ? extends ARenderBufferStrategy>>();
     }
     
     
-    protected void addStrategoid(Class<?> clazz, ARenderBufferStrategoid<?, ? extends ARenderBufferStrategy> renderBufferStrategoid) {
+    protected void addStrategoid(Class<?> clazz, ARenderBufferStrategoid<? extends IRenderable, ? extends ARenderBufferStrategy> renderBufferStrategoid) {
         this.strategoidMap.put(clazz, renderBufferStrategoid);
     }
     
+    public abstract void render(ARenderer renderer);
     
     public abstract void disposeAsset(IRenderAsset asset);
-    
+
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends IDrawable> ARenderBufferStrategoid<T, ? extends ARenderBufferStrategy> getStrategoid(T instance) {
-        return (ARenderBufferStrategoid<T, ? extends ARenderBufferStrategy>) this.strategoidMap.get(instance.getClass()).newInstance();
-    }
-    
-        // to be removed
-    public void setRenderer(ARenderer renderer) {
-        this.renderer = renderer;
+    public <I extends IRenderable> void executeStrategoid(I instance) {
+        ARenderBufferStrategoid<I, ?> strategoid = (ARenderBufferStrategoid<I, ?>) this.strategoidMap.get(instance.getClass());
+        strategoid.execute(instance);
     }
 }
