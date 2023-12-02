@@ -1,19 +1,24 @@
-package johnengine.game;
+package johnengine.basic.game;
 
-import johnengine.core.IHasTick;
+import johnengine.core.AGame;
+import johnengine.core.ITickable;
+import johnengine.core.UUID;
 
-public abstract class JGameObject implements IHasTick {
+public abstract class AGameObject implements ITickable {
 
+    private final AGame game;
     private long id;
     private boolean isActive;
     private boolean isDestroyed;
-
-    protected JGameObject(long id) {
-        this.id = id;
+    
+    protected AGameObject(AGame game) {
+        this.game = game;
+        this.id = UUID.newLongUUID();   // Assign a unique ID using the global UUID-class
         this.isActive = true;
         this.isDestroyed = false;
     }
-
+    
+    
     public void destroy() {
         this.isDestroyed = true;
     }
@@ -36,5 +41,9 @@ public abstract class JGameObject implements IHasTick {
 
     public long getID() {
         return this.id;
+    }
+    
+    public AGame getGame() {
+        return this.game;
     }
 }

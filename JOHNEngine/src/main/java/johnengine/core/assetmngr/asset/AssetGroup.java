@@ -10,29 +10,28 @@ public class AssetGroup implements IAsset {
     protected final AssetManager assetManager;
     protected final String name;
     protected final List<String> assets;
-    protected final List<AssetGroup> subGroups;
+    //protected final List<AssetGroup> subGroups;
     
     public AssetGroup(String name, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.name = name;
         this.assets = new ArrayList<>();
-        this.subGroups = new ArrayList<>();
+        //this.subGroups = new ArrayList<>();
     }
     
     
-    @Override
-    public void load() {
+    /*public void load() {
         for( AssetGroup assetGroup : this.subGroups )
         assetGroup.load();
         
         for( String assetName : this.assets )
         this.assetManager.loadAsset(assetName);
-    }
+    }*/
     
     @Override
     public void deload() {
-        for( AssetGroup assetGroup : this.subGroups )
-        assetGroup.deload();
+        /*for( AssetGroup assetGroup : this.subGroups )
+        assetGroup.deload();*/
         
         for( String assetName : this.assets )
         this.assetManager.deloadAsset(assetName);
@@ -45,7 +44,7 @@ public class AssetGroup implements IAsset {
         return this;
     }
     
-    public AssetGroup putAndDeclare(AAsset<?> asset) {
+    public AssetGroup putAndDeclare(IAsset asset) {
         if( asset != null )
         {
             this.assetManager.declareAsset(asset);
@@ -71,7 +70,7 @@ public class AssetGroup implements IAsset {
         return this;
     }
     
-    public AssetGroup putGroup(AssetGroup assetGroup) {
+    /*public AssetGroup putGroup(AssetGroup assetGroup) {
         if( assetGroup != null )
         this.subGroups.add(assetGroup);
         
@@ -92,11 +91,12 @@ public class AssetGroup implements IAsset {
         }
         
         return this;
-    }
+    }*/
     
     
     /************************** GETTERS **************************/
     
+    @Override
     public String getName() {
         return this.name;
     }

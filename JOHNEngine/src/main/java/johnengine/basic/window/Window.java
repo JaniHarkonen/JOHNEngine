@@ -3,15 +3,17 @@ package johnengine.basic.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+import johnengine.basic.renderer.Renderer3D;
 import johnengine.core.IEngineComponent;
 import johnengine.core.input.Input;
-import johnengine.core.renderer.Renderer;
+import johnengine.core.renderer.ARenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
 import johnengine.core.winframe.BasicWindowRequestContext;
 
-public final class Window extends AWindowFramework implements IEngineComponent, IThreadable {
+public final class Window extends AWindowFramework 
+    implements IEngineComponent, IThreadable {
     
     public static class WindowProperties extends Properties {
         public static final boolean DEFAULT_IS_FULLSCREEN = false;
@@ -33,15 +35,21 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     
     /*************************** Window-class ****************************/
     
-    private Renderer renderer;
-    private Input input;
+    protected Input input;
     
-    public static Window setup() {
-        return new Window();
+    public static Window setup3D() {
+        Window instance = new Window();
+        instance.setRenderer(new Renderer3D(instance));
+        return instance;
     }
     
-    public Window() {
-        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager(null));
+        // TO BE IMPLEMENTED
+    /*public static Window setup2D() {
+        return null;
+    }*/
+    
+    protected Window() {
+        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
         this.input = new Input(this);
@@ -59,7 +67,7 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         this.input.setup();
         
         GLFW.glfwMakeContextCurrent(this.windowID);
-        this.setupRenderer();
+        this.renderer.initialize();
         this.setWindowState(STATE_OPEN);
         
         this.loop();
@@ -74,7 +82,6 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         while( this.updatingProperties.windowState != STATE_CLOSED )
         {
             this.requestManager.processRequests();
-            GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
@@ -99,6 +106,8 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
                 fpsCounter = 0;
                 startTime = currentTime;
             }
+            
+            GLFW.glfwPollEvents();
         }
     }
     
@@ -118,9 +127,10 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
     @Override
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
+        this.renderer.generateRenderBuffer();
     }
     
-    private long createWindow() {
+    protected long createWindow() {
         
             // Remove deocration (borders) when in fullscreen mode
         GLFW.glfwWindowHint(
@@ -189,14 +199,6 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         this.input = null;
     }
     
-    private void setupRenderer() {
-        if( this.renderer != null )
-        return;
-        
-        this.renderer = new Renderer();
-        this.renderer.initialize();
-    }
-    
     void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
         this.setWindowState(STATE_INITIALIZING);
@@ -225,20 +227,20 @@ public final class Window extends AWindowFramework implements IEngineComponent, 
         ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
     }
     
-    public boolean isFullscreen() {
-        return ((WindowProperties) this.snapshotProperties).isFullscreen;
+    long getPrimaryMonitorID() {
+        return this.primaryMonitorID;
     }
     
-    public Renderer getRenderer() {
-        return this.renderer;
+    public boolean isFullscreen() {
+        return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
     
     public Input.State getInput() {
         return this.input.getState();
     }
     
-    long getPrimaryMonitorID() {
-        return this.primaryMonitorID;
+    public ARenderer getRenderer() {
+        return this.renderer;
     }
     
     

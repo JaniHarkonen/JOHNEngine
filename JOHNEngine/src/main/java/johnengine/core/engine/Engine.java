@@ -18,7 +18,7 @@ public final class Engine extends AThreadable {
     
     /**
      * The engine has stopped running a game or the engine
-     * hasn't been started yet.
+     * hasn't been started yet. 
      */
     public static final int STATE_STOPPED = 3;
     
