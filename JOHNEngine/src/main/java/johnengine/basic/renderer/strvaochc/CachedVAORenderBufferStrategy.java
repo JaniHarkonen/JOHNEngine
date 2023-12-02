@@ -7,7 +7,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGraphicsAsset;
-import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.assets.IRendererAsset;
+import johnengine.basic.assets.opengl.shader.Shader;
+import johnengine.basic.assets.opengl.shader.ShaderProgram;
+import johnengine.basic.assets.opengl.shader.uniforms.UNIInteger;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
 import johnengine.basic.renderer.asset.Mesh;
@@ -19,19 +22,16 @@ import johnengine.basic.renderer.components.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
-import johnengine.core.renderer.shader.Shader;
-import johnengine.core.renderer.shader.ShaderProgram;
-import johnengine.core.renderer.shader.uniforms.UNIInteger;
 
 public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     
     private final TimedCache<MeshGL, VAO> vaoCache;
     private final ShaderProgram shaderProgram;
-    private final Map<Class<? extends IRenderAsset>, IGraphicsAsset<?>> graphicsAssetMap; 
+    private final Map<Class<? extends IRendererAsset>, IGraphicsAsset<?>> graphicsAssetMap; 
     private final ConcurrentLinkedQueue<RenderBuffer> renderBufferQueue;
-    private final ConcurrentLinkedQueue<IRenderAsset> assetGenerationQueue;
-    private final ConcurrentLinkedQueue<IRenderAsset> assetDisposalQueue;
+    private final ConcurrentLinkedQueue<IRendererAsset> assetGenerationQueue;
+    private final ConcurrentLinkedQueue<IRendererAsset> assetDisposalQueue;
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
 
@@ -40,9 +40,9 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.vaoCache = new TimedCache<MeshGL, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferQueue = new ConcurrentLinkedQueue<RenderBuffer>();
-        this.graphicsAssetMap = new HashMap<Class<? extends IRenderAsset>, IGraphicsAsset<?>>();
-        this.assetGenerationQueue = new ConcurrentLinkedQueue<IRenderAsset>();
-        this.assetDisposalQueue = new ConcurrentLinkedQueue<IRenderAsset>();
+        this.graphicsAssetMap = new HashMap<Class<? extends IRendererAsset>, IGraphicsAsset<?>>();
+        this.assetGenerationQueue = new ConcurrentLinkedQueue<IRendererAsset>();
+        this.assetDisposalQueue = new ConcurrentLinkedQueue<IRendererAsset>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
         
@@ -52,7 +52,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     
-    private void addGraphicsAsset(Class<? extends IRenderAsset> renderAssetClass, IGraphicsAsset<?> graphicsAsset) {
+    private void addGraphicsAsset(Class<? extends IRendererAsset> renderAssetClass, IGraphicsAsset<?> graphicsAsset) {
         this.graphicsAssetMap.put(renderAssetClass, graphicsAsset);
     }
     
@@ -104,18 +104,18 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     @Override
-    public void assetLoaded(IRenderAsset asset) {
+    public void assetLoaded(IRendererAsset asset) {
         this.assetGenerationQueue.add(asset);
     }
     
     @Override
-    public void disposeAsset(IRenderAsset asset) {
+    public void disposeAsset(IRendererAsset asset) {
         this.assetDisposalQueue.add(asset);
     }
 
     @Override
     public void processLoadedAssets() {
-        IRenderAsset asset;
+        IRendererAsset asset;
         while( (asset = this.assetGenerationQueue.poll()) != null )
         {
             IGraphicsAsset<?> graphicsAsset = this.graphicsAssetMap.get(asset.getClass());

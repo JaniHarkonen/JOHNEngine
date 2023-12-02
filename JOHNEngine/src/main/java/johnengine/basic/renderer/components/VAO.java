@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL30;
 
+import johnengine.basic.assets.IBindable;
+import johnengine.basic.assets.IGeneratable;
 import johnengine.testing.DebugUtils;
 
-public class VAO {
+public class VAO implements IGeneratable, IBindable {
     
     private int handle;
     private List<AVBO<?>> vbos;
@@ -20,7 +22,8 @@ public class VAO {
     }
 
     
-    public void generate() {
+    @Override
+    public boolean generate() {
         this.handle = GL30.glGenVertexArrays();
         this.bind();
         
@@ -45,20 +48,28 @@ public class VAO {
         this.vbos = null;
         
         this.unbind();
+        return true;
     }
     
-    public void bind() {
+    @Override
+    public boolean bind() {
         GL30.glBindVertexArray(this.handle);
+        return true;
     }
     
-    public void unbind() {
+    @Override
+    public boolean unbind() {
         GL30.glBindVertexArray(0);
+        return true;
     }
     
-    public void delete() {
+    @Override
+    public boolean dispose() {
         GL30.glDeleteVertexArrays(this.handle);
         this.handle = 0;
         this.vbos = null;
+        
+        return true;
     }
     
     public void addVBO(AVBO<?> vbo) {

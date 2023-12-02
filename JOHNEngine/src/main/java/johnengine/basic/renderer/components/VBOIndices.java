@@ -16,7 +16,9 @@ public final class VBOIndices extends AVBO<Mesh.Face[]> {
 
     
     @Override
-    public void generate(Mesh.Face[] data) {
+    public boolean generate() {
+        Mesh.Face[] data = this.source;
+        
         this.genBuffers();
         this.bind();
         IntBuffer indexBuffer = this.allocateIntBuffer(data.length);
@@ -34,5 +36,7 @@ public final class VBOIndices extends AVBO<Mesh.Face[]> {
         
         this.freeAllocation(indexBuffer);
         this.unbind();
+        
+        return true;
     }
 }

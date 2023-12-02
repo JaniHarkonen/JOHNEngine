@@ -7,7 +7,7 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
-import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.core.assetmngr.asset.IAsset;
@@ -26,7 +26,7 @@ public class SceneObjectLoader extends AAssetLoader {
     //private final List<Animation> expectedAnimations;
     
     private int importFlags;
-    private ILoaderMonitor<IRenderAsset> monitor;
+    private ILoaderMonitor<IRendererAsset> monitor;
 
     public SceneObjectLoader(String path) {
         super(path);

@@ -1,9 +1,7 @@
 package johnengine.basic.assets;
 
-public interface IGraphicsAsset<T> {
-    public void generate();
-    public void dispose();
-    public IGraphicsAsset<T> createInstance(IRenderAsset asset);
+public interface IGraphicsAsset<T> extends IGeneratable {
+    public IGraphicsAsset<T> createInstance(IRendererAsset asset);
     
     public T getData();
 }

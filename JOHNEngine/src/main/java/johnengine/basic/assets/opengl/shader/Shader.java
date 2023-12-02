@@ -1,10 +1,11 @@
-package johnengine.core.renderer.shader;
+package johnengine.basic.assets.opengl.shader;
 
 import org.lwjgl.opengl.GL30;
 
+import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
 
-public final class Shader extends TextAsset {
+public final class Shader extends TextAsset implements IGeneratable {
     protected final int type;
     protected int handle;
     
@@ -18,6 +19,7 @@ public final class Shader extends TextAsset {
     }
     
     
+    @Override
     public boolean generate() {
         if( this.asset == null )
         return false;
@@ -49,9 +51,12 @@ public final class Shader extends TextAsset {
         GL30.glDetachShader(shaderProgram.getHandle(), this.handle);
     }
     
-    public void dispose() {
+    @Override
+    public boolean dispose() {
         GL30.glDeleteShader(this.handle);
         this.handle = 0;
+        
+        return true;
     }
     
     

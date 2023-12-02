@@ -1,4 +1,4 @@
-package johnengine.core.renderer.shader;
+package johnengine.basic.assets.opengl.shader;
 
 import org.lwjgl.opengl.GL30;
 

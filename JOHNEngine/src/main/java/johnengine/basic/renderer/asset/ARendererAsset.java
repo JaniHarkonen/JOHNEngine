@@ -1,9 +1,9 @@
 package johnengine.basic.renderer.asset;
 
 import johnengine.basic.assets.IGraphicsAsset;
-import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.assets.IRendererAsset;
 
-public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements IRenderAsset {
+public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements IRendererAsset {
 
     G graphics;
     

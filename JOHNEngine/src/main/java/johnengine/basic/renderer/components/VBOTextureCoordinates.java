@@ -15,7 +15,9 @@ public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
 
     
     @Override
-    public void generate(Vector2f[] data) {
+    public boolean generate() {
+        Vector2f[] data = this.source;
+        
         this.genBuffers();
         this.bind();
         FloatBuffer uvBuffer = this.allocateFloatBuffer(data.length);
@@ -32,5 +34,7 @@ public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
         
         this.freeAllocation(uvBuffer);
         this.unbind();
+        
+        return true;
     }
 }

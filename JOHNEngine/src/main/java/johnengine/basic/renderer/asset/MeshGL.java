@@ -2,7 +2,7 @@ package johnengine.basic.renderer.asset;
 
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IMesh;
-import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.renderer.components.VBOIndices;
 import johnengine.basic.renderer.components.VBOTextureCoordinates;
 import johnengine.basic.renderer.components.VBOVertices;
@@ -49,7 +49,7 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     private final Mesh mesh;
     private VBOContainer vbos;
     
-    public MeshGL(IRenderAsset mesh) {
+    public MeshGL(IRendererAsset mesh) {
         this.mesh = (Mesh) mesh;
         this.mesh.graphics = this;
         this.vbos = null;
@@ -62,12 +62,12 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     
     
     @Override
-    public IGraphicsAsset<MeshGL.VBOContainer> createInstance(IRenderAsset mesh) {
+    public IGraphicsAsset<MeshGL.VBOContainer> createInstance(IRendererAsset mesh) {
         return new MeshGL(mesh);
     }
     
     @Override
-    public void generate() {
+    public boolean generate() {
         Mesh.Data data = this.mesh.getDataDirect();
         
         VBOVertices vboVertices = new VBOVertices();
@@ -80,14 +80,18 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
         vboIndices.generate(data.getFaces());
         
         this.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);
+        
+        return true;
     }
     
     @Override
-    public void dispose() {
+    public boolean dispose() {
         //this.mesh.graphics = null;
-        this.vbos.getVerticesVBO().delete();
-        this.vbos.getTextureCoordinatesVBO().delete();
-        this.vbos.getIndicesVBO().delete();
+        this.vbos.getVerticesVBO().dispose();
+        this.vbos.getTextureCoordinatesVBO().dispose();
+        this.vbos.getIndicesVBO().dispose();
+        
+        return true;
     }
     
     

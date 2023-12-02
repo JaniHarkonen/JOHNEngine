@@ -15,7 +15,9 @@ public final class VBOVertices extends AVBO<Vector3f[]> {
 
     
     @Override
-    public void generate(Vector3f[] data) {
+    public boolean generate() {
+        Vector3f[] data = this.source;
+        
         this.genBuffers();
         this.bind();
         FloatBuffer vertexBuffer = this.allocateFloatBuffer(data.length);
@@ -33,5 +35,7 @@ public final class VBOVertices extends AVBO<Vector3f[]> {
         
         this.freeAllocation(vertexBuffer);
         this.unbind();
+        
+        return true;
     }
 }

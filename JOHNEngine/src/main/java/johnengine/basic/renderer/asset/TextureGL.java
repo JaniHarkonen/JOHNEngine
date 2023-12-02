@@ -2,12 +2,13 @@ package johnengine.basic.renderer.asset;
 
 import org.lwjgl.opengl.GL30;
 
+import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGraphicsAsset;
-import johnengine.basic.assets.IRenderAsset;
+import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.ITexture;
 import johnengine.basic.renderer.asset.Mesh.Data;
 
-public class TextureGL implements ITexture<Integer> {
+public class TextureGL implements ITexture<Integer>, IBindable {
     public static final int TARGET = GL30.GL_TEXTURE_2D;
     public static Data DEFAULT_DATA = null;
     
@@ -19,7 +20,7 @@ public class TextureGL implements ITexture<Integer> {
     private final Texture texture;
     private int handle;
     
-    public TextureGL(IRenderAsset texture) {
+    public TextureGL(IRendererAsset texture) {
         this.texture = (Texture) texture;
         this.texture.graphics = this;
         this.handle = 0;
@@ -32,12 +33,12 @@ public class TextureGL implements ITexture<Integer> {
     
     
     @Override
-    public IGraphicsAsset<Integer> createInstance(IRenderAsset asset) {
+    public IGraphicsAsset<Integer> createInstance(IRendererAsset asset) {
         return new TextureGL(asset);
     }
     
     @Override
-    public void generate() {
+    public boolean generate() {
         Texture.Data data = this.texture.getDataDirect();
         
         this.handle = GL30.glGenTextures();
@@ -58,20 +59,28 @@ public class TextureGL implements ITexture<Integer> {
         );
         GL30.glGenerateMipmap(TARGET);
         this.unbind();
-    }
-
-    public void bind() {
-        GL30.glActiveTexture(GL30.GL_TEXTURE0);
-        GL30.glBindTexture(TARGET, this.handle);
-    }
-
-    public void unbind() {
-        GL30.glBindTexture(TARGET, 0);
+        
+        return true;
     }
 
     @Override
-    public void dispose() {
+    public boolean bind() {
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+        GL30.glBindTexture(TARGET, this.handle);
+        
+        return true;
+    }
+
+    @Override
+    public boolean unbind() {
+        GL30.glBindTexture(TARGET, 0);
+        return true;
+    }
+
+    @Override
+    public boolean dispose() {
         GL30.glDeleteTextures(this.handle);
+        return true;
     }
 
     @Override

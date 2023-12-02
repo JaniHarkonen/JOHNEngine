@@ -1,4 +1,4 @@
-package johnengine.core.renderer.shader;
+package johnengine.basic.assets.opengl.shader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,10 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL30;
 
-public class ShaderProgram {
+import johnengine.basic.assets.IBindable;
+import johnengine.basic.assets.IGeneratable;
+
+public class ShaderProgram implements IGeneratable, IBindable {
     private List<Shader> shaders;
     private Map<String, AUniform<?>> uniforms;
     private int handle;
@@ -19,9 +22,10 @@ public class ShaderProgram {
     }
     
     
-    public void generate() {
+    @Override
+    public boolean generate() {
         if( this.handle > 0 )
-        return;
+        return false;
         
         this.handle = GL30.glCreateProgram();
         
@@ -32,22 +36,31 @@ public class ShaderProgram {
         
         for( Shader shader : this.shaders )
         shader.detachFrom(this);
+        
+        return true;
     }
     
-    public void bind() {
+    @Override
+    public boolean bind() {
         GL30.glUseProgram(this.handle);
+        return true;
     }
     
-    public void unbind() {
+    @Override
+    public boolean unbind() {
         GL30.glUseProgram(0);
+        return true;
     }
     
-    public void dispose() {
+    @Override
+    public boolean dispose() {
         this.unbind();
         GL30.glDeleteProgram(this.handle);
         this.uniforms = null;
         this.shaders = null;
         this.handle = 0;
+        
+        return true;
     }
     
     

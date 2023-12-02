@@ -7,28 +7,48 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
-public abstract class AVBO<T> {
+import johnengine.basic.assets.IBindable;
+import johnengine.basic.assets.IGeneratable;
+
+public abstract class AVBO<S> implements IGeneratable, IBindable {
     protected int handle;
     protected int target;
     protected int size;
+    protected S source;
     
     protected AVBO(int target, int size) {
         this.target = target;
         this.size = size;
+        this.source = null;
     }
     
-    public abstract void generate(T data);
     
-    public void bind() {
-        GL30.glBindBuffer(this.target, this.handle);
+    public boolean generate(S source) {
+        this.setSource(source);
+        return this.generate();
     }
     
-    public void unbind() {
-        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-    }
-    
-    public void delete() {
+    @Override
+    public boolean dispose() {
         GL30.glDeleteBuffers(this.handle);
+        return true;
+    }
+    
+    @Override
+    public boolean bind() {
+        GL30.glBindBuffer(this.target, this.handle);
+        return true;
+    }
+    
+    @Override
+    public boolean unbind() {
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+        return true;
+    }
+    
+    
+    public void setSource(S source) {
+        this.source = source;
     }
     
     
