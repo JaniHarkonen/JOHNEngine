@@ -49,13 +49,6 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
                     heightBuffer.get()
                 );
                 
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                
                 if( this.monitor != null )
                 this.monitor.assetLoaded(this.targetAsset);
             }
