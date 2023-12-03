@@ -69,4 +69,8 @@ public class Renderer3D extends ARenderer {
     public JWorld getActiveWorld() {
         return this.activeWorld;
     }
+    
+    public ARenderBufferStrategy getRenderBufferStrategy() {
+        return this.renderBufferStrategy;
+    }
 }

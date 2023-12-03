@@ -81,6 +81,10 @@ public class SceneObjectLoader extends AAssetLoader {
         this.expect(mesh, this.expectedMeshes);
     }
     
+    public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
+        this.monitor = monitor;
+    }
+    
     /*public void expectMaterial(Material mesh) {
         this.expect(mesh, this.expectedMaterials);
     }

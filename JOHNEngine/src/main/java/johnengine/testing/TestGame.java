@@ -3,6 +3,8 @@ package johnengine.testing;
 import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.asset.Mesh;
+import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
@@ -32,7 +34,6 @@ public class TestGame extends AGame {
         objLoader.expectMesh(mesh);
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);*/
         
-        CModel model = new CModel();
         //model.setMesh(mesh);
         /*
             // Declare assets
@@ -68,9 +69,32 @@ public class TestGame extends AGame {
         
         this.window.disableVSync();
         
+        AssetManager am = this.assetManager;
+        
+        Mesh mesh = new Mesh("man");
+        am.declareAsset(mesh);
+        
+        /*SceneObjectLoader objLoader = new SceneObjectLoader();
+        objLoader.expectMesh(mesh);
+        objLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
+        */
+        
+        Texture texture = new Texture("creep");
+        Texture.Loader textureLoader = new Texture.Loader(texture);
+        textureLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
         
         this.worldMain = new JWorld(this);
-        this.worldMain.createInstance(new JTestBox(this.worldMain, model));
+        
+        for( int i = 0; i < 1; i++ )
+        {
+            CModel model = new CModel();
+            //model.setMesh(mesh);
+            model.setTexture(texture);
+            this.worldMain.createInstance(new JTestBox(this.worldMain, model));
+        }
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

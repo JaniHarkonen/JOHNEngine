@@ -132,6 +132,8 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     public void render(ARenderer renderer) {
+        this.processLoadedAssets();
+        
         RenderBuffer renderBuffer = this.lastRenderBuffer;
         RenderBuffer nextRenderBuffer = this.renderBufferQueue.poll();
         

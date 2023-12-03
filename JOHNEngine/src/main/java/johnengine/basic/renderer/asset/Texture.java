@@ -7,8 +7,10 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.ITexture;
 import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.ILoaderMonitor;
 import johnengine.testing.DebugUtils;
 
 public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
@@ -17,9 +19,11 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
     
     public static class Loader extends AAssetLoader {
         private Texture targetAsset;
+        private ILoaderMonitor<IRendererAsset> monitor;
         
         public Loader(Texture targetAsset) {
             this.targetAsset = targetAsset;
+            this.monitor = null;
         }
         
 
@@ -44,7 +48,22 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
                     widthBuffer.get(), 
                     heightBuffer.get()
                 );
+                
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+                if( this.monitor != null )
+                this.monitor.assetLoaded(this.targetAsset);
             }
+        }
+        
+        
+        public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
+            this.monitor = monitor;
         }
     }
     
