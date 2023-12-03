@@ -1,6 +1,8 @@
-package johnengine.basic.assets.opengl.shader;
+package johnengine.basic.renderer.components;
 
 import org.lwjgl.opengl.GL30;
+
+import johnengine.basic.renderer.ShaderProgram;
 
 public abstract class AUniform<T> {
     protected final String name;

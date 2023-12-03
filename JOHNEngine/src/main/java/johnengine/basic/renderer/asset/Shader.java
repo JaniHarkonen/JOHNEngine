@@ -1,9 +1,10 @@
-package johnengine.basic.assets.opengl.shader;
+package johnengine.basic.renderer.asset;
 
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
+import johnengine.basic.renderer.ShaderProgram;
 
 public final class Shader extends TextAsset implements IGeneratable {
     protected final int type;

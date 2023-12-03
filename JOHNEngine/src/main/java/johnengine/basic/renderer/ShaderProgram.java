@@ -1,4 +1,4 @@
-package johnengine.basic.assets.opengl.shader;
+package johnengine.basic.renderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGeneratable;
+import johnengine.basic.renderer.asset.Shader;
+import johnengine.basic.renderer.components.AUniform;
 
 public class ShaderProgram implements IGeneratable, IBindable {
     private List<Shader> shaders;

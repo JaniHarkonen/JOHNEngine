@@ -4,9 +4,6 @@
 ??? should ABasicWindowRequests be implemented using lambdas instead???
 - remove cringe
 ???? new exception class??
-- MAJOR: instead of spawning threads each time there are new load requests,
-AssetRequestManager should spawn the threads once and then distribute the 
-work in real time
 - consider what renderer functionalities can be defined in ARenderer
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
