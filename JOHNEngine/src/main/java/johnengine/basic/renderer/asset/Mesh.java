@@ -11,7 +11,6 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
 import johnengine.basic.assets.IMesh;
-import johnengine.testing.DebugUtils;
 
 public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {    
     public static class Face {
@@ -166,7 +165,6 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     
     @Override
     public IMesh<?> getDefaultGraphics() {
-        //DebugUtils.log(this, "inapropp");
         return DEFAULT_INSTANCE.graphics;
     }
 }

@@ -84,7 +84,7 @@ public class TestGame extends AGame {
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
         //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
-        am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
+        //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
         
         this.worldMain = new JWorld(this);
         
@@ -92,7 +92,7 @@ public class TestGame extends AGame {
         {
             CModel model = new CModel();
             //model.setMesh(mesh);
-            model.setTexture(texture);
+            //model.setTexture(texture);
             this.worldMain.createInstance(new JTestBox(this.worldMain, model));
         }
         
