@@ -27,9 +27,6 @@ public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements 
         if( this.isPersistent )
         return;
         
-        //if( this.graphics != null )
-        //this.graphics.dispose();
-        
         if( this.deloader != null )
         this.deloader.deloadAsset(this);
     }
@@ -52,6 +49,12 @@ public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements 
         
         return this.graphics;
     }
+    
+    
+    public void setDeloader(IDeloadProcessor<IRendererAsset> deloader) {
+        this.deloader = deloader;
+    }
+    
     
     public String getName() {
         return this.name;

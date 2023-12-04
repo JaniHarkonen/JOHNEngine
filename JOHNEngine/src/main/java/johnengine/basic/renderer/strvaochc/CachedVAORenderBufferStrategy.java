@@ -11,10 +11,11 @@ import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
 import johnengine.basic.renderer.ShaderProgram;
+import johnengine.basic.renderer.asset.ARendererAsset;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.MeshGL;
-import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
+import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.components.VAO;
@@ -129,6 +130,8 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         {
             IGraphicsAsset<?> graphicsAsset = this.graphicsAssetMap.get(asset.getClass());
             graphicsAsset.createInstance(asset).generate();
+            
+            ((ARendererAsset<?, ?>) asset).setDeloader(this);
         }
     }
     
