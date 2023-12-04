@@ -2,13 +2,11 @@ package johnengine.core.input;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.basic.window.Window;
+public abstract class AInput implements IInput {
 
-public class Input {
-    
         // The state has been promoted to its own class because a snapshot has 
         // to be maintained for each tick
-    public static class State {
+    public static class State implements IInput.State<State> {
         private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
         private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
         
@@ -21,7 +19,7 @@ public class Input {
         private double mouseX;
         private double mouseY;
         
-        private State() {
+        public State() {
             this.keyMap = new int[KEY_MAP_SIZE];
             this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
             this.mouseX = 0;
@@ -29,7 +27,8 @@ public class Input {
         }
         
         
-        private void takeSnapshot(State dest) {
+        @Override
+        public void takeSnapshot(State dest) {
             for( int i = 0; i < KEY_MAP_SIZE; i++ )
             {
                 dest.keyMap[i] = this.keyMap[i];
@@ -60,76 +59,77 @@ public class Input {
             return (this.buttonMap[mouseButton] == state);
         }
         
-        public boolean isKeyReleased(int key) {
-            return this.checkKey(key, INPUT_RELEASED);
-        }
-        
+        @Override
         public boolean isKeyDown(int key) {
             return this.checkKey(key, INPUT_PRESSED);
         }
         
-        public boolean isMouseReleased(int button) {
-            return this.checkMouseButton(button, INPUT_RELEASED);
+        @Override
+        public boolean isKeyReleased(int key) {
+            return this.checkKey(key, INPUT_RELEASED);
         }
         
+        @Override
         public boolean isMouseDown(int button) {
             return this.checkMouseButton(button, INPUT_PRESSED);
         }
         
+        @Override
+        public boolean isMouseReleased(int button) {
+            return this.checkMouseButton(button, INPUT_RELEASED);
+        }
+        
+        @Override
         public double getMouseX() {
             return this.mouseX;
         }
         
+        @Override
         public double getMouseY() {
             return this.mouseY;
         }
     }
     
     
-    /************************************* Input-class **************************************/
+    /************************* AInput-class **************************/
     
-    private final Window hostWindow;
-    private final State updatingState;
-    private final State snapshotState;
+    protected final State updatingState;
+    protected final State snapshotState;
 
-    public Input(Window hostWindow) {
-        this.hostWindow = hostWindow;
-        this.updatingState = new State();
-        this.snapshotState = new State();
+    protected AInput(State updatingState, State snapshotState) {
+        this.updatingState = updatingState;
+        this.snapshotState = snapshotState;
     }
     
-    
-    public void setup() {
-        long windowID = this.hostWindow.getWindowID();
-        GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
-        GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
-        GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
-        //GLFW.glfwSetScrollCallback(window, cbfun)
+    protected AInput() {
+        this(new State(), new State());
     }
     
+
+    @Override
     public void snapshot() {
         this.updatingState.takeSnapshot(this.snapshotState);
     }
     
-    private void keyListener(int key, int action) {
-        if( action == GLFW.GLFW_REPEAT )
-        return;
-        
-        this.updatingState.keyMap[key] = action + 1;
+    
+    /***************************** SETTERS ****************************/
+    
+    protected void setStateKey(State state, int key, int value) {
+        state.keyMap[key] = value;
     }
     
-    private void mousePositionListener(double mouseX, double mouseY) {
-        this.updatingState.mouseX = mouseX;
-        this.updatingState.mouseY = mouseY;
+    protected void setStateMouseButton(State state, int mouseButton, int value) {
+        state.buttonMap[mouseButton] = value;
     }
     
-    private void mouseListener(int button, int action) {
-        this.updatingState.buttonMap[button] = action + 1;
+    protected void setStateMousePosition(State state, double mouseX, double mouseY) {
+        state.mouseX = mouseX;
+        state.mouseY = mouseY;
     }
-    
     
     /***************************** GETTERS ****************************/
     
+    @Override
     public State getState() {
         return this.snapshotState;
     }

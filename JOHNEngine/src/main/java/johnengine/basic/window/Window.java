@@ -5,7 +5,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.renderer.Renderer3D;
 import johnengine.core.IEngineComponent;
-import johnengine.core.input.Input;
 import johnengine.core.renderer.ARenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;

@@ -25,8 +25,8 @@ public class JWorld extends AGameObject {
             // Use InstanceManager's iterator instead of requesting a 
             // list of all available instances
         AWorldObject inst;
-        //while( (inst = this.worldManager.nextInstance()) != null )
-        //inst.tick(deltaTime);
+        while( (inst = this.worldManager.nextInstance()) != null )
+        inst.tick(deltaTime);
     }
     
     public void createInstance(AWorldObject instance) {
