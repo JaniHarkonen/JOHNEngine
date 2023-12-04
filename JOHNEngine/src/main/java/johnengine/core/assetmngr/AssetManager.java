@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.assetmngr.asset.IAsset;
 import johnengine.core.threadable.AThreadable;
 import johnengine.testing.DebugUtils;
@@ -20,7 +21,7 @@ public final class AssetManager implements IEngineComponent {
         private boolean isRunning;
         
         LoaderProcess() {
-            this.queuedLoaders = new ConcurrentLinkedQueue<AAssetLoader>();
+            this.queuedLoaders = new ConcurrentLinkedQueue<>();
             this.isRunning = false;
         }
 
@@ -89,7 +90,7 @@ public final class AssetManager implements IEngineComponent {
     private int numberOfThreads;
     
     public AssetManager(int numberOfThreads) {
-        this.assets = new HashMap<String, IAsset>();
+        this.assets = new HashMap<>();
         this.loaderProcesses = new LoaderProcess[numberOfThreads];
         this.nextThreadIndex = 0;
         this.numberOfThreads = numberOfThreads;
@@ -110,9 +111,9 @@ public final class AssetManager implements IEngineComponent {
         return this;
     }
     
-    /*public AssetGroup createAssetGroup(String groupName) {
+    public AssetGroup createAssetGroup(String groupName) {
         return new AssetGroup(groupName, this);
-    }*/
+    }
     
     public AssetManager load(AAssetLoader loader) {
         this.getNextLoaderProcess().addTask(loader);

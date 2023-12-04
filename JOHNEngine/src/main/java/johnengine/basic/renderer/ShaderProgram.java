@@ -18,8 +18,8 @@ public class ShaderProgram implements IGeneratable, IBindable {
     private int handle;
 
     public ShaderProgram() {
-        this.shaders = new ArrayList<Shader>();
-        this.uniforms = new HashMap<String, AUniform<?>>();
+        this.shaders = new ArrayList<>();
+        this.uniforms = new HashMap<>();
         this.handle = 0;
     }
     

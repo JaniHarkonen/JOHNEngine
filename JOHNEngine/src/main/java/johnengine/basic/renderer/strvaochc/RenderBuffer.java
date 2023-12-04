@@ -7,7 +7,7 @@ public class RenderBuffer {
     private List<RenderUnit> buffer;
     
     public RenderBuffer() {
-        this.buffer = new ArrayList<RenderUnit>();
+        this.buffer = new ArrayList<>();
     }
     
     

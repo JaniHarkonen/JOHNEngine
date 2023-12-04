@@ -17,7 +17,7 @@ public class VAO implements IGeneratable, IBindable {
     
     public VAO() {
         this.handle = 0;
-        this.vbos = new ArrayList<AVBO<?>>();
+        this.vbos = new ArrayList<>();
         this.indicesVBO = null;
     }
 

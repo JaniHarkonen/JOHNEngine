@@ -37,12 +37,12 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
 
     public CachedVAORenderBufferStrategy() {
         super();
-        this.vaoCache = new TimedCache<MeshGL, VAO>(DEFAULT_EXPIRATION_TIME * 1000);
+        this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
-        this.renderBufferQueue = new ConcurrentLinkedQueue<RenderBuffer>();
-        this.graphicsAssetMap = new HashMap<Class<? extends IRendererAsset>, IGraphicsAsset<?>>();
-        this.assetGenerationQueue = new ConcurrentLinkedQueue<IRendererAsset>();
-        this.assetDisposalQueue = new ConcurrentLinkedQueue<IRendererAsset>();
+        this.renderBufferQueue = new ConcurrentLinkedQueue<>();
+        this.graphicsAssetMap = new HashMap<>();
+        this.assetGenerationQueue = new ConcurrentLinkedQueue<>();
+        this.assetDisposalQueue = new ConcurrentLinkedQueue<>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
         
@@ -89,8 +89,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         //.declareUniform(cameraOrientationMatrix)
         //.declareUniform(cameraProjectionMatrix)
         .declareUniform(textureSampler);
-        
-        //this.currentRenderBuffer = new RenderBuffer();
     }
     
     @Override
