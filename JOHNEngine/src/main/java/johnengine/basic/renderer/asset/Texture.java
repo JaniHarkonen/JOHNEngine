@@ -103,7 +103,7 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
     
     static {
             // T_T
-        /*String bytes = 
+        String bytes = 
             "0000000000000000" + 
             "0000000000000000" + 
             "0000000000000000" + 
@@ -119,10 +119,10 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
             "0000011111100000" + 
             "0000000000000000" + 
             "0000000000000000" + 
-            "0000000000000000";*/
+            "0000000000000000";
         
             // WTF
-        String bytes = 
+        /*String bytes = 
             "0001000000001000" + 
             "0001000110001000" + 
             "0000101001010000" + 
@@ -134,17 +134,18 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
             "0000000010000000" + 
             "0000000010000000" + 
             "0000000000000000" + 
-            "0000011111110000" + 
-            "0000010000000000" + 
-            "0000011111000000" + 
-            "0000010000000000" + 
-            "0000010000000000";
+            "0000011111100000" + 
+            "0000000000100000" + 
+            "0000000111100000" + 
+            "0000000000100000" + 
+            "0000000000100000";
+          */  
         
         int width = 16;
         int height = 16;
         int channelCount = 4;
         ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
-        for( int i = 0; i < bytes.length(); i++ )
+        for( int i = bytes.length() - 1; i >= 0; i-- )
         {
             byte value = (bytes.charAt(i) == '1') ? (byte) 255 : 0;
             

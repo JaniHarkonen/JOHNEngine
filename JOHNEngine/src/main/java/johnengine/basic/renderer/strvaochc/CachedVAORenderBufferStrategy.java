@@ -32,6 +32,9 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     private final ConcurrentLinkedQueue<RenderBuffer> renderBufferQueue;
     private final ConcurrentLinkedQueue<IRendererAsset> assetGenerationQueue;
     private final ConcurrentLinkedQueue<IRendererAsset> assetDisposalQueue;
+    
+    
+    
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
 
@@ -107,8 +110,16 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     @Override
-    public void disposeAsset(IRendererAsset asset) {
+    public void deloadAsset(IRendererAsset asset) {
         this.assetDisposalQueue.add(asset);
+    }
+
+
+    @Override
+    public void processAssetDeloads() {
+        IRendererAsset asset;
+        while( (asset = this.assetDisposalQueue.poll()) != null )
+        asset.getGraphics().dispose();
     }
 
     @Override
@@ -119,9 +130,6 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
             IGraphicsAsset<?> graphicsAsset = this.graphicsAssetMap.get(asset.getClass());
             graphicsAsset.createInstance(asset).generate();
         }
-        
-        while( (asset = this.assetDisposalQueue.poll()) != null )
-        asset.getGraphics().dispose();
     }
     
     @Override
@@ -131,6 +139,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     public void render(ARenderer renderer) {
         this.processLoadedAssets();
+        this.processAssetDeloads();
         
         RenderBuffer renderBuffer = this.lastRenderBuffer;
         RenderBuffer nextRenderBuffer = this.renderBufferQueue.poll();

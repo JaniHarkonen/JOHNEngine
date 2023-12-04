@@ -2,17 +2,20 @@ package johnengine.basic.renderer.asset;
 
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IRendererAsset;
+import johnengine.core.assetmngr.asset.IDeloadProcessor;
 
 public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements IRendererAsset {
 
     G graphics;
     
+    protected IDeloadProcessor<IRendererAsset> deloader;
     protected D data;
     protected String name;
     protected boolean isPersistent;
     
     protected ARendererAsset(String name, boolean isPersistent) {
         this.graphics = null;
+        this.deloader = null;
         this.name = name;
         this.isPersistent = isPersistent;
         this.data = null;
@@ -24,8 +27,11 @@ public abstract class ARendererAsset<G extends IGraphicsAsset<?>, D> implements 
         if( this.isPersistent )
         return;
         
-        if( this.graphics != null )
-        this.graphics.dispose();
+        //if( this.graphics != null )
+        //this.graphics.dispose();
+        
+        if( this.deloader != null )
+        this.deloader.deloadAsset(this);
     }
     
     

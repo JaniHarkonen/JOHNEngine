@@ -22,6 +22,6 @@ public class JTestBox extends AWorldObject {
 
     @Override
     public void tick(float deltaTime) {
-        DebugUtils.log(this, "bernie will win Y_Y");
+        
     }
 }

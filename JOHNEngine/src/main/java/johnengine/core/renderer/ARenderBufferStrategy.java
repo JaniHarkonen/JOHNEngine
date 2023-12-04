@@ -6,11 +6,13 @@ import java.util.Map;
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.core.IRenderBufferStrategy;
 import johnengine.core.IRenderable;
+import johnengine.core.assetmngr.asset.IDeloadProcessor;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
 public abstract class ARenderBufferStrategy implements 
     IRenderBufferStrategy,
-    ILoaderMonitor<IRendererAsset> 
+    ILoaderMonitor<IRendererAsset>,
+    IDeloadProcessor<IRendererAsset>
 {
     
     protected final 
@@ -38,8 +40,6 @@ public abstract class ARenderBufferStrategy implements
     }
     
     public abstract void render(ARenderer renderer);
-    
-    public abstract void disposeAsset(IRendererAsset asset);
 
     @Override
     @SuppressWarnings("unchecked")
