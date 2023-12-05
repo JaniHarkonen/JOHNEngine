@@ -234,8 +234,8 @@ public final class Window extends AWindowFramework
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
     
-    public Input.State getInput() {
-        return this.input.getState();
+    public Input getInput() {
+        return this.input;
     }
     
     public ARenderer getRenderer() {

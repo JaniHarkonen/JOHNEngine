@@ -1,7 +1,10 @@
 package johnengine.testing;
 
+import johnengine.basic.assets.sceneobj.SceneObjectLoader;
+import johnengine.basic.game.CController;
 import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
+import johnengine.basic.game.rewrite.JCamera;
 import johnengine.basic.renderer.Renderer3D;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -25,60 +28,19 @@ public class TestGame extends AGame {
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
         
-        /*AssetManager am = this.assetManager;
-        Mesh mesh = new Mesh("mesh");
-        mesh.setRenderer(this.window.getRenderer());
-        am.declareAsset(mesh);
-        
-        SceneObjectLoader objLoader = new SceneObjectLoader();
-        objLoader.expectMesh(mesh);
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);*/
-        
-        //model.setMesh(mesh);
-        /*
-            // Declare assets
-        AssetManager am = this.assetManager;
-        am.declareAsset(new Mesh("defaultMesh"));   // Mesh
-        am.declareAsset(new Texture("defaultTexture")); // Texture
-        
-            // Load Assimp scene (including mesh)
-        SceneObjectLoader sl = new SceneObjectLoader();
-        sl.expectMesh((Mesh) am.getAsset("defaultMesh"));
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", sl);
-        
-            // Load an image asset (texture)
-        AImageAsset.Loader il = new AImageAsset.Loader((Texture) am.getAsset("defaultTexture"));
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", il);
-        
-            // Create a model with the mesh and the texture
-        CModel modelDefault = new CModel();
-        modelDefault.setMesh((Mesh) am.getAsset("defaultMesh"));
-        modelDefault.setTexture((Texture) am.getAsset("defaultTexture"));
-        
-            // Create the game world and create the camera and the
-            // test box (with the created model)
-        this.worldMain = new JWorld(this);
-        
-        JCamera camMain = new JCamera(this.worldMain);
-        this.worldMain.createInstance(camMain);
-        this.worldMain.createInstance(new JTestBox(this.worldMain, modelDefault));
-        this.worldMain.setActiveCamera(camMain);
-        
-        this.window.disableVSync();
-        */
-        
-        this.window.disableVSync();
+        this.window
+        .disableVSync();
         
         AssetManager am = this.assetManager;
         
         Mesh mesh = new Mesh("man");
         am.declareAsset(mesh);
         
-        /*SceneObjectLoader objLoader = new SceneObjectLoader();
+        SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
         objLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
-        */
+        
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
@@ -91,10 +53,14 @@ public class TestGame extends AGame {
         for( int i = 0; i < 1; i++ )
         {
             CModel model = new CModel();
-            //model.setMesh(mesh);
+            model.setMesh(mesh);
             //model.setTexture(texture);
             this.worldMain.createInstance(new JTestBox(this.worldMain, model));
         }
+        
+        JCamera camera = new JCamera(this.worldMain);
+        camera.setController(new CController(this.window.getInput(), camera));
+        this.worldMain.createInstance(camera);
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

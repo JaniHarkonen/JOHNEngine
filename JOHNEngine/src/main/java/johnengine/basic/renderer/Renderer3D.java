@@ -24,7 +24,8 @@ public class Renderer3D extends ARenderer {
     }
     
     public Renderer3D(AWindowFramework hostWindow) {
-        this(hostWindow, new CachedVAORenderBufferStrategy());
+        this(hostWindow, null);
+        this.renderBufferStrategy = new CachedVAORenderBufferStrategy(this);
     }
     
     
@@ -57,7 +58,7 @@ public class Renderer3D extends ARenderer {
         GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
-        this.renderBufferStrategy.render(this);
+        this.renderBufferStrategy.render();
     }
     
     

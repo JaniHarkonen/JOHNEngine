@@ -122,7 +122,8 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
             "0000000000000000";
         
             // WTF
-        /*String bytes = 
+        /*
+        String bytes = 
             "0001000000001000" + 
             "0001000110001000" + 
             "0000101001010000" + 
@@ -145,6 +146,8 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
         int height = 16;
         int channelCount = 4;
         ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
+        
+            // Populate pixels upside-down due to OpenGL
         for( int i = bytes.length() - 1; i >= 0; i-- )
         {
             byte value = (bytes.charAt(i) == '1') ? (byte) 255 : 0;

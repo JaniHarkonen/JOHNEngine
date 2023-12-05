@@ -79,10 +79,10 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         DEFAULT_INSTANCE.data = new Mesh.Data(
                 // Vertices
             new Vector3f[] {
-                new Vector3f(-0.5f, 0.5f, 0.0f),        // top left
-                new Vector3f(-0.5f, -0.5f, 0.0f),       // bottom left
-                new Vector3f(0.5f, -0.5f, 0.0f),        // bottom right
-                new Vector3f(0.5f, 0.5f, 0.0f)          // top right
+                new Vector3f(-0.5f, 0.5f, -1.0f),        // top left
+                new Vector3f(-0.5f, -0.5f, -1.0f),       // bottom left
+                new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
+                new Vector3f(0.5f, 0.5f, -1.0f)          // top right
             }, 
                 // UVs
             new Vector2f[] {

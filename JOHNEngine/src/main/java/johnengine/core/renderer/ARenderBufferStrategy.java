@@ -24,8 +24,11 @@ public abstract class ARenderBufferStrategy implements
             >
         > strategoidMap;
     
-    protected ARenderBufferStrategy() {
+    protected final ARenderer renderer;
+    
+    protected ARenderBufferStrategy(ARenderer renderer) {
         this.strategoidMap = new HashMap<>();
+        this.renderer = renderer;
     }
     
     
@@ -39,7 +42,7 @@ public abstract class ARenderBufferStrategy implements
         this.strategoidMap.put(clazz, renderBufferStrategoid);
     }
     
-    public abstract void render(ARenderer renderer);
+    public abstract void render();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -48,5 +51,10 @@ public abstract class ARenderBufferStrategy implements
             this.strategoidMap.get(instance.getClass())
         );
         strategoid.execute(instance);
+    }
+    
+    
+    public ARenderer getRenderer() {
+        return this.renderer;
     }
 }

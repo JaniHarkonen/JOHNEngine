@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
+import johnengine.basic.game.rewrite.JCamera;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.ARendererAsset;
 import johnengine.basic.renderer.asset.Mesh;
@@ -20,6 +22,7 @@ import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.components.VAO;
 import johnengine.basic.renderer.components.uniforms.UNIInteger;
+import johnengine.basic.renderer.components.uniforms.UNIMatrix4f;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
@@ -34,13 +37,14 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     private final ConcurrentLinkedQueue<IRendererAsset> assetGenerationQueue;
     private final ConcurrentLinkedQueue<IRendererAsset> assetDisposalQueue;
     
-    
-    
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
+    
+    private Matrix4f viewMatrix;
+    private JCamera activeCamera;
 
-    public CachedVAORenderBufferStrategy() {
-        super();
+    public CachedVAORenderBufferStrategy(ARenderer renderer) {
+        super(renderer);
         this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferQueue = new ConcurrentLinkedQueue<>();
@@ -49,8 +53,12 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.assetDisposalQueue = new ConcurrentLinkedQueue<>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
+        this.activeCamera = null;
+        this.viewMatrix = new Matrix4f();
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
+        this.addStrategoid(JCamera.class, new StrategoidCamera(this));
+        
         this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL()));
         this.addGraphicsAsset(Texture.class, (IGraphicsAsset<?>) (new TextureGL()));
     }
@@ -86,13 +94,16 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         
         // Declare uniforms
         //UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
-        //UNIMatrix4f cameraProjectionMatrix = new UNIMatrix4f("cameraProjectionMatrix");
-        UNIInteger textureSampler = new UNIInteger("texSampler");
+        
+        UNIInteger textureSampler = new UNIInteger("textureSampler");
+        UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix");
+        UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
         
         this.shaderProgram
         //.declareUniform(cameraOrientationMatrix)
-        //.declareUniform(cameraProjectionMatrix)
-        .declareUniform(textureSampler);
+        .declareUniform(textureSampler)
+        .declareUniform(projectionMatrix)
+        .declareUniform(cameraOrientationMatrix);
     }
     
     @Override
@@ -140,7 +151,8 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.shaderProgram.dispose();
     }
     
-    public void render(ARenderer renderer) {
+    @Override
+    public void render() {
         this.processLoadedAssets();
         this.processAssetDeloads();
         
@@ -154,8 +166,12 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         return;
         
             // Draw render units of all buffers
+        JCamera camera = this.activeCamera;
         this.shaderProgram.bind();
-        this.shaderProgram.getUniform("texSampler").set();
+        this.shaderProgram.getUniform("textureSampler").set();
+        
+        if( camera != null )
+        ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix")).set(this.viewMatrix);
         
         do
         {
@@ -206,5 +222,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     public void addRenderUnit(RenderUnit unit) {
         this.currentRenderBuffer.addUnit(unit);
+    }
+    
+    public void setActiveCamera(JCamera camera) {
+        this.activeCamera = camera;
+    }
+    
+    public void setViewMatrix(Matrix4f viewMatrix) {
+        this.viewMatrix = viewMatrix;
     }
 }

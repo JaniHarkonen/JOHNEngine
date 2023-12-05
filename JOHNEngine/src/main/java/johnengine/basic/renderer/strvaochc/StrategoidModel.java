@@ -5,7 +5,7 @@ import johnengine.core.renderer.ARenderBufferStrategoid;
 
 public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORenderBufferStrategy> {
 
-    protected StrategoidModel(CachedVAORenderBufferStrategy strategy) {
+    public StrategoidModel(CachedVAORenderBufferStrategy strategy) {
         super(strategy);
     }
 
