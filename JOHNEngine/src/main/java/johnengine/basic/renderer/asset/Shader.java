@@ -6,9 +6,19 @@ import org.lwjgl.opengl.GL46;
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.renderer.ShaderProgram;
-import johnengine.core.exception.JOHNException;
 
 public final class Shader extends TextAsset implements IGeneratable {
+    
+    public static class ShaderException extends RuntimeException {
+        public ShaderException(String message) {
+            super(message);
+        }
+        
+        public ShaderException(String message, String shaderName) {
+            this(message.replaceAll("%shader", shaderName));
+        }
+    }
+    
     protected final int type;
     protected int handle;
     
@@ -30,13 +40,9 @@ public final class Shader extends TextAsset implements IGeneratable {
         this.handle = GL30.glCreateShader(this.type);
         GL30.glShaderSource(this.handle, this.asset);
         
+            // Failed to compile
         if( GL30.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != 0 )
-        {
-            throw new JOHNException(
-                JOHNException.FATAL_ERROR, 
-                "Failed to compile a shader '" + this.name + "'!"
-            );
-        }
+        throw new ShaderException("Failed to compile a shader '%shader'!", this.name);
         
         GL30.glCompileShader(this.handle);
         return true;

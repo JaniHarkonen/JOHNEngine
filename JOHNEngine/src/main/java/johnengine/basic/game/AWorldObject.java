@@ -7,12 +7,16 @@ public abstract class AWorldObject extends AGameObject implements IRenderable {
     protected JWorld world;
     protected boolean isVisible;
     protected CPosition position;
+    protected CRotation rotation;
+    protected CScale scale;
 
     protected AWorldObject(JWorld world) {
         super(world.getGame());
         this.world = world;
         this.isVisible = true;
         this.position = new CPosition();
+        this.rotation = new CRotation();
+        this.scale = new CScale();
     }
     
     
@@ -59,5 +63,29 @@ public abstract class AWorldObject extends AGameObject implements IRenderable {
     
     public float getZ() {
         return this.position.get().z;
+    }
+    
+    public CRotation getRotation() {
+        return this.rotation;
+    }
+    
+    public float getRotationAngle() {
+        return this.rotation.getAngle();
+    }
+    
+    public CScale getScale() {
+        return this.scale;
+    }
+    
+    public float getXScale() {
+        return this.scale.getXScale();
+    }
+    
+    public float getYScale() {
+        return this.scale.getYScale();
+    }
+    
+    public float getZScale() {
+        return this.scale.getZScale();
     }
 }

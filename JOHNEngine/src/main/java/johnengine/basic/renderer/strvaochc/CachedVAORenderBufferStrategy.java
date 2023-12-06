@@ -40,7 +40,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
     
-    private Matrix4f viewMatrix;
+    private Matrix4f cameraMatrix;
     private JCamera activeCamera;
 
     public CachedVAORenderBufferStrategy(ARenderer renderer) {
@@ -54,7 +54,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
         this.activeCamera = null;
-        this.viewMatrix = new Matrix4f();
+        this.cameraMatrix = new Matrix4f();
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
         this.addStrategoid(JCamera.class, new StrategoidCamera(this));
@@ -96,13 +96,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         //UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
         
         UNIInteger textureSampler = new UNIInteger("textureSampler");
-        UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix");
+        UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix");
         UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
         
         this.shaderProgram
         //.declareUniform(cameraOrientationMatrix)
         .declareUniform(textureSampler)
-        .declareUniform(projectionMatrix)
+        .declareUniform(cameraMatrix)
         .declareUniform(cameraOrientationMatrix);
     }
     
@@ -171,7 +171,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.shaderProgram.getUniform("textureSampler").set();
         
         if( camera != null )
-        ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix")).set(this.viewMatrix);
+        ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix")).set(this.cameraMatrix);
         
         do
         {
@@ -228,7 +228,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.activeCamera = camera;
     }
     
-    public void setViewMatrix(Matrix4f viewMatrix) {
-        this.viewMatrix = viewMatrix;
+    public void setCameraMatrix(Matrix4f cameraMatrix) {
+        this.cameraMatrix = cameraMatrix;
     }
 }

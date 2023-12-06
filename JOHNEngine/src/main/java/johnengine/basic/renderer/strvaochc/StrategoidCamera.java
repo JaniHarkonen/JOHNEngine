@@ -1,8 +1,6 @@
 package johnengine.basic.renderer.strvaochc;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import johnengine.basic.game.rewrite.JCamera;
 import johnengine.core.renderer.ARenderBufferStrategoid;
@@ -22,14 +20,13 @@ public class StrategoidCamera extends ARenderBufferStrategoid<JCamera, CachedVAO
         instance.getProjection().calculate();
         this.strategy.setActiveCamera(instance);
         
-        Vector3f viewPosition = instance.getPosition().get();
-        Vector2f viewRotation = instance.getRotation().get();
+        Matrix4f projectionMatrix = instance.getProjection().get();
         Matrix4f viewMatrix = (new Matrix4f())
-        .identity()
-        .rotateX(viewRotation.x)
-        .rotateY(viewRotation.y)
-        .translate(viewPosition.x, viewPosition.y, viewPosition.z);
+        .translationRotate(instance.getPosition().get(), instance.getRotation().get());
         
-        this.strategy.setViewMatrix(instance.getProjection().getMatrix().mul(viewMatrix));
+            // camera matrix: projection matrix * view matrix
+            // view matrix:   matrix rotated and translated according to camera
+            //                rotation and position
+        this.strategy.setCameraMatrix(projectionMatrix.mul(viewMatrix));
     }
 }

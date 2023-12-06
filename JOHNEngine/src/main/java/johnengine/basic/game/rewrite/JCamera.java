@@ -43,7 +43,7 @@ public class JCamera extends AWorldObject implements IControllable {
 
     @Override
     public void rotateX(float angle) {
-        this.rotation.rotate(0, angle);
+        this.rotation.rotate(angle);
     }
 
     
