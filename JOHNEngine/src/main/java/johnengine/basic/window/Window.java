@@ -78,8 +78,11 @@ public final class Window extends AWindowFramework
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
         
-        while( this.updatingProperties.windowState != STATE_CLOSED )
+        while( true )
         {
+            if( this.isWindowClosing() )
+            break;
+            
             this.requestManager.processRequests();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
@@ -112,6 +115,9 @@ public final class Window extends AWindowFramework
     
     @Override
     public void stop() {
+        if( this.isWindowClosing() )
+        return;
+        
         GLFW.glfwTerminate();
         this.reset();
         this.setWindowState(STATE_CLOSED);

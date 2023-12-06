@@ -345,6 +345,10 @@ public abstract class AWindowFramework {
         return (this.snapshotProperties.windowState == STATE_CLOSED);
     }
     
+    public boolean isWindowClosing() {
+        return (this.updatingProperties.windowState == STATE_CLOSED);
+    }
+    
     public boolean isWindowInitializing() {
         return (this.snapshotProperties.windowState == STATE_INITIALIZING);
     }

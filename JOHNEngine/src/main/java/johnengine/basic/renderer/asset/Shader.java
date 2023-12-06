@@ -1,10 +1,12 @@
 package johnengine.basic.renderer.asset;
 
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.renderer.ShaderProgram;
+import johnengine.core.exception.JOHNException;
 
 public final class Shader extends TextAsset implements IGeneratable {
     protected final int type;
@@ -27,6 +29,15 @@ public final class Shader extends TextAsset implements IGeneratable {
         
         this.handle = GL30.glCreateShader(this.type);
         GL30.glShaderSource(this.handle, this.asset);
+        
+        if( GL30.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != 0 )
+        {
+            throw new JOHNException(
+                JOHNException.FATAL_ERROR, 
+                "Failed to compile a shader '" + this.name + "'!"
+            );
+        }
+        
         GL30.glCompileShader(this.handle);
         return true;
     }

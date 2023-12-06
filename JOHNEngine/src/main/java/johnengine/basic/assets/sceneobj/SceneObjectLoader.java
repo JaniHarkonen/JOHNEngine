@@ -60,7 +60,6 @@ public class SceneObjectLoader extends AAssetLoader {
         }
         
             // Extract materials
-        s = scene.mNumMaterials();
         //for( int i = 0; i < s; i++ )
         //this.expectedMaterials.get(i).setData(AIMaterial.create(scene.mMaterials().get(i)));
         

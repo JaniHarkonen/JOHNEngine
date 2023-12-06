@@ -30,22 +30,28 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     
     public static class Data {
         private Vector3f[] vertices;
+        private Vector3f[] normals;
         private Vector2f[] uvs;
         private Face[] faces;
         
-        public Data(Vector3f[] vertices, Vector2f[] uvs, Face[] faces) {
+        public Data(Vector3f[] vertices, Vector3f[] normals, Vector2f[] uvs, Face[] faces) {
             this.vertices = vertices;
+            this.normals = normals;
             this.uvs = uvs;
             this.faces = faces;
         }
         
         public Data() {
-            this(new Vector3f[0], new Vector2f[0], new Face[0]);
+            this(new Vector3f[0], new Vector3f[0], new Vector2f[0], new Face[0]);
         }
         
         
         public Vector3f[] getVertices() {
             return this.vertices;
+        }
+        
+        public Vector3f[] getNormals() {
+            return this.normals;
         }
         
         public Vector2f[] getUVs() {
@@ -58,6 +64,10 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
 
         public int getVertexCount() {
             return this.vertices.length;
+        }
+        
+        public int getNormalCount() {
+            return this.normals.length;
         }
         
         public int getUVCount() {
@@ -84,6 +94,7 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
                 new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
                 new Vector3f(0.5f, 0.5f, -1.0f)          // top right
             }, 
+            new Vector3f[0],
                 // UVs
             new Vector2f[] {
                 new Vector2f(0.0f, 1.0f), 
@@ -110,6 +121,15 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         {
             AIVector3D vertex = aiVertexBuffer.get();
             vertexList.add(new Vector3f(vertex.x(), vertex.y(), vertex.z()));
+        }
+        
+            // Extract normals
+        AIVector3D.Buffer aiNormalBuffer = src.mNormals();
+        List<Vector3f> normalList = new ArrayList<>();
+        while( aiNormalBuffer.remaining() > 0 )
+        {
+            AIVector3D normal = aiNormalBuffer.get();
+            normalList.add(new Vector3f(normal.x(), normal.y(), normal.z()));
         }
         
             // Extract UV-coordinates
@@ -142,6 +162,7 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
             // Populate
         dest.data = new Data(
             vertexList.toArray(new Vector3f[vertexList.size()]),
+            normalList.toArray(new Vector3f[normalList.size()]),
             uvs,
             faces.toArray(new Face[faces.size()])
         );
