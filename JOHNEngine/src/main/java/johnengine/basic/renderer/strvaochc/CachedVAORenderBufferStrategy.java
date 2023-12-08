@@ -11,6 +11,7 @@ import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
+import johnengine.basic.game.JAmbientLight;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.ARendererAsset;
@@ -21,8 +22,10 @@ import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.components.VAO;
+import johnengine.basic.renderer.components.uniforms.UNIFloat;
 import johnengine.basic.renderer.components.uniforms.UNIInteger;
 import johnengine.basic.renderer.components.uniforms.UNIMatrix4f;
+import johnengine.basic.renderer.components.uniforms.UNIVector3f;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
@@ -40,8 +43,10 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     private RenderBuffer currentRenderBuffer;
     private RenderBuffer lastRenderBuffer;
     
+    private Matrix4f projectionMatrix;
     private Matrix4f cameraMatrix;
-    private JCamera activeCamera;
+    
+    private JAmbientLight ambientLight;
 
     public CachedVAORenderBufferStrategy(ARenderer renderer) {
         super(renderer);
@@ -53,11 +58,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.assetDisposalQueue = new ConcurrentLinkedQueue<>();
         this.currentRenderBuffer = null;
         this.lastRenderBuffer = null;
-        this.activeCamera = null;
+        this.projectionMatrix = new Matrix4f();
         this.cameraMatrix = new Matrix4f();
+        this.ambientLight = null;
         
         this.addStrategoid(CModel.class, new StrategoidModel(this));
         this.addStrategoid(JCamera.class, new StrategoidCamera(this));
+        this.addStrategoid(JAmbientLight.class, new StrategoidAmbientLight(this));
         
         this.addGraphicsAsset(Mesh.class, (IGraphicsAsset<?>) (new MeshGL()));
         this.addGraphicsAsset(Texture.class, (IGraphicsAsset<?>) (new TextureGL()));
@@ -92,18 +99,21 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
             // Generate shader program
         this.shaderProgram.generate();
         
-        // Declare uniforms
-        //UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
-        
-        UNIInteger textureSampler = new UNIInteger("textureSampler");
-        UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix");
-        UNIMatrix4f objectPositionMatrix = new UNIMatrix4f("objectPositionMatrix");
+            // Declare uniforms
+        UNIInteger textureSampler = new UNIInteger("textureSampler", "uTextureSampler");
+        UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
+        UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix", "uCameraMatrix");
+        UNIMatrix4f modelMatrix = new UNIMatrix4f("modelMatrix", "uModelMatrix");
+        UNIFloat ambientLightIntensity = new UNIFloat("ambientLightIntensity", "uAmbientLight.intensity");
+        UNIVector3f ambientLightColor = new UNIVector3f("ambientLightColor", "uAmbientLight.color");
         
         this.shaderProgram
-        //.declareUniform(cameraOrientationMatrix)
         .declareUniform(textureSampler)
+        .declareUniform(projectionMatrix)
         .declareUniform(cameraMatrix)
-        .declareUniform(objectPositionMatrix);
+        .declareUniform(modelMatrix)
+        .declareUniform(ambientLightIntensity)
+        .declareUniform(ambientLightColor);
     }
     
     @Override
@@ -166,14 +176,24 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         return;
         
             // Draw render units of all buffers
-        JCamera camera = this.activeCamera;
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
         
-        if( camera != null )
+        ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix")).set(this.projectionMatrix);
         ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix")).set(this.cameraMatrix);
         
-        UNIMatrix4f objectPositionMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("objectPositionMatrix");
+        if( this.ambientLight != null )
+        {
+            ((UNIFloat) this.shaderProgram.getUniform("ambientLightIntensity")).set(this.ambientLight.getIntensity());
+            ((UNIVector3f) this.shaderProgram.getUniform("ambientLightColor")).set(this.ambientLight.getColor());
+        }
+        else
+        {
+            ((UNIFloat) this.shaderProgram.getUniform("ambientLightIntensity")).set(JAmbientLight.DEFAULT_INTENSITY);
+            ((UNIVector3f) this.shaderProgram.getUniform("ambientLightColor")).set(JAmbientLight.DEFAULT_COLOR);
+        }
+        
+        UNIMatrix4f modelMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
         
         do
         {
@@ -194,6 +214,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
                     vao = new VAO();
                     VBOContainer vbos = meshGraphics.getData();
                     vao.addVBO(vbos.getVerticesVBO());
+                    vao.addVBO(vbos.getNormalsVBO());   
                     vao.addVBO(vbos.getTextureCoordinatesVBO());
                     vao.setIndicesVBO(vbos.getIndicesVBO());
                     vao.generate();
@@ -202,7 +223,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
                 }
                 
                     // Set position matrix
-                objectPositionMatrix.set(unit.getPositionMatrix());
+                modelMatrix.set(unit.getPositionMatrix());
                 
                     // Bind texture
                 GL30.glActiveTexture(GL30.GL_TEXTURE0);
@@ -230,11 +251,15 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.currentRenderBuffer.addUnit(unit);
     }
     
-    public void setActiveCamera(JCamera camera) {
-        this.activeCamera = camera;
+    public void setProjectionMatrix(Matrix4f projectionMatrix) {
+        this.projectionMatrix = projectionMatrix;
     }
     
     public void setCameraMatrix(Matrix4f cameraMatrix) {
         this.cameraMatrix = cameraMatrix;
+    }
+    
+    public void setAmbientLight(JAmbientLight ambientLight) {
+        this.ambientLight = ambientLight;
     }
 }

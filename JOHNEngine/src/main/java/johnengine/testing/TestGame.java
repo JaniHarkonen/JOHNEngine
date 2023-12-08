@@ -3,6 +3,7 @@ package johnengine.testing;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.CController;
 import johnengine.basic.game.CModel;
+import johnengine.basic.game.JAmbientLight;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.renderer.Renderer3D;
@@ -50,7 +51,7 @@ public class TestGame extends AGame {
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
-        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
         //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
         
         this.worldMain = new JWorld(this);
@@ -64,13 +65,16 @@ public class TestGame extends AGame {
             model.setPosition(box.getPosition());
             model.setRotation(box.getRotation());
             model.setScale(box.getScale());
-            //model.setTexture(texture);
+            model.setTexture(texture);
             this.worldMain.createInstance(box);
         }
         
         JCamera camera = new JCamera(this.worldMain);
         camera.setController(new CController(this.window.getInput(), camera));
         this.worldMain.createInstance(camera);
+        
+        JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
+        this.worldMain.createInstance(ambientLight);
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

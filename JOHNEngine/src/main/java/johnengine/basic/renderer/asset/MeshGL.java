@@ -4,6 +4,7 @@ import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.renderer.components.VBOIndices;
+import johnengine.basic.renderer.components.VBONormals;
 import johnengine.basic.renderer.components.VBOTextureCoordinates;
 import johnengine.basic.renderer.components.VBOVertices;
 
@@ -11,15 +12,18 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     
     public static class VBOContainer {
         private VBOVertices vboVertices;
+        private VBONormals vboNormals;
         private VBOTextureCoordinates vboUVs;
         private VBOIndices vboIndices;
         
         public VBOContainer(
-            VBOVertices vboVertices, 
+            VBOVertices vboVertices,
+            VBONormals vboNormals,
             VBOTextureCoordinates vboUVs, 
             VBOIndices vboIndices
         ) {
             this.vboVertices = vboVertices;
+            this.vboNormals = vboNormals;
             this.vboUVs = vboUVs;
             this.vboIndices = vboIndices;
         }
@@ -27,6 +31,10 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
         
         public VBOVertices getVerticesVBO() {
             return this.vboVertices;
+        }
+        
+        public VBONormals getNormalsVBO() {
+            return this.vboNormals;
         }
         
         public VBOTextureCoordinates getTextureCoordinatesVBO() {
@@ -70,17 +78,23 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     public boolean generate() {
         Mesh.Data data = this.mesh.getDataDirect();
         
+            // Generate vertices VBO
         VBOVertices vboVertices = new VBOVertices();
         vboVertices.generate(data.getVertices());
         
+            // Generate normals VBO
+        VBONormals vboNormals = new VBONormals();
+        vboNormals.generate(data.getNormals());
+        
+            // Generate UVs VBO
         VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
         vboUVs.generate(data.getUVs());
         
+            // Generate indices VBO
         VBOIndices vboIndices = new VBOIndices();
         vboIndices.generate(data.getFaces());
         
-        this.vbos = new VBOContainer(vboVertices, vboUVs, vboIndices);
-        
+        this.vbos = new VBOContainer(vboVertices, vboNormals, vboUVs, vboIndices);
         return true;
     }
     
@@ -88,6 +102,7 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     public boolean dispose() {
         //this.mesh.graphics = null;
         this.vbos.getVerticesVBO().dispose();
+        this.vbos.getNormalsVBO().dispose();
         this.vbos.getTextureCoordinatesVBO().dispose();
         this.vbos.getIndicesVBO().dispose();
         
