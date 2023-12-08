@@ -11,7 +11,7 @@ import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.CModel;
-import johnengine.basic.game.rewrite.JCamera;
+import johnengine.basic.game.JCamera;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.ARendererAsset;
 import johnengine.basic.renderer.asset.Mesh;
@@ -97,13 +97,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         
         UNIInteger textureSampler = new UNIInteger("textureSampler");
         UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix");
-        UNIMatrix4f cameraOrientationMatrix = new UNIMatrix4f("cameraOrientationMatrix");
+        UNIMatrix4f objectPositionMatrix = new UNIMatrix4f("objectPositionMatrix");
         
         this.shaderProgram
         //.declareUniform(cameraOrientationMatrix)
         .declareUniform(textureSampler)
         .declareUniform(cameraMatrix)
-        .declareUniform(cameraOrientationMatrix);
+        .declareUniform(objectPositionMatrix);
     }
     
     @Override
@@ -173,10 +173,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         if( camera != null )
         ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix")).set(this.cameraMatrix);
         
+        UNIMatrix4f objectPositionMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("objectPositionMatrix");
+        
         do
         {
             for( RenderUnit unit : renderBuffer.getBuffer() )
             {
+                    // Get VAO and texture
                 Mesh mesh = unit.getMesh();
                 Texture texture = unit.getTexture();
                 
@@ -197,6 +200,9 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
                     
                     this.vaoCache.cacheItem(meshGraphics, vao);
                 }
+                
+                    // Set position matrix
+                objectPositionMatrix.set(unit.getPositionMatrix());
                 
                     // Bind texture
                 GL30.glActiveTexture(GL30.GL_TEXTURE0);

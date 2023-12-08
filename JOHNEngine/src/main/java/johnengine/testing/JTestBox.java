@@ -22,6 +22,6 @@ public class JTestBox extends AWorldObject {
 
     @Override
     public void tick(float deltaTime) {
-        
+        //this.rotation.rotateY(0.001f);
     }
 }

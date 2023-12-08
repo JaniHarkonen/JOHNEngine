@@ -2,7 +2,7 @@ package johnengine.basic.renderer.strvaochc;
 
 import org.joml.Matrix4f;
 
-import johnengine.basic.game.rewrite.JCamera;
+import johnengine.basic.game.JCamera;
 import johnengine.core.renderer.ARenderBufferStrategoid;
 import johnengine.core.winframe.AWindowFramework;
 

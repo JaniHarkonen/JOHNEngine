@@ -2,6 +2,8 @@ package johnengine.basic.game;
 
 public interface IControllable {
     
+    public void rotateY(float angle);
+    
     public void rotateX(float angle);
     
     public void moveForward();

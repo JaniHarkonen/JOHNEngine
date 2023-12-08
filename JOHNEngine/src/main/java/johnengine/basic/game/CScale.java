@@ -15,6 +15,23 @@ public class CScale implements IGeometryComponent.DirectAccess<Vector3f> {
     }
     
     
+    public void resize(float scale) {
+        this.scale.add(scale, scale, scale);
+    }
+    
+    public void resizeX(float scale) {
+        this.scale.add(scale, 0, 0);
+    }
+    
+    public void resizeY(float scale) {
+        this.scale.add(0, scale, 0);
+    }
+    
+    public void resizeZ(float scale) {
+        this.scale.add(0, 0, scale);
+    }
+    
+    
     @Override
     public Vector3f get() {
         return this.scale;

@@ -1,8 +1,6 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.game;
 
 import org.joml.Matrix4f;
-
-import johnengine.basic.game.IGeometryComponent;
 
 public class CProjection implements IGeometryComponent.Calculatable<Matrix4f> {
 

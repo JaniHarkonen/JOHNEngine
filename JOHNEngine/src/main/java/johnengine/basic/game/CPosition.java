@@ -15,6 +15,11 @@ public class CPosition implements IGeometryComponent.DirectAccess<Vector3f> {
     }
     
     
+    public void move(Vector3f position) {
+        this.position.add(position);
+    }
+    
+    
     @Override
     public Vector3f get() {
         return this.position;

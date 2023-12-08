@@ -3,29 +3,51 @@ package johnengine.basic.game;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class CRotation implements IGeometryComponent.Calculatable<Quaternionf> {
+public class CRotation implements IGeometryComponent.DirectAccess<Quaternionf> {
 
+    private static final Vector3f X_AXIS = new Vector3f(1.0f, 0.0f, 0.0f);
+    private static final Vector3f Y_AXIS = new Vector3f(0.0f, 1.0f, 0.0f);
+    private static final Vector3f Z_AXIS = new Vector3f(0.0f, 0.0f, 1.0f);
+    
     private Quaternionf rotation;
-    private float angle;
-    private Vector3f axis;
+    private float xAngle;
+    private float yAngle;
+    private float zAngle;
     
     public CRotation() {
-        this.rotation = new Quaternionf();
-        this.angle = 0;
-        this.axis = new Vector3f(0.0f, 1.0f, 0.0f);
-        this.calculate();
+        this.rotation = (new Quaternionf()).fromAxisAngleDeg(Y_AXIS, 0.0f);
+        this.xAngle = 0.0f;
+        this.yAngle = 0.0f;
+        this.zAngle = 0.0f;
     }
     
     
-    @Override
-    public void calculate() {
-        this.rotation.fromAxisAngleRad(this.axis, this.angle);
+    public void rotateX(float angle) {
+        this.xAngle += angle;
+        this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle).mul((new Quaternionf()).fromAxisAngleDeg(Y_AXIS, this.yAngle));
+        //this.xAngle += angle;
+        //this.rotation.fromAxisAngleDeg(Y_AXIS, this.yAngle);
+        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
+        //this.rotation.rotateX(angle);
+        //this.rotation.rotateLocalX(angle);
+        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
     }
     
-    public void rotate(float angle) {
-        this.angle += angle;
-        this.calculate();
+    public void rotateY(float angle) {
+        this.yAngle += angle;
+        this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle).mul((new Quaternionf()).fromAxisAngleDeg(Y_AXIS, this.yAngle));
+        //this.xAngle += angle;
+        //this.rotation.fromAxisAngleDeg(Y_AXIS, this.yAngle);
+        //this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle);
+        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
+        //this.rotation.rotateAxis(this.yAngle, Y_AXIS);
     }
+    
+    public void rotateZ(float angle) {
+        //this.zAngle += angle;
+        //this.rotation.rotateAxis(this.zAngle, Z_AXIS);
+    }
+    
     
     @Override
     public Quaternionf get() {
@@ -37,22 +59,20 @@ public class CRotation implements IGeometryComponent.Calculatable<Quaternionf> {
         return new Quaternionf(this.rotation);
     }
     
-    public float getAngle() {
-        return this.angle;
+    public float getXAngle() {
+        return this.xAngle;
     }
     
-    public Vector3f getAxis() {
-        return this.axis;
+    public float getYAngle() {
+        return this.yAngle;
     }
     
-    public void set(float angle) {
-        this.angle = angle;
-        this.calculate();
+    public float getZAngle() {
+        return this.zAngle;
     }
     
-    public void set(Vector3f axis, float angle) {
-        this.axis = axis;
-        this.angle = angle;
-        this.calculate();
+    @Override
+    public void set(Quaternionf rotation) {
+        this.rotation = rotation;
     }
 }

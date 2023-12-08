@@ -69,10 +69,6 @@ public abstract class AWorldObject extends AGameObject implements IRenderable {
         return this.rotation;
     }
     
-    public float getRotationAngle() {
-        return this.rotation.getAngle();
-    }
-    
     public CScale getScale() {
         return this.scale;
     }

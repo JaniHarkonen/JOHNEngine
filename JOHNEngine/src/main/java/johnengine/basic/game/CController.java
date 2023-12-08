@@ -9,14 +9,10 @@ public class CController implements ITickable {
 
     private IInput inputSource;
     private IControllable controlledInstance;
-    private double previousMouseX;
-    private double previousMouseY;
     
     public CController(IInput inputSource, IControllable controlledInstance) {
         this.inputSource = inputSource;
         this.controlledInstance = controlledInstance;
-        this.previousMouseX = 0;
-        this.previousMouseY = 0;
     }
     
     
@@ -25,28 +21,36 @@ public class CController implements ITickable {
         IInput.State<?> state = this.inputSource.getState();
         double mouseX = state.getMouseX();
         double mouseY = state.getMouseY();
-        double mouseDeltaX = mouseX - this.previousMouseX;
-        double mouseDeltaY = mouseY - this.previousMouseY;
-        float sensitivity = 0.001f;
+        double mouseDeltaX = mouseX - (AGameObject.class.cast(this.controlledInstance).getGame().getWindow().getWidth() / 2);
+        double mouseDeltaY = mouseY - (AGameObject.class.cast(this.controlledInstance).getGame().getWindow().getHeight() / 2);
+        float sensitivity = 0.1f;
         
         if( mouseDeltaX != 0 )
-        this.controlledInstance.rotateX((float) mouseDeltaX * sensitivity);
+        this.controlledInstance.rotateY((float) mouseDeltaX * sensitivity);
+        
+        if( mouseDeltaY != 0 )
+        this.controlledInstance.rotateX((float) mouseDeltaY * sensitivity);
         
         float speed = 20.0f;
         if( state.isKeyDown(GLFW.GLFW_KEY_LEFT) )
-        this.controlledInstance.rotateX(-speed * sensitivity);
+        this.controlledInstance.rotateY(-speed * sensitivity);
         
         if( state.isKeyDown(GLFW.GLFW_KEY_RIGHT) )
-        this.controlledInstance.rotateX(speed * sensitivity);
+        this.controlledInstance.rotateY(speed * sensitivity);
         
         if( state.isKeyDown(GLFW.GLFW_KEY_UP) )
-        this.controlledInstance.moveForward();
+        this.controlledInstance.rotateX(-speed * sensitivity);
+        //this.controlledInstance.moveForward();
         
         if( state.isKeyDown(GLFW.GLFW_KEY_DOWN) )
-        this.controlledInstance.moveBackward();
+        this.controlledInstance.rotateX(speed * sensitivity);
         
-        this.previousMouseX = mouseX;
-        this.previousMouseY = mouseY;
+        if( state.isKeyDown(GLFW.GLFW_KEY_W) )
+        this.controlledInstance.moveForward();
+            
+        if( state.isKeyDown(GLFW.GLFW_KEY_S) )
+        this.controlledInstance.moveBackward();
+        //this.controlledInstance.moveBackward();
     }
     
 }

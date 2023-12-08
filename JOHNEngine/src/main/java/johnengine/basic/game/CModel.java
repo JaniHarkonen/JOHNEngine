@@ -10,16 +10,20 @@ public class CModel implements IRenderable {
     private Mesh mesh;
     private Texture texture;
     private CPosition position;
+    private CRotation rotation;
+    private CScale scale;
 
     
-    public CModel(CPosition position) {
+    public CModel(CPosition position, CRotation rotation, CScale scale) {
         this.position = position;
+        this.rotation = rotation;
+        this.scale = scale;
         this.mesh = new Mesh("default");
         this.texture = new Texture("default");
     }
     
     public CModel() {
-        this(new CPosition());
+        this(new CPosition(), new CRotation(), new CScale());
     }
     
     
@@ -41,8 +45,24 @@ public class CModel implements IRenderable {
         return this.position;
     }
     
+    public CRotation getRotation() {
+        return this.rotation;
+    }
+    
+    public CScale getScale() {
+        return this.scale;
+    }
+    
     public void setPosition(CPosition position) {
         this.position = position;
+    }
+    
+    public void setRotation(CRotation rotation) {
+        this.rotation = rotation;
+    }
+    
+    public void setScale(CScale scale) {
+        this.scale = scale;
     }
     
     public void setMesh(Mesh mesh) {

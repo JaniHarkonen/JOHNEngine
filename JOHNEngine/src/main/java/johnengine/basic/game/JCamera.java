@@ -1,22 +1,15 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.game;
 
-import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.CController;
-import johnengine.basic.game.CRotation;
-import johnengine.basic.game.IControllable;
-import johnengine.basic.game.JWorld;
 import johnengine.core.IRenderBufferStrategy;
 
 public class JCamera extends AWorldObject implements IControllable {
     
     private CProjection viewProjection;
-    private CRotation rotation;
     private CController controller;
 
     public JCamera(JWorld world) {
         super(world);
         this.viewProjection = new CProjection();
-        this.rotation = new CRotation();
         this.controller = null;
     }
 
@@ -37,13 +30,15 @@ public class JCamera extends AWorldObject implements IControllable {
         return this.viewProjection;
     }
     
-    public CRotation getRotation() {
-        return this.rotation;
-    }
-
+    
     @Override
     public void rotateX(float angle) {
-        this.rotation.rotate(angle);
+        this.rotation.rotateX(angle);
+    }
+    
+    @Override
+    public void rotateY(float angle) {
+        this.rotation.rotateY(angle);
     }
 
     

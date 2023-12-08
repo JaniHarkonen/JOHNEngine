@@ -84,6 +84,7 @@ public final class Window extends AWindowFramework
             break;
             
             this.requestManager.processRequests();
+            GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
@@ -108,8 +109,6 @@ public final class Window extends AWindowFramework
                 fpsCounter = 0;
                 startTime = currentTime;
             }
-            
-            GLFW.glfwPollEvents();
         }
     }
     

@@ -3,8 +3,8 @@ package johnengine.testing;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.CController;
 import johnengine.basic.game.CModel;
+import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
-import johnengine.basic.game.rewrite.JCamera;
 import johnengine.basic.renderer.Renderer3D;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -21,6 +21,7 @@ public class TestGame extends AGame {
 
     private MilliCounter timer;
     private JWorld worldMain;
+    private long tickCounter;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -28,7 +29,11 @@ public class TestGame extends AGame {
         this.window = (Window) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
         
+        this.tickCounter = 0;
+        
         this.window
+        .hideCursor()
+        //.enterFullscreen()
         .disableVSync();
         
         AssetManager am = this.assetManager;
@@ -52,10 +57,15 @@ public class TestGame extends AGame {
         
         for( int i = 0; i < 1; i++ )
         {
+            
             CModel model = new CModel();
             model.setMesh(mesh);
+            JTestBox box = new JTestBox(this.worldMain, model);
+            model.setPosition(box.getPosition());
+            model.setRotation(box.getRotation());
+            model.setScale(box.getScale());
             //model.setTexture(texture);
-            this.worldMain.createInstance(new JTestBox(this.worldMain, model));
+            this.worldMain.createInstance(box);
         }
         
         JCamera camera = new JCamera(this.worldMain);
@@ -67,7 +77,8 @@ public class TestGame extends AGame {
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {
-                
+                window.changeTitle(""+tickCounter);
+                tickCounter = 0;
             }
         };*/
         
@@ -80,6 +91,8 @@ public class TestGame extends AGame {
         
         //this.worldMain.tick(deltaTime);
         this.worldMain.tick(deltaTime);
+        //this.tickCounter++;
+        this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         this.window.changeTitle(""+this.window.getFPS());
         
         //this.timer.count();
