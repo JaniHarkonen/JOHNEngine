@@ -55,7 +55,7 @@ public class Renderer3D extends ARenderer {
     
     @Override
     public void render() {
-        GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         this.renderBufferStrategy.render();

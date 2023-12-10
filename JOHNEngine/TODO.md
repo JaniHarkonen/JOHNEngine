@@ -29,3 +29,7 @@ as it is becoming clearer that RenderBufferStrategy is going to contain a snapsh
 of the game world 
 - WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
 THIS IS NOT ALLOWED -> REFACTOR
+
+- make changes to the default mesh
+	-- add normals
+- add default material

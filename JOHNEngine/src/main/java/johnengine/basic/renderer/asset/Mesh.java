@@ -11,6 +11,7 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
 import johnengine.basic.assets.IMesh;
+import johnengine.basic.assets.sceneobj.Material;
 
 public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {    
     public static class Face {
@@ -34,7 +35,12 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         private Vector2f[] uvs;
         private Face[] faces;
         
-        public Data(Vector3f[] vertices, Vector3f[] normals, Vector2f[] uvs, Face[] faces) {
+        public Data(
+            Vector3f[] vertices, 
+            Vector3f[] normals, 
+            Vector2f[] uvs, 
+            Face[] faces
+        ) {
             this.vertices = vertices;
             this.normals = normals;
             this.uvs = uvs;
@@ -42,7 +48,7 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         }
         
         public Data() {
-            this(new Vector3f[0], new Vector3f[0], new Vector2f[0], new Face[0]);
+            this(null, null, null, null);
         }
         
         
@@ -94,7 +100,7 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
                 new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
                 new Vector3f(0.5f, 0.5f, -1.0f)          // top right
             }, 
-            new Vector3f[0],
+            new Vector3f[0],        // FIX THIS
                 // UVs
             new Vector2f[] {
                 new Vector2f(0.0f, 1.0f), 
@@ -170,8 +176,11 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     
     /********************** Class body **********************/
     
+    private Material material;
+    
     public Mesh(String name, boolean isPersistent) {
         super(name, isPersistent);
+        this.material = null;
     }
     
     public Mesh(String name) {
@@ -179,6 +188,11 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     }
 
 
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+    
+    
     @Override
     public Mesh.Data getDefault() {
         return DEFAULT_INSTANCE.data;
@@ -187,5 +201,9 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     @Override
     public IMesh<?> getDefaultGraphics() {
         return DEFAULT_INSTANCE.graphics;
+    }
+    
+    public Material getMaterial() {
+        return this.material;
     }
 }

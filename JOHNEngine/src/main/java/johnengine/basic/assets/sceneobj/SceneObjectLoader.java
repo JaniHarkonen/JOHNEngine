@@ -3,6 +3,8 @@ package johnengine.basic.assets.sceneobj;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.assimp.AIColor4D;
+import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
@@ -12,6 +14,7 @@ import johnengine.basic.renderer.asset.Mesh;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.core.assetmngr.asset.IAsset;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
+import johnengine.testing.DebugUtils;
 
 public class SceneObjectLoader extends AAssetLoader {
     
@@ -22,7 +25,6 @@ public class SceneObjectLoader extends AAssetLoader {
         Assimp.aiProcess_LimitBoneWeights;
     
     private final List<Mesh> expectedMeshes;
-    //private final List<Material> expectedMaterials;
     //private final List<Animation> expectedAnimations;
     
     private int importFlags;
@@ -31,7 +33,6 @@ public class SceneObjectLoader extends AAssetLoader {
     public SceneObjectLoader(String path) {
         super(path);
         this.expectedMeshes = new ArrayList<>();
-        //this.expectedMaterials = new ArrayList<>();
         //this.expectedAnimations = new ArrayList<>();
         this.importFlags = DEFAULT_IMPORT_FLAGS;
         this.monitor = null;
@@ -48,7 +49,7 @@ public class SceneObjectLoader extends AAssetLoader {
         int s;
         
             // Extract meshes
-        s = scene.mNumMeshes();
+        s = Math.min(this.expectedMeshes.size(), scene.mNumMeshes());
         for( int i = 0; i < s; i++ )
         {
             Mesh expectedMesh = this.expectedMeshes.get(i);
@@ -59,9 +60,13 @@ public class SceneObjectLoader extends AAssetLoader {
             this.monitor.assetLoaded(expectedMesh);
         }
         
-            // Extract materials
-        //for( int i = 0; i < s; i++ )
-        //this.expectedMaterials.get(i).setData(AIMaterial.create(scene.mMaterials().get(i)));
+        /*
+        AIMaterial aiMaterial = AIMaterial.create(scene.mMaterials().get(0));
+        AIColor4D color = AIColor4D.create();
+        Assimp.aiGetMaterialColor(aiMaterial, Assimp.ai_matkey_color, Assimp.aiTextureType_NONE, 0, color);
+        
+        DebugUtils.log(this, color.r(), color.g(), color.b(), color.a());
+        */
         
             // Extract animations
         s = scene.mNumAnimations();
@@ -84,10 +89,7 @@ public class SceneObjectLoader extends AAssetLoader {
         this.monitor = monitor;
     }
     
-    /*public void expectMaterial(Material mesh) {
-        this.expect(mesh, this.expectedMaterials);
-    }
-    
+    /*
     public void expectAnimation(Animation mesh) {
         this.expect(mesh, this.expectedAnimations);
     }*/

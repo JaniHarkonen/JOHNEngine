@@ -1,4 +1,4 @@
-package johnengine.basic.game;
+package johnengine.basic.game.components.geometry;
 
 public interface IGeometryComponent<T> {
     

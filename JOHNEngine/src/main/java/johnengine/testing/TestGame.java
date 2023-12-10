@@ -1,11 +1,13 @@
 package johnengine.testing;
 
+import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
-import johnengine.basic.game.CController;
-import johnengine.basic.game.CModel;
-import johnengine.basic.game.JAmbientLight;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
+import johnengine.basic.game.components.CController;
+import johnengine.basic.game.components.CModel;
+import johnengine.basic.game.lights.JAmbientLight;
+import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.renderer.Renderer3D;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -47,12 +49,15 @@ public class TestGame extends AGame {
         objLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
         
-        
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
         //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
+        
+        Material material = new Material();
+        material.setTexture(texture);
+        mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
         
@@ -65,9 +70,13 @@ public class TestGame extends AGame {
             model.setPosition(box.getPosition());
             model.setRotation(box.getRotation());
             model.setScale(box.getScale());
-            model.setTexture(texture);
+            //model.setTexture(texture);
             this.worldMain.createInstance(box);
         }
+        
+        CModel debugmodel = new CModel();
+        debugmodel.setMesh(mesh);
+        debugmodel.setTexture(texture);
         
         JCamera camera = new JCamera(this.worldMain);
         camera.setController(new CController(this.window.getInput(), camera));
@@ -75,6 +84,10 @@ public class TestGame extends AGame {
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
+        
+        JPointLight pointLight = new JPointLight(this.worldMain);
+        pointLight.DEBUGmodel = debugmodel;
+        this.worldMain.createInstance(pointLight);
         
             // Update the active world of the renderer
         Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

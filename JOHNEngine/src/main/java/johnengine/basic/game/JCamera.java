@@ -1,5 +1,7 @@
 package johnengine.basic.game;
 
+import johnengine.basic.game.components.CController;
+import johnengine.basic.game.components.geometry.CProjection;
 import johnengine.core.IRenderBufferStrategy;
 
 public class JCamera extends AWorldObject implements IControllable {

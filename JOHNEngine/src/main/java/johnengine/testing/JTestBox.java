@@ -1,8 +1,10 @@
 package johnengine.testing;
 
+import org.joml.Vector3f;
+
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.CModel;
 import johnengine.basic.game.JWorld;
+import johnengine.basic.game.components.CModel;
 import johnengine.core.IRenderBufferStrategy;
 
 public class JTestBox extends AWorldObject {
@@ -12,6 +14,7 @@ public class JTestBox extends AWorldObject {
     public JTestBox(JWorld world, CModel model) {
         super(world);
         this.model = model;
+        this.scale.set(new Vector3f(.25f));
     }
     
 

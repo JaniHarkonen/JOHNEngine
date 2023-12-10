@@ -1,7 +1,9 @@
-package johnengine.basic.game;
+package johnengine.basic.game.components.geometry;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import johnengine.basic.game.components.geometry.IGeometryComponent.DirectAccess;
 
 public class CRotation implements IGeometryComponent.DirectAccess<Quaternionf> {
 

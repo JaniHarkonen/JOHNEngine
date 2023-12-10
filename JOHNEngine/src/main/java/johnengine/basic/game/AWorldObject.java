@@ -1,5 +1,8 @@
 package johnengine.basic.game;
 
+import johnengine.basic.game.components.geometry.CPosition;
+import johnengine.basic.game.components.geometry.CRotation;
+import johnengine.basic.game.components.geometry.CScale;
 import johnengine.core.IRenderable;
 
 public abstract class AWorldObject extends AGameObject implements IRenderable {

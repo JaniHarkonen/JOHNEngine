@@ -1,12 +1,12 @@
 #version 460
 
-layout (location=0) in vec3 position;
-layout (location=1) in vec3 normal;
-layout (location=2) in vec2 texCoord;
+layout(location = 0) in vec3 inPosition;
+layout(location = 1) in vec3 inNormal;
+layout(location = 2) in vec2 inTextureCoord;
 
-out vec3 outPosition;
-out vec3 outNormal;
-out vec2 outTexCoord;
+out vec3 ioPosition;
+out vec3 ioNormal;
+out vec2 ioTexCoord;
 
 uniform mat4 uProjectionMatrix;
 uniform mat4 uCameraMatrix;
@@ -14,11 +14,11 @@ uniform mat4 uModelMatrix;
 
 void main()
 {
-	mat4 modelViewMatrix = uCameraMatrix * uModelMatrix;
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-    //gl_Position = cameraMatrix * objectPositionMatrix * vec4(position, 1.0);
-    gl_Position = uProjectionMatrix * modelViewPosition;
-    outPosition = modelViewPosition.xyz;
-    outNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
-    outTexCoord = texCoord;
+	mat4 m4ModelViewMatrix = uCameraMatrix * uModelMatrix;
+	vec4 v4ModelViewPosition = m4ModelViewMatrix * vec4(inPosition, 1.0);
+    ioPosition = v4ModelViewPosition.xyz;
+    ioNormal = normalize(m4ModelViewMatrix * vec4(inNormal, 0.0)).xyz;
+    ioTexCoord = inTextureCoord;
+
+    gl_Position = uProjectionMatrix * v4ModelViewPosition;
 }

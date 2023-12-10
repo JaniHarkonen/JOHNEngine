@@ -1,5 +1,7 @@
 package johnengine.basic.game;
 
+import johnengine.basic.game.components.CController;
+
 public interface IControllable {
     
     public void rotateY(float angle);

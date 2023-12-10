@@ -1,5 +1,8 @@
-package johnengine.basic.game;
+package johnengine.basic.game.components;
 
+import johnengine.basic.game.components.geometry.CPosition;
+import johnengine.basic.game.components.geometry.CRotation;
+import johnengine.basic.game.components.geometry.CScale;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.core.IRenderBufferStrategy;

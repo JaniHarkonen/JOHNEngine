@@ -1,7 +1,9 @@
-package johnengine.basic.game;
+package johnengine.basic.game.lights;
 
 import org.joml.Vector3f;
 
+import johnengine.basic.game.AWorldObject;
+import johnengine.basic.game.JWorld;
 import johnengine.core.IRenderBufferStrategy;
 
 public class JAmbientLight extends AWorldObject {
@@ -26,7 +28,7 @@ public class JAmbientLight extends AWorldObject {
 
     @Override
     public void tick(float deltaTime) {
-        this.intensity = (float) Math.random();
+        //this.intensity = (float) Math.random();
         //this.color = new Vector3f((float) Math.random(), (float) Math.random(), (float) Math.random());
     }
     

@@ -1,7 +1,9 @@
-package johnengine.basic.game;
+package johnengine.basic.game.components;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.game.AGameObject;
+import johnengine.basic.game.IControllable;
 import johnengine.core.ITickable;
 import johnengine.core.input.IInput;
 
