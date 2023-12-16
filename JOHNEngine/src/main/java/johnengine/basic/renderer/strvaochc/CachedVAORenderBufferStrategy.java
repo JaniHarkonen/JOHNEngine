@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.IGraphicsAsset;
@@ -13,7 +12,6 @@ import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JCamera;
-import johnengine.basic.game.components.CAttenuation;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JPointLight;
@@ -25,12 +23,17 @@ import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
-import johnengine.basic.renderer.components.VAO;
-import johnengine.basic.renderer.components.uniforms.UNIFloat;
-import johnengine.basic.renderer.components.uniforms.UNIInteger;
-import johnengine.basic.renderer.components.uniforms.UNIMatrix4f;
-import johnengine.basic.renderer.components.uniforms.UNIVector3f;
-import johnengine.basic.renderer.components.uniforms.UNIVector4f;
+import johnengine.basic.renderer.strvaochc.structs.SAmbientLight;
+import johnengine.basic.renderer.strvaochc.structs.SMaterial;
+import johnengine.basic.renderer.strvaochc.structs.SPointLight;
+import johnengine.basic.renderer.strvaochc.uniforms.rewrite.UNIAmbientLight;
+import johnengine.basic.renderer.strvaochc.uniforms.rewrite.UNIMaterial;
+import johnengine.basic.renderer.strvaochc.uniforms.rewrite.UNIPointLight;
+import johnengine.basic.renderer.uniforms.UNIInteger;
+import johnengine.basic.renderer.uniforms.UNIMatrix4f;
+import johnengine.basic.renderer.uniforms.UniformArray;
+import johnengine.basic.renderer.uniforms.UniformUtils;
+import johnengine.basic.renderer.vertex.VAO;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.ARenderBufferStrategy;
 import johnengine.core.renderer.ARenderer;
@@ -38,6 +41,10 @@ import johnengine.core.renderer.ARenderer;
 public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     public static final int MAX_POINT_LIGHT_COUNT = 5;
+    
+    private static final SAmbientLight STRUCT_DEFAULT_AMBIENT_LIGHT = new SAmbientLight(
+        JAmbientLight.DEFAULT_COLOR, JAmbientLight.DEFAULT_INTENSITY
+    );
     
     private final TimedCache<MeshGL, VAO> vaoCache;
     private final ShaderProgram shaderProgram;
@@ -51,9 +58,9 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     
     private Matrix4f projectionMatrix;
     private Matrix4f cameraMatrix;
-    
-    private JAmbientLight ambientLight;
-    private Map<JPointLight, Boolean> pointLights;
+        
+    private SAmbientLight ambientLight;
+    private Map<JPointLight, SPointLight> pointLights;
 
     public CachedVAORenderBufferStrategy(ARenderer renderer) {
         super(renderer);
@@ -113,70 +120,27 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
         UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix", "uCameraMatrix");
         UNIMatrix4f modelMatrix = new UNIMatrix4f("modelMatrix", "uModelMatrix");
-        UNIFloat ambientLightIntensity = new UNIFloat("ambientLightIntensity", "uAmbientLight.fIntensity");
-        UNIVector3f ambientLightColor = new UNIVector3f("ambientLightColor", "uAmbientLight.c3Ambient");
-        UNIVector4f materialDiffuseColor = new UNIVector4f("materialDiffuseColor", "uMaterial.c4Diffuse");
-        UNIVector4f materialSpecularColor = new UNIVector4f("materialSpecularColor", "uMaterial.c4Specular");
-        UNIFloat materialReflectance = new UNIFloat("materialReflectance", "uMaterial.fReflectance");
+        
+        UNIAmbientLight ambientLight = new UNIAmbientLight("ambientLight", "uAmbientLight");
+        UNIMaterial material = new UNIMaterial("material", "uMaterial");
+        UniformArray<SPointLight, UNIPointLight> pointLight = 
+            new UniformArray<SPointLight, UNIPointLight>(
+                "pointLight", 
+                "uPointLight",
+                new UNIPointLight[MAX_POINT_LIGHT_COUNT]
+            );
+        
+        UniformUtils.fillArray(pointLight, () -> new UNIPointLight("", ""));
+
         
         this.shaderProgram
         .declareUniform(textureSampler)
         .declareUniform(projectionMatrix)
         .declareUniform(cameraMatrix)
         .declareUniform(modelMatrix)
-        .declareUniform(ambientLightIntensity)
-        .declareUniform(ambientLightColor)
-        .declareUniform(materialDiffuseColor)
-        .declareUniform(materialSpecularColor)
-        .declareUniform(materialReflectance);
-        
-            // Declare point light uniforms
-        for( int i = 0; i < MAX_POINT_LIGHT_COUNT; i++ )
-        {
-                // Prefix and identity prefix
-            String pl = "pointLight";
-            String plIndex = "uPointLight" + "[" + i + "]";
-            
-                // Light intensity
-            this.shaderProgram.declareUniform(
-                new UNIFloat(pl + "Intensity_" + i, 
-                plIndex + ".fIntensity"
-            ));
-            
-                // Light position
-            this.shaderProgram.declareUniform(
-                new UNIVector3f(pl + "Position_" + i, 
-                plIndex + ".v3Position"
-            ));
-            
-                // Light color
-            this.shaderProgram.declareUniform(
-                new UNIVector3f(pl + "Color_" + i,
-                plIndex + ".c3Light"
-            ));
-            
-                // Prefixes for attenuation (secondary prefixes)
-            String plAtt = pl + "Attenuation";
-            String plIndAtt = plIndex + ".attenuation";
-
-                // Attenuation constant
-            this.shaderProgram.declareUniform(
-                new UNIFloat(plAtt + "Constant_" + i,
-                plIndAtt + ".fConstant"
-            ));
-            
-                // Attenuation linear
-            this.shaderProgram.declareUniform(
-                new UNIFloat(plAtt + "Linear_" + i,
-                plIndAtt + ".fLinear"
-            ));
-            
-                // Attenuation exponent
-            this.shaderProgram.declareUniform(
-                new UNIFloat(plAtt + "Exponent_" + i,
-                plIndAtt + ".fExponent"
-            ));
-        }
+        .declareUniform(ambientLight)
+        .declareUniform(material)
+        .declareUniform(pointLight);
     }
     
     @Override
@@ -225,6 +189,7 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public void render() {
         this.processLoadedAssets();
         this.processAssetDeloads();
@@ -246,67 +211,22 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix")).set(this.projectionMatrix);
         ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix")).set(this.cameraMatrix);
         
+        SAmbientLight structAmbientLight = STRUCT_DEFAULT_AMBIENT_LIGHT;
+        
             // Setup ambient light uniforms
         if( this.ambientLight != null )
-        {
-            ((UNIFloat) this.shaderProgram.getUniform("ambientLightIntensity")).set(this.ambientLight.getIntensity());
-            ((UNIVector3f) this.shaderProgram.getUniform("ambientLightColor")).set(this.ambientLight.getColor());
-        }
-        else
-        {
-            ((UNIFloat) this.shaderProgram.getUniform("ambientLightIntensity")).set(JAmbientLight.DEFAULT_INTENSITY);
-            ((UNIVector3f) this.shaderProgram.getUniform("ambientLightColor")).set(JAmbientLight.DEFAULT_COLOR);
-        }
+        structAmbientLight = this.ambientLight;
+        
+        ((UNIAmbientLight) this.shaderProgram.getUniform("ambientLight")).set(structAmbientLight);
         
             // Setup point light uniforms
         int pointLightIndex = 0;
-        for( Map.Entry<JPointLight, Boolean> en : this.pointLights.entrySet() )
+        for( Map.Entry<JPointLight, SPointLight> en : this.pointLights.entrySet() )
         {
-            JPointLight pointLight = en.getKey();
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightIntensity_" + pointLightIndex))
-            .set(pointLight.getIntensity());
-            
-            ((UNIVector3f) this.shaderProgram.getUniform("pointLightPosition_" + pointLightIndex))
-            .set(pointLight.getPosition().get());
-            
-            ((UNIVector3f) this.shaderProgram.getUniform("pointLightColor_" + pointLightIndex))
-            .set(pointLight.getColor());
-            
-            CAttenuation attenuation = pointLight.getAttenuation();
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationConstant_" + pointLightIndex))
-            .set(attenuation.getConstant());
-            
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationLinear_" + pointLightIndex))
-            .set(attenuation.getLinear());
-            
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationExponent_" + pointLightIndex))
-            .set(attenuation.getExponent());
-            pointLightIndex++;
-            
-            if( pointLightIndex >= MAX_POINT_LIGHT_COUNT )
-            break;
-        }
-        
-            // Fill the rest of the unused point light uniforms
-        for( int i = pointLightIndex; i < MAX_POINT_LIGHT_COUNT; i++ )
-        {
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightIntensity_" + pointLightIndex))
-            .set(0.0f);
-            
-            ((UNIVector3f) this.shaderProgram.getUniform("pointLightPosition_" + pointLightIndex))
-            .set(new Vector3f(0.0f));
-            
-            ((UNIVector3f) this.shaderProgram.getUniform("pointLightColor_" + pointLightIndex))
-            .set(new Vector3f(0.0f));
-            
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationConstant_" + pointLightIndex))
-            .set(0.0f);
-            
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationLinear_" + pointLightIndex))
-            .set(0.0f);
-            
-            ((UNIFloat) this.shaderProgram.getUniform("pointLightAttenuationExponent_" + pointLightIndex))
-            .set(0.0f);
+            SPointLight struct = en.getValue();
+            UNIPointLight uPointLight = ((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
+            .getArrayIndex(pointLightIndex);
+            uPointLight.set(struct);
         }
         
         UNIMatrix4f modelMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
@@ -345,9 +265,13 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
                 Texture texture = material.getTexture();
                 TextureGL textureGraphics = (TextureGL) texture.getGraphics();
                 
-                ((UNIVector4f) this.shaderProgram.getUniform("materialDiffuseColor")).set(material.getDiffuseColor());
-                ((UNIVector4f) this.shaderProgram.getUniform("materialSpecularColor")).set(material.getSpecularColor());
-                ((UNIFloat) this.shaderProgram.getUniform("materialReflectance")).set(material.getReflectance());
+                SMaterial materialStruct = new SMaterial();
+                materialStruct.c4Diffuse = material.getDiffuseColor();
+                materialStruct.c4Specular = material.getSpecularColor();
+                materialStruct.fReflectance = material.getReflectance();
+                
+                ((UNIMaterial) this.shaderProgram.getUniform("material"))
+                .set(materialStruct);
                 GL30.glActiveTexture(GL30.GL_TEXTURE0);
                 textureGraphics.bind();
                 
@@ -381,12 +305,11 @@ public class CachedVAORenderBufferStrategy extends ARenderBufferStrategy {
         this.cameraMatrix = cameraMatrix;
     }
     
-    public void setAmbientLight(JAmbientLight ambientLight) {
+    public void setAmbientLight(SAmbientLight ambientLight) {
         this.ambientLight = ambientLight;
     }
     
-    public void addPointLight(JPointLight pointLight) {
-        if( this.pointLights.get(pointLight) == null )
-        this.pointLights.put(pointLight, true);
+    public void addPointLight(JPointLight pointLight, SPointLight pointLightStruct) {
+        this.pointLights.put(pointLight, pointLightStruct);
     }
 }

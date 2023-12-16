@@ -1,10 +1,8 @@
-package johnengine.basic.renderer.components.uniforms;
+package johnengine.basic.renderer.uniforms;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
-
-import johnengine.basic.renderer.components.AUniform;
 
 public class UNIMatrix4f extends AUniform<Matrix4f> {
 

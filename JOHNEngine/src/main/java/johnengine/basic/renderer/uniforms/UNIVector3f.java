@@ -1,9 +1,7 @@
-package johnengine.basic.renderer.components.uniforms;
+package johnengine.basic.renderer.uniforms;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
-
-import johnengine.basic.renderer.components.AUniform;
 
 public class UNIVector3f extends AUniform<Vector3f> {
 

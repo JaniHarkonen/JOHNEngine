@@ -3,10 +3,10 @@ package johnengine.basic.renderer.asset;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.IRendererAsset;
-import johnengine.basic.renderer.components.VBOIndices;
-import johnengine.basic.renderer.components.VBONormals;
-import johnengine.basic.renderer.components.VBOTextureCoordinates;
-import johnengine.basic.renderer.components.VBOVertices;
+import johnengine.basic.renderer.vertex.VBOIndices;
+import johnengine.basic.renderer.vertex.VBONormals;
+import johnengine.basic.renderer.vertex.VBOTextureCoordinates;
+import johnengine.basic.renderer.vertex.VBOVertices;
 
 public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     

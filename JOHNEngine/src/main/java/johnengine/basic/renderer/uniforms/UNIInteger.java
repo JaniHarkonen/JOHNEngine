@@ -1,8 +1,6 @@
-package johnengine.basic.renderer.components.uniforms;
+package johnengine.basic.renderer.uniforms;
 
 import org.lwjgl.opengl.GL30;
-
-import johnengine.basic.renderer.components.AUniform;
 
 public class UNIInteger extends AUniform<Integer> {
 

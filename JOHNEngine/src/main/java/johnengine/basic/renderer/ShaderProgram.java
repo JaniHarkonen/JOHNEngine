@@ -10,11 +10,11 @@ import org.lwjgl.opengl.GL30;
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.renderer.asset.Shader;
-import johnengine.basic.renderer.components.AUniform;
+import johnengine.basic.renderer.uniforms.IUniform;
 
 public class ShaderProgram implements IGeneratable, IBindable {
     private List<Shader> shaders;
-    private Map<String, AUniform<?>> uniforms;
+    private Map<String, IUniform<?>> uniforms;
     private int handle;
 
     public ShaderProgram() {
@@ -66,14 +66,14 @@ public class ShaderProgram implements IGeneratable, IBindable {
     }
     
     
-    public ShaderProgram declareUniform(AUniform<?> uniform) {
+    public ShaderProgram declareUniform(IUniform<?> uniform) {
         uniform.declare(this);
         this.uniforms.put(uniform.getName(), uniform);
         
         return this;
     }
     
-    public AUniform<?> getUniform(String name) {
+    public IUniform<?> getUniform(String name) {
         return this.uniforms.get(name);
     }
     

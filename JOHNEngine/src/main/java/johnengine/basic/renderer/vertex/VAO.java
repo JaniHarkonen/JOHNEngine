@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.components;
+package johnengine.basic.renderer.vertex;
 
 import java.util.ArrayList;
 import java.util.List;

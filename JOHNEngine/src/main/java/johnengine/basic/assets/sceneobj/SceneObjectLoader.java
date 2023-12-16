@@ -3,8 +3,6 @@ package johnengine.basic.assets.sceneobj;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.assimp.AIColor4D;
-import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
@@ -14,7 +12,6 @@ import johnengine.basic.renderer.asset.Mesh;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.core.assetmngr.asset.IAsset;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
-import johnengine.testing.DebugUtils;
 
 public class SceneObjectLoader extends AAssetLoader {
     

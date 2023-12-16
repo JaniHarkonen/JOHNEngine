@@ -75,12 +75,13 @@ void main()
     vec4 c4TextureColor = texture(uTextureSampler, ioTexCoord);
     vec4 c4DiffuseSpecular = CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[0], ioPosition, ioNormal);
 
-    /*for( int i=1; i < MAX_POINT_LIGHT_COUNT; i++ )
+    for( int i=1; i < MAX_POINT_LIGHT_COUNT; i++ )
     {
-        if (uPointLight[i].intensity > 0)
+        if (uPointLight[i].fIntensity > 0)
         {
-            c4DiffuseSpecular += CalculatePointLight(uMaterial.c4Diffuse, uPointLight[i], ioPosition, ioNormal);
+            c4DiffuseSpecular += CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[i], ioPosition, ioNormal);
         }
-    }*/
+    }
+    
     outFragmentColor = (c4AmbienceColor * c4TextureColor) + c4DiffuseSpecular;
 }
