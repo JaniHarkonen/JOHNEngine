@@ -2,7 +2,7 @@ package johnengine.basic.game;
 
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.geometry.CProjection;
-import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderStrategy;
 
 public class JCamera extends AWorldObject implements IControllable {
     
@@ -17,8 +17,8 @@ public class JCamera extends AWorldObject implements IControllable {
 
     
     @Override
-    public void render(IRenderBufferStrategy renderBufferStrategy) {
-        renderBufferStrategy.executeStrategoid(this);
+    public void render(IRenderStrategy renderStrategy) {
+        renderStrategy.executeStrategoid(this);
     }
 
     @Override

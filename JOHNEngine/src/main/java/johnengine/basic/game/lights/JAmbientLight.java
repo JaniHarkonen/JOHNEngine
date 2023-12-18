@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
-import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderStrategy;
 
 public class JAmbientLight extends AWorldObject {
 
@@ -22,8 +22,8 @@ public class JAmbientLight extends AWorldObject {
 
     
     @Override
-    public void render(IRenderBufferStrategy renderBufferStrategy) {
-        renderBufferStrategy.executeStrategoid(this);
+    public void render(IRenderStrategy renderStrategy) {
+        renderStrategy.executeStrategoid(this);
     }
 
     @Override

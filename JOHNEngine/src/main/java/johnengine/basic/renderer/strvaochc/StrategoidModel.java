@@ -3,11 +3,11 @@ package johnengine.basic.renderer.strvaochc;
 import org.joml.Matrix4f;
 
 import johnengine.basic.game.components.CModel;
-import johnengine.core.renderer.ARenderBufferStrategoid;
 
-public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORenderBufferStrategy> {
+//public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORenderStrategy> {
+public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
 
-    public StrategoidModel(CachedVAORenderBufferStrategy strategy) {
+    public StrategoidModel(CachedVAORenderStrategy strategy) {
         super(strategy);
     }
 

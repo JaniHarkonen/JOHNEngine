@@ -6,7 +6,7 @@ import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CAttenuation;
 import johnengine.basic.game.components.CModel;
-import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderStrategy;
 
 public class JPointLight extends AWorldObject {
 
@@ -29,14 +29,14 @@ public class JPointLight extends AWorldObject {
     }
 
     @Override
-    public void render(IRenderBufferStrategy renderBufferStrategy) {
-        renderBufferStrategy.executeStrategoid(this);
+    public void render(IRenderStrategy renderStrategy) {
+        renderStrategy.executeStrategoid(this);
         
         if( this.DEBUGmodel != null )
         {
             this.DEBUGmodel.getScale().set(new Vector3f(.1f));
             this.DEBUGmodel.setPosition(this.position);
-            this.DEBUGmodel.render(renderBufferStrategy);
+            this.DEBUGmodel.render(renderStrategy);
         }
     }
 

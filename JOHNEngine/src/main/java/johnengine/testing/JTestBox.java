@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CModel;
-import johnengine.core.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderStrategy;
 
 public class JTestBox extends AWorldObject {
 
@@ -19,8 +19,8 @@ public class JTestBox extends AWorldObject {
     
 
     @Override
-    public void render(IRenderBufferStrategy renderBufferStrategy) {
-        this.model.render(renderBufferStrategy);
+    public void render(IRenderStrategy renderStrategy) {
+        this.model.render(renderStrategy);
     }
 
     @Override

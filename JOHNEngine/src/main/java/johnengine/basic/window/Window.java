@@ -3,9 +3,9 @@ package johnengine.basic.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
-import johnengine.core.renderer.ARenderer;
+import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
@@ -38,7 +38,8 @@ public final class Window extends AWindowFramework
     
     public static Window setup3D() {
         Window instance = new Window();
-        instance.setRenderer(new Renderer3D(instance));
+        //instance.setRenderer(new Renderer3D(instance));
+        instance.setRenderer(new RendererGL(instance));
         return instance;
     }
     
@@ -243,7 +244,11 @@ public final class Window extends AWindowFramework
         return this.input;
     }
     
-    public ARenderer getRenderer() {
+    /*public ARendererOLD getRenderer() {
+        return this.renderer;
+    }*/
+    
+    public IRenderer getRenderer() {
         return this.renderer;
     }
     

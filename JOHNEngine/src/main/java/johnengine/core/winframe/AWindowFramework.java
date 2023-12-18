@@ -2,7 +2,7 @@ package johnengine.core.winframe;
 
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.core.renderer.ARenderer;
+import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 
 public abstract class AWindowFramework {
@@ -126,7 +126,7 @@ public abstract class AWindowFramework {
     protected final Properties updatingProperties;
     protected final Properties snapshotProperties;
     protected final BufferedRequestManager requestManager;
-    protected ARenderer renderer;
+    protected IRenderer renderer;
     protected long windowID;
     protected long primaryMonitorID;
     
@@ -278,7 +278,7 @@ public abstract class AWindowFramework {
         this.updatingProperties.windowState = state;
     }
     
-    public void setRenderer(ARenderer renderer) {
+    public void setRenderer(IRenderer renderer) {
         this.renderer = renderer;
     }
     

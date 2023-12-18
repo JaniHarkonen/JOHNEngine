@@ -5,8 +5,8 @@ import johnengine.basic.game.components.geometry.CRotation;
 import johnengine.basic.game.components.geometry.CScale;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
-import johnengine.core.IRenderBufferStrategy;
 import johnengine.core.IRenderable;
+import johnengine.core.renderer.IRenderStrategy;
 
 public class CModel implements IRenderable {
     
@@ -31,8 +31,8 @@ public class CModel implements IRenderable {
     
     
     @Override
-    public void render(IRenderBufferStrategy renderBufferStrategy) {
-        renderBufferStrategy.executeStrategoid(this);
+    public void render(IRenderStrategy renderStrategy) {
+        renderStrategy.executeStrategoid(this);
     }
     
     

@@ -1,53 +1,39 @@
 package johnengine.basic.renderer.strvaochc.uniforms;
 
-import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.strvaochc.structs.SAttenuation;
-import johnengine.basic.renderer.uniforms.AUniform;
+import johnengine.basic.renderer.uniforms.AUniformObject;
 import johnengine.basic.renderer.uniforms.UNIFloat;
-import johnengine.basic.renderer.uniforms.UniformUtils;
 
-public class UNIAttenuation extends AUniform<SAttenuation> {
-    
+public class UNIAttenuation extends AUniformObject<SAttenuation> {
+
     private UNIFloat fConstant;
     private UNIFloat fLinear;
     private UNIFloat fExponent;
-
+    
     public UNIAttenuation(String name, String identifier) {
-        super(name, identifier);
-        this.fConstant = new UNIFloat(
-            UniformUtils.addFieldName(this.name, "constant"),
-            UniformUtils.addFieldNameToId(this.identifier, "fConstant")
+        super(
+            name, 
+            identifier, 
+            new UNIFloat("constant", "fConstant"),
+            new UNIFloat("linear", "fLinear"),
+            new UNIFloat("exponent", "fExponent")
         );
         
-        this.fLinear = new UNIFloat(
-            UniformUtils.addFieldName(this.name, "linear"),
-            UniformUtils.addFieldNameToId(this.identifier, "fLinear")
-        );
-        
-        this.fExponent = new UNIFloat(
-            UniformUtils.addFieldName(this.name, "exponent"),
-            UniformUtils.addFieldNameToId(this.identifier, "fExponent")
-        );
-    }
-
-    
-    @Override
-    public void declare(ShaderProgram shaderProgram) {
-        this.fConstant.declare(shaderProgram);
-        this.fLinear.declare(shaderProgram);
-        this.fExponent.declare(shaderProgram);
+        this.fConstant = (UNIFloat) this.uniformFields.get("constant");
+        this.fLinear = (UNIFloat) this.uniformFields.get("linear");
+        this.fExponent = (UNIFloat) this.uniformFields.get("exponent");
     }
     
-    @Override
-    public void set() {
-        this.fConstant.set(this.value.fConstant);
-        this.fLinear.set(this.value.fLinear);
-        this.fExponent.set(this.value.fExponent);
+    public UNIAttenuation() {
+        this("", "");
     }
-
+    
+    
     @Override
-    protected SAttenuation getDefault() {
-        return new SAttenuation();
+    public void setValue(SAttenuation struct) {
+        this.fConstant.setValue(struct.fConstant);
+        this.fLinear.setValue(struct.fLinear);
+        this.fExponent.setValue(struct.fExponent);
     }
     
     

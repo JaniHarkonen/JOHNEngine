@@ -8,7 +8,7 @@ import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JPointLight;
-import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.window.Window;
@@ -46,12 +46,14 @@ public class TestGame extends AGame {
         
         SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
-        objLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
+        //objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()));
+        objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
-        textureLoader.setMonitor(Renderer3D.class.cast(this.window.getRenderer()).getRenderBufferStrategy());
+        //textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getRenderStrategy());
+        textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
         //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
         
@@ -63,7 +65,6 @@ public class TestGame extends AGame {
         
         for( int i = 0; i < 1; i++ )
         {
-            
             CModel model = new CModel();
             model.setMesh(mesh);
             JTestBox box = new JTestBox(this.worldMain, model);
@@ -90,7 +91,7 @@ public class TestGame extends AGame {
         this.worldMain.createInstance(pointLight);
         
             // Update the active world of the renderer
-        Renderer3D.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
+        RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {

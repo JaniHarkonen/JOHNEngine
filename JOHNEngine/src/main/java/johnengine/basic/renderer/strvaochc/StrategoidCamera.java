@@ -3,12 +3,12 @@ package johnengine.basic.renderer.strvaochc;
 import org.joml.Matrix4f;
 
 import johnengine.basic.game.JCamera;
-import johnengine.core.renderer.ARenderBufferStrategoid;
 import johnengine.core.winframe.AWindowFramework;
 
-public class StrategoidCamera extends ARenderBufferStrategoid<JCamera, CachedVAORenderBufferStrategy> {
+//public class StrategoidCamera extends ARenderBufferStrategoid<JCamera, CachedVAORenderStrategy> {
+public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
 
-    public StrategoidCamera(CachedVAORenderBufferStrategy strategy) {
+    public StrategoidCamera(CachedVAORenderStrategy strategy) {
         super(strategy);
     }
 

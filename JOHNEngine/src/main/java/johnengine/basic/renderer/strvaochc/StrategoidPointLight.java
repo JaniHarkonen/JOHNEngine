@@ -4,11 +4,11 @@ import johnengine.basic.game.components.CAttenuation;
 import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.renderer.strvaochc.structs.SAttenuation;
 import johnengine.basic.renderer.strvaochc.structs.SPointLight;
-import johnengine.core.renderer.ARenderBufferStrategoid;
 
-public class StrategoidPointLight extends ARenderBufferStrategoid<JPointLight, CachedVAORenderBufferStrategy> {
+//public class StrategoidPointLight extends ARenderBufferStrategoid<JPointLight, CachedVAORenderStrategy> {
+public class StrategoidPointLight extends ACachedVAOStrategoid<JPointLight> {
 
-    public StrategoidPointLight(CachedVAORenderBufferStrategy strategy) {
+    public StrategoidPointLight(CachedVAORenderStrategy strategy) {
         super(strategy);
     }
 

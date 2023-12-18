@@ -1,54 +1,40 @@
 package johnengine.basic.renderer.strvaochc.uniforms;
 
-import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.strvaochc.structs.SMaterial;
-import johnengine.basic.renderer.uniforms.AUniform;
+import johnengine.basic.renderer.uniforms.AUniformObject;
 import johnengine.basic.renderer.uniforms.UNIFloat;
 import johnengine.basic.renderer.uniforms.UNIVector4f;
-import johnengine.basic.renderer.uniforms.UniformUtils;
 
-public class UNIMaterial extends AUniform<SMaterial> {
-    
+public class UNIMaterial extends AUniformObject<SMaterial> {
+
     private UNIVector4f c4Diffuse;
     private UNIVector4f c4Specular;
-    private UNIFloat fReflectance;
-
+    private UNIFloat fReflectance;    
+    
     public UNIMaterial(String name, String identifier) {
-        super(name, identifier);
-        this.c4Diffuse = new UNIVector4f(
-            UniformUtils.addFieldName(this.name, "diffuseLight"),
-            UniformUtils.addFieldNameToId(this.identifier, "c4Diffuse")
+        super(
+            name, 
+            identifier, 
+            new UNIVector4f("diffuse", "c4Diffuse"),
+            new UNIVector4f("specular", "c4Specular"),
+            new UNIFloat("reflectance", "fReflectance")
         );
         
-        this.c4Specular = new UNIVector4f(
-            UniformUtils.addFieldName(this.name, "specularLight"),
-            UniformUtils.addFieldNameToId(this.identifier, "c4Specular")
-        );
-        
-        this.fReflectance = new UNIFloat(
-            UniformUtils.addFieldName(this.name, "reflectance"),
-            UniformUtils.addFieldNameToId(this.identifier, "fReflectance")
-        );
-    }
-
-    
-    @Override
-    public void declare(ShaderProgram shaderProgram) {
-        this.c4Diffuse.declare(shaderProgram);
-        this.c4Specular.declare(shaderProgram);
-        this.fReflectance.declare(shaderProgram);
+        this.c4Diffuse = (UNIVector4f) this.uniformFields.get("diffuse");
+        this.c4Specular = (UNIVector4f) this.uniformFields.get("specular");
+        this.fReflectance = (UNIFloat) this.uniformFields.get("reflectance");
     }
     
-    @Override
-    public void set() {
-        this.c4Diffuse.set(this.value.c4Diffuse);
-        this.c4Specular.set(this.value.c4Specular);
-        this.fReflectance.set(this.value.fReflectance);
+    public UNIMaterial() {
+        this("", "");
     }
-
+    
+    
     @Override
-    protected SMaterial getDefault() {
-        return new SMaterial();
+    public void setValue(SMaterial struct) {
+        this.c4Diffuse.setValue(struct.c4Diffuse);
+        this.c4Specular.setValue(struct.c4Specular);
+        this.fReflectance.setValue(struct.fReflectance);
     }
     
     
