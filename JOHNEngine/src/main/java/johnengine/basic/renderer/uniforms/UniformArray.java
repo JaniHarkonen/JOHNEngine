@@ -1,9 +1,11 @@
 package johnengine.basic.renderer.uniforms;
 
+import java.util.function.Supplier;
+
 import johnengine.basic.renderer.ShaderProgram;
 
 public class UniformArray<T, U extends IUniform<T>> implements IUniform<U[]> {
-
+    
     private U[] array;
     private String name;
     private String identifier;
@@ -34,6 +36,16 @@ public class UniformArray<T, U extends IUniform<T>> implements IUniform<U[]> {
     public void set() {
         for( U uniform : this.array )
         uniform.set();
+    }
+    
+    public void fill(Supplier<U> uniformGenerator) {
+        for( int i = 0; i < this.array.length; i++ )
+        this.setArrayIndex(i, uniformGenerator.get());
+    }
+    
+    public void clear() {
+        for( int i = 0; i < this.array.length; i++ )
+        this.setArrayIndex(i, null);
     }
     
     public void setArrayIndex(int index, U value) {

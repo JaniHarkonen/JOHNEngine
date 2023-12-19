@@ -10,26 +10,30 @@ public class RenderBufferManager {
     
     public RenderBufferManager() {
         this.renderBufferQueue = new ConcurrentLinkedQueue<>();
-        this.lastBuffer = null;
+        this.lastBuffer = new RenderBuffer();
         this.currentBuffer = new RenderBuffer();
     }
     
     
     public void newBuffer() {
         this.renderBufferQueue.add(this.currentBuffer);
-        this.currentBuffer = new RenderBuffer();
+        this.currentBuffer = new RenderBuffer();    
     }
     
-    public void addRenderUnit(RenderUnit unit) {
-        this.currentBuffer.addUnit(unit);
+    public RenderBuffer peekNext() {
+        return this.renderBufferQueue.peek();
     }
     
-    public RenderBuffer getLatestBuffer() {
+    public RenderBuffer poll() {
         RenderBuffer renderBuffer = this.renderBufferQueue.poll();
         
         if( renderBuffer != null )
         this.lastBuffer = renderBuffer;
 
         return this.lastBuffer;
+    }
+    
+    RenderBuffer getCurrentBuffer() {
+        return this.currentBuffer;
     }
 }

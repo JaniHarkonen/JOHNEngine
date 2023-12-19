@@ -10,13 +10,11 @@ public interface IRenderStrategy {
     
     public boolean executeStrategoid(IRenderable target);
     
-    public void preRender();
-    
     public void render();
     
-    public void postRender();
-    
     public IRenderer getRenderer();
+    
+    public boolean canRender();
     
     public void dispose();
 }

@@ -3,7 +3,6 @@ package johnengine.basic.renderer.strvaochc;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.renderer.strvaochc.structs.SAmbientLight;
 
-//public class StrategoidAmbientLight extends ARenderBufferStrategoid<JAmbientLight, CachedVAORenderBufferStrategy> {
 public class StrategoidAmbientLight extends ACachedVAOStrategoid<JAmbientLight> {
 
     public StrategoidAmbientLight(CachedVAORenderStrategy strategy) {

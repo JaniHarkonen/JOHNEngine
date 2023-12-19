@@ -38,7 +38,6 @@ public final class Window extends AWindowFramework
     
     public static Window setup3D() {
         Window instance = new Window();
-        //instance.setRenderer(new Renderer3D(instance));
         instance.setRenderer(new RendererGL(instance));
         return instance;
     }
@@ -243,10 +242,6 @@ public final class Window extends AWindowFramework
     public Input getInput() {
         return this.input;
     }
-    
-    /*public ARendererOLD getRenderer() {
-        return this.renderer;
-    }*/
     
     public IRenderer getRenderer() {
         return this.renderer;

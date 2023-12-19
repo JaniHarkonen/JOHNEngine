@@ -5,7 +5,6 @@ import org.joml.Matrix4f;
 import johnengine.basic.game.JCamera;
 import johnengine.core.winframe.AWindowFramework;
 
-//public class StrategoidCamera extends ARenderBufferStrategoid<JCamera, CachedVAORenderStrategy> {
 public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
 
     public StrategoidCamera(CachedVAORenderStrategy strategy) {

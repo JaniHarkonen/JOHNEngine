@@ -1,6 +1,5 @@
 package johnengine.basic.renderer.strvaochc;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.joml.Matrix4f;
@@ -28,7 +27,6 @@ import johnengine.basic.renderer.strvaochc.uniforms.UNIPointLight;
 import johnengine.basic.renderer.uniforms.UNIInteger;
 import johnengine.basic.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.renderer.uniforms.UniformArray;
-import johnengine.basic.renderer.uniforms.UniformUtils;
 import johnengine.basic.renderer.vertex.VAO;
 import johnengine.core.IRenderable;
 import johnengine.core.cache.TimedCache;
@@ -37,13 +35,12 @@ import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderStrategoidManager;
 
-public class CachedVAORenderStrategy implements IRenderStrategy {
+public class CachedVAORenderStrategy implements 
+    IRenderStrategy,
+    IHasRenderBuffer
+{
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     public static final int MAX_POINT_LIGHT_COUNT = 5;
-    
-    private static final SAmbientLight STRUCT_DEFAULT_AMBIENT_LIGHT = new SAmbientLight(
-        JAmbientLight.DEFAULT_COLOR, JAmbientLight.DEFAULT_INTENSITY
-    );
     
     private final IRenderer renderer;
     private final TimedCache<MeshGL, VAO> vaoCache;
@@ -51,21 +48,11 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
     private RenderBufferManager renderBufferManager;
     private RenderStrategoidManager strategoidManager;
     
-    private Matrix4f projectionMatrix;
-    private Matrix4f cameraMatrix;
-        
-    private SAmbientLight ambientLight;
-    private Map<JPointLight, SPointLight> pointLights;
-    
     public CachedVAORenderStrategy(IRenderer renderer) {
         this.renderer = renderer;
         this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager();
-        this.projectionMatrix = new Matrix4f();
-        this.cameraMatrix = new Matrix4f();
-        this.ambientLight = null;
-        this.pointLights = new HashMap<>();
         this.strategoidManager = new RenderStrategoidManager();
         
         this.strategoidManager.addStrategoid(CModel.class, new StrategoidModel(this));
@@ -114,7 +101,8 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
                 new UNIPointLight[MAX_POINT_LIGHT_COUNT]
             );
         
-        UniformUtils.fillArray(pointLight, () -> new UNIPointLight());
+        //UniformUtils.fillArray(pointLight, () -> new UNIPointLight());
+        pointLight.fill(() -> new UNIPointLight());
 
         this.shaderProgram
         .declareUniform(textureSampler)
@@ -142,37 +130,43 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
         return true;
     }
     
-    @Override
     @SuppressWarnings("unchecked")
-    public void preRender() {
+    public void preRender(RenderBuffer renderBuffer) {
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
         
-        ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix")).set(this.projectionMatrix);
-        ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix")).set(this.cameraMatrix);
+        ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
+        .set(renderBuffer.getProjectionMatrix());
         
-        SAmbientLight structAmbientLight = STRUCT_DEFAULT_AMBIENT_LIGHT;
+        ((UNIMatrix4f) this.shaderProgram.getUniform("cameraMatrix"))
+        .set(renderBuffer.getCameraMatrix());
         
-            // Setup ambient light uniforms
-        if( this.ambientLight != null )
-        structAmbientLight = this.ambientLight;
-        
-        ((UNIAmbientLight) this.shaderProgram.getUniform("ambientLight")).set(structAmbientLight);
+        ((UNIAmbientLight) this.shaderProgram.getUniform("ambientLight"))
+        .set(renderBuffer.getAmbientLight());
         
             // Setup point light uniforms
         int pointLightIndex = 0;
-        for( Map.Entry<JPointLight, SPointLight> en : this.pointLights.entrySet() )
+        for( Map.Entry<JPointLight, SPointLight> en : renderBuffer.getPointLights() )
         {
             SPointLight struct = en.getValue();
-            UNIPointLight uPointLight = ((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
-            .getArrayIndex(pointLightIndex);
+            
+            UNIPointLight uPointLight = (
+                (UniformArray<SPointLight, UNIPointLight>) 
+                this.shaderProgram.getUniform("pointLight")
+            ).getArrayIndex(pointLightIndex);
+            
             uPointLight.set(struct);
+            
+            pointLightIndex++;
         }
     }
     
     @Override
     public void render() {
-        RenderBuffer renderBuffer = this.renderBufferManager.getLatestBuffer();
+            // Pre-render
+        RenderBuffer renderBuffer = this.renderBufferManager.poll();
+        this.preRender(renderBuffer);
+        
         UNIMatrix4f modelMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
         for( RenderUnit unit : renderBuffer.getBuffer() )
         {
@@ -220,9 +214,11 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
             vao.bind();
             GL30.glDrawElements(GL30.GL_TRIANGLES, meshData.getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
         }
+        
+            // Post-render
+        this.postRender();
     }
     
-    @Override
     public void postRender() {
         GL30.glBindVertexArray(0);
         this.shaderProgram.unbind();
@@ -230,6 +226,8 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
             // Update cached VAOs and remove those that have been unused
             // for too long
         this.vaoCache.update();
+        //((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
+        //.fill(() -> );
     }
     
     @Override
@@ -237,28 +235,38 @@ public class CachedVAORenderStrategy implements IRenderStrategy {
         this.shaderProgram.dispose();
     }
     
+    @Override
     public void addRenderUnit(RenderUnit unit) {
-        this.renderBufferManager.addRenderUnit(unit);
+        this.renderBufferManager.getCurrentBuffer().addRenderUnit(unit);
     }
     
+    @Override
     public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.projectionMatrix = projectionMatrix;
+        this.renderBufferManager.getCurrentBuffer().setProjectionMatrix(projectionMatrix);
     }
     
+    @Override
     public void setCameraMatrix(Matrix4f cameraMatrix) {
-        this.cameraMatrix = cameraMatrix;
+        this.renderBufferManager.getCurrentBuffer().setCameraMatrix(cameraMatrix);
     }
     
+    @Override
     public void setAmbientLight(SAmbientLight ambientLight) {
-        this.ambientLight = ambientLight;
+        this.renderBufferManager.getCurrentBuffer().setAmbientLight(ambientLight);
     }
     
+    @Override
     public void addPointLight(JPointLight pointLight, SPointLight pointLightStruct) {
-        this.pointLights.put(pointLight, pointLightStruct);
+        this.renderBufferManager.getCurrentBuffer().addPointLight(pointLight, pointLightStruct);
     }
 
     @Override
     public IRenderer getRenderer() {
         return this.renderer;
+    }
+    
+    @Override
+    public boolean canRender() {
+        return (this.renderBufferManager.peekNext() != null);
     }
 }

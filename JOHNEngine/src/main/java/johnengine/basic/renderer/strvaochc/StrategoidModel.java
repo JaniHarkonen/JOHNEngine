@@ -4,7 +4,6 @@ import org.joml.Matrix4f;
 
 import johnengine.basic.game.components.CModel;
 
-//public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORenderStrategy> {
 public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
 
     public StrategoidModel(CachedVAORenderStrategy strategy) {
