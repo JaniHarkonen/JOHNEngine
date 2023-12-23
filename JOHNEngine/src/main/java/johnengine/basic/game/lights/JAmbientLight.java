@@ -9,7 +9,7 @@ import johnengine.core.renderer.IRenderStrategy;
 public class JAmbientLight extends AWorldObject {
 
     public static final Vector3f DEFAULT_COLOR = new Vector3f(1.0f, 1.0f, 1.0f);
-    public static final float DEFAULT_INTENSITY = 1.0f;
+    public static final float DEFAULT_INTENSITY = 0.5f;
     
     private Vector3f color;
     private float intensity;

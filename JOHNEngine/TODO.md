@@ -26,18 +26,7 @@ to render (using OpenGL-commands) after window.stop() has been called
 	-> GLFWterminate() is called upon window.stop()
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
-of the game world 
-- WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
-THIS IS NOT ALLOWED -> REFACTOR
+of the game world
 - ARequest should be IRequest due to no internal state
 
 - add default material
-
-### Renderer revamp
-Renderer
-- render buffer queue
-	-- current render buffer
-	-- last render buffer
-
-- rename render buffer strategy to render strategy
-	

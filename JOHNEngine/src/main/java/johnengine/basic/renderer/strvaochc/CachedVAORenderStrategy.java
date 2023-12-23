@@ -10,7 +10,9 @@ import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
+import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
+import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.MeshGL;
@@ -19,18 +21,22 @@ import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.strvaochc.structs.SAmbientLight;
+import johnengine.basic.renderer.strvaochc.structs.SDirectionalLight;
 import johnengine.basic.renderer.strvaochc.structs.SMaterial;
 import johnengine.basic.renderer.strvaochc.structs.SPointLight;
+import johnengine.basic.renderer.strvaochc.structs.SSpotLight;
 import johnengine.basic.renderer.strvaochc.uniforms.UNIAmbientLight;
+import johnengine.basic.renderer.strvaochc.uniforms.UNIDirectionalLight;
 import johnengine.basic.renderer.strvaochc.uniforms.UNIMaterial;
 import johnengine.basic.renderer.strvaochc.uniforms.UNIPointLight;
+import johnengine.basic.renderer.strvaochc.uniforms.UNISpotLight;
 import johnengine.basic.renderer.uniforms.UNIInteger;
 import johnengine.basic.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.renderer.uniforms.UniformArray;
 import johnengine.basic.renderer.vertex.VAO;
 import johnengine.core.IRenderable;
 import johnengine.core.cache.TimedCache;
-import johnengine.core.renderer.IRenderStrategoid;
+import johnengine.core.renderer.IRenderBufferStrategoid;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderStrategoidManager;
@@ -41,6 +47,7 @@ public class CachedVAORenderStrategy implements
 {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     public static final int MAX_POINT_LIGHT_COUNT = 5;
+    public static final int MAX_SPOT_LIGHT_COUNT = 5;
     
     private final IRenderer renderer;
     private final TimedCache<MeshGL, VAO> vaoCache;
@@ -59,6 +66,8 @@ public class CachedVAORenderStrategy implements
         this.strategoidManager.addStrategoid(JCamera.class, new StrategoidCamera(this));
         this.strategoidManager.addStrategoid(JAmbientLight.class, new StrategoidAmbientLight(this));
         this.strategoidManager.addStrategoid(JPointLight.class, new StrategoidPointLight(this));
+        this.strategoidManager.addStrategoid(JDirectionalLight.class, new StrategoidDirectionalLight(this));
+        this.strategoidManager.addStrategoid(JSpotLight.class, new StrategoidSpotLight(this));
     }
     
     
@@ -93,6 +102,7 @@ public class CachedVAORenderStrategy implements
         UNIMatrix4f modelMatrix = new UNIMatrix4f("modelMatrix", "uModelMatrix");
         
         UNIAmbientLight ambientLight = new UNIAmbientLight("ambientLight", "uAmbientLight");
+        UNIDirectionalLight directionalLight = new UNIDirectionalLight("directionalLight", "uDirectionalLight");
         UNIMaterial material = new UNIMaterial("material", "uMaterial");
         UniformArray<SPointLight, UNIPointLight> pointLight = 
             new UniformArray<SPointLight, UNIPointLight>(
@@ -101,8 +111,15 @@ public class CachedVAORenderStrategy implements
                 new UNIPointLight[MAX_POINT_LIGHT_COUNT]
             );
         
-        //UniformUtils.fillArray(pointLight, () -> new UNIPointLight());
+        UniformArray<SSpotLight, UNISpotLight> spotLight = 
+            new UniformArray<SSpotLight, UNISpotLight>(
+                "spotLight", 
+                "uSpotLight",
+                new UNISpotLight[MAX_SPOT_LIGHT_COUNT]
+            );
+        
         pointLight.fill(() -> new UNIPointLight());
+        spotLight.fill(() -> new UNISpotLight());
 
         this.shaderProgram
         .declareUniform(textureSampler)
@@ -111,7 +128,9 @@ public class CachedVAORenderStrategy implements
         .declareUniform(modelMatrix)
         .declareUniform(ambientLight)
         .declareUniform(material)
-        .declareUniform(pointLight);
+        .declareUniform(pointLight)
+        .declareUniform(directionalLight)
+        .declareUniform(spotLight);
     }
     
     @Override
@@ -121,7 +140,7 @@ public class CachedVAORenderStrategy implements
     
     @Override
     public boolean executeStrategoid(IRenderable target) {
-        IRenderStrategoid<IRenderable> strategoid = this.strategoidManager.getStrategoid(target.getClass());
+        IRenderBufferStrategoid<IRenderable> strategoid = this.strategoidManager.getStrategoid(target.getClass());
         
         if( strategoid == null )
         return false;
@@ -144,6 +163,9 @@ public class CachedVAORenderStrategy implements
         ((UNIAmbientLight) this.shaderProgram.getUniform("ambientLight"))
         .set(renderBuffer.getAmbientLight());
         
+        ((UNIDirectionalLight) this.shaderProgram.getUniform("directionalLight"))
+        .set(renderBuffer.getDirectionalLight());
+        
             // Setup point light uniforms
         int pointLightIndex = 0;
         for( Map.Entry<JPointLight, SPointLight> en : renderBuffer.getPointLights() )
@@ -156,8 +178,22 @@ public class CachedVAORenderStrategy implements
             ).getArrayIndex(pointLightIndex);
             
             uPointLight.set(struct);
-            
             pointLightIndex++;
+        }
+        
+            // Setup spot light uniforms
+        int spotLightIndex = 0;
+        for( Map.Entry<JSpotLight, SSpotLight> en : renderBuffer.getSpotLights() )
+        {
+            SSpotLight struct = en.getValue();
+            
+            UNISpotLight uSpotLight = (
+                (UniformArray<SSpotLight, UNISpotLight>) 
+                this.shaderProgram.getUniform("spotLight")
+            ).getArrayIndex(spotLightIndex);
+            
+            uSpotLight.set(struct);
+            spotLightIndex++;
         }
     }
     
@@ -256,8 +292,23 @@ public class CachedVAORenderStrategy implements
     }
     
     @Override
+    public void setDirectionalLight(SDirectionalLight directionalLight) {
+        this.renderBufferManager.getCurrentBuffer().setDirectionalLight(directionalLight);
+    }
+    
+    @Override
     public void addPointLight(JPointLight pointLight, SPointLight pointLightStruct) {
         this.renderBufferManager.getCurrentBuffer().addPointLight(pointLight, pointLightStruct);
+    }
+    
+    @Override
+    public void addSpotLight(JSpotLight spotLight, SSpotLight spotLightStruct) {
+        this.renderBufferManager.getCurrentBuffer().addSpotLight(spotLight, spotLightStruct);
+    }
+    
+    @Override
+    public SPointLight getPointLightStruct(JPointLight pointLight) {
+        return this.renderBufferManager.getCurrentBuffer().getPointLightStruct(pointLight);
     }
 
     @Override

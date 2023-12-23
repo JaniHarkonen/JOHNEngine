@@ -1,5 +1,7 @@
 package johnengine.basic.game;
 
+import org.joml.Vector3f;
+
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.geometry.CProjection;
 import johnengine.core.renderer.IRenderStrategy;
@@ -57,12 +59,29 @@ public class JCamera extends AWorldObject implements IControllable {
 
     @Override
     public void moveForward() {
-        this.position.get().set(this.position.get().x, this.position.get().y, this.position.get().z- 0.1f);
+        Vector3f movementVector = new Vector3f();
+        this.rotation.get().positiveZ(movementVector);
+        this.position.get().add(movementVector.mul(0.05f));
     }
-
 
     @Override
     public void moveBackward() {
-        this.position.get().set(this.position.get().x, this.position.get().y, this.position.get().z+ 0.1f);
+        Vector3f movementVector = new Vector3f();
+        this.rotation.get().positiveZ(movementVector);
+        this.position.get().sub(movementVector.mul(0.05f));
+    }
+    
+    @Override
+    public void moveLeft() {
+        Vector3f movementVector = new Vector3f();
+        this.rotation.get().positiveX(movementVector);
+        this.position.get().add(movementVector.mul(0.05f));
+    }
+
+    @Override
+    public void moveRight() {
+        Vector3f movementVector = new Vector3f();
+        this.rotation.get().positiveX(movementVector);
+        this.position.get().sub(movementVector.mul(0.05f));
     }
 }

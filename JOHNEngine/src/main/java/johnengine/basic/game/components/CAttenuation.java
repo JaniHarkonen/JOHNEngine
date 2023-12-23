@@ -17,7 +17,11 @@ public class CAttenuation {
     }
     
     public CAttenuation() {
-        this(DEFAULT_CONSTANT, DEFAULT_LINEAR, DEFAULT_EXPONENT);
+        this(
+            DEFAULT_CONSTANT, 
+            DEFAULT_LINEAR, 
+            DEFAULT_EXPONENT
+        );
     }
     
     

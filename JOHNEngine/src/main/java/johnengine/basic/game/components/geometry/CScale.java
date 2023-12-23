@@ -2,8 +2,6 @@ package johnengine.basic.game.components.geometry;
 
 import org.joml.Vector3f;
 
-import johnengine.basic.game.components.geometry.IGeometryComponent.DirectAccess;
-
 public class CScale implements IGeometryComponent.DirectAccess<Vector3f> {
 
     private Vector3f scale;

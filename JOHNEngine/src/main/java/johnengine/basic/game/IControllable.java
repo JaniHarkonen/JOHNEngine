@@ -12,6 +12,10 @@ public interface IControllable {
     
     public void moveBackward();
     
+    public void moveLeft();
+    
+    public void moveRight();
+    
     public CController getController();
     
     public void setController(CController controller);

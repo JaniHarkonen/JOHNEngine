@@ -3,8 +3,6 @@ package johnengine.basic.game.components.geometry;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import johnengine.basic.game.components.geometry.IGeometryComponent.DirectAccess;
-
 public class CRotation implements IGeometryComponent.DirectAccess<Quaternionf> {
 
     private static final Vector3f X_AXIS = new Vector3f(1.0f, 0.0f, 0.0f);
@@ -27,22 +25,11 @@ public class CRotation implements IGeometryComponent.DirectAccess<Quaternionf> {
     public void rotateX(float angle) {
         this.xAngle += angle;
         this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle).mul((new Quaternionf()).fromAxisAngleDeg(Y_AXIS, this.yAngle));
-        //this.xAngle += angle;
-        //this.rotation.fromAxisAngleDeg(Y_AXIS, this.yAngle);
-        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
-        //this.rotation.rotateX(angle);
-        //this.rotation.rotateLocalX(angle);
-        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
     }
     
     public void rotateY(float angle) {
         this.yAngle += angle;
         this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle).mul((new Quaternionf()).fromAxisAngleDeg(Y_AXIS, this.yAngle));
-        //this.xAngle += angle;
-        //this.rotation.fromAxisAngleDeg(Y_AXIS, this.yAngle);
-        //this.rotation.fromAxisAngleDeg(X_AXIS, this.xAngle);
-        //this.rotation.rotateAxis(this.xAngle, X_AXIS);
-        //this.rotation.rotateAxis(this.yAngle, Y_AXIS);
     }
     
     public void rotateZ(float angle) {

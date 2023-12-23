@@ -52,6 +52,12 @@ public class CController implements ITickable {
             
         if( state.isKeyDown(GLFW.GLFW_KEY_S) )
         this.controlledInstance.moveBackward();
+        
+        if( state.isKeyDown(GLFW.GLFW_KEY_A) )
+        this.controlledInstance.moveLeft();
+            
+        if( state.isKeyDown(GLFW.GLFW_KEY_D) )
+        this.controlledInstance.moveRight();
         //this.controlledInstance.moveBackward();
     }
     

@@ -17,6 +17,12 @@ struct AmbientLight {
 	vec3 c3Ambient;
 };
 
+struct DirectionalLight {
+    vec3 c3Light;
+    vec3 v3Direction;
+    float fIntensity;
+};
+
 struct PointLight {
     float fIntensity;
     vec3 c3Light;
@@ -24,7 +30,14 @@ struct PointLight {
     Attenuation attenuation;
 };
 
+struct SpotLight {
+    vec3 v3Direction;
+    float fCutOff;
+    PointLight pointLight;
+};
+
 const int   MAX_POINT_LIGHT_COUNT = 5;
+const int   MAX_SPOT_LIGHT_COUNT = 5;
 const float SPECULAR_POWER = 10;
 const vec4  FAIL_VEC = vec4(1,1,1,1);
 
@@ -34,10 +47,12 @@ in vec2 ioTexCoord;
 
 out vec4 outFragmentColor;
 
-uniform sampler2D       uTextureSampler;
-uniform AmbientLight    uAmbientLight;
-uniform PointLight      uPointLight[MAX_POINT_LIGHT_COUNT];
-uniform Material        uMaterial;
+uniform sampler2D           uTextureSampler;
+uniform AmbientLight        uAmbientLight;
+uniform DirectionalLight    uDirectionalLight;
+uniform PointLight          uPointLight[MAX_POINT_LIGHT_COUNT];
+uniform SpotLight           uSpotLight[MAX_SPOT_LIGHT_COUNT];
+uniform Material            uMaterial;
 
 vec4 CalculateLightColor(vec4 c4BaseDiffuse, vec4 c4BaseSpecular, vec3 c3Light, float fLightIntensity, vec3 v3Position, vec3 v3DirectionToLight, vec3 v3Normal) {
     //vec4 c4ResultDiffuse = vec4(0, 0, 0, 1);
@@ -69,19 +84,60 @@ vec4 CalculatePointLight(vec4 c4Diffuse, vec4 c4Specular, PointLight light, vec3
     return c4Light / fInverseAttenuation;
 }
 
+vec4 CalculateSpotLight(vec4 diffuse, vec4 specular, SpotLight light, vec3 position, vec3 normal) {
+    vec3 light_direction = light.pointLight.v3Position - position;
+    vec3 to_light_dir  = normalize(light_direction);
+    vec3 from_light_dir  = -to_light_dir;
+    float spot_alfa = dot(from_light_dir, normalize(light.v3Direction));
+
+    vec4 color = vec4(0, 0, 0, 0);
+
+    if( spot_alfa > light.fCutOff )
+    {
+        color = CalculatePointLight(diffuse, specular, light.pointLight, position, normal);
+        color *= (1.0 - (1.0 - spot_alfa) / (1.0 - light.fCutOff));
+    }
+
+    return color;
+}
+
 void main()
 {
-    vec4 c4AmbienceColor = vec4(uAmbientLight.fIntensity * uAmbientLight.c3Ambient, 1);
-    vec4 c4TextureColor = texture(uTextureSampler, ioTexCoord);
-    vec4 c4DiffuseSpecular = CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[0], ioPosition, ioNormal);
+    vec4 c4Ambience = vec4(uAmbientLight.fIntensity * uAmbientLight.c3Ambient, 1);
+    vec4 c4Texture = texture(uTextureSampler, ioTexCoord);
+    /*vec4 c4DiffuseSpecular = CalculateLightColor(
+        c4Texture + uMaterial.c4Diffuse, 
+        c4Texture + uMaterial.c4Specular, 
+        uDirectionalLight.c3Light, 
+        uDirectionalLight.fIntensity, 
+        ioPosition, 
+        normalize(uDirectionalLight.v3Direction), 
+        ioNormal
+    );*/
+    //vec4 c4DiffuseSpecular = CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[0], ioPosition, ioNormal);
 
-    for( int i=1; i < MAX_POINT_LIGHT_COUNT; i++ )
+    /*for( int i=1; i < MAX_POINT_LIGHT_COUNT; i++ )
     {
-        if (uPointLight[i].fIntensity > 0)
+        if( uPointLight[i].fIntensity > 0 )
         {
             c4DiffuseSpecular += CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[i], ioPosition, ioNormal);
         }
+    }*/
+
+    vec4 c4DiffuseSpecular;
+    for( int i = 0; i < MAX_SPOT_LIGHT_COUNT; i++ )
+    {
+        if( uSpotLight[i].pointLight.fIntensity > 0 )
+        {
+            c4DiffuseSpecular = CalculateSpotLight(
+                c4Texture + uMaterial.c4Diffuse, 
+                c4Texture + uMaterial.c4Specular, 
+                uSpotLight[i], 
+                ioPosition, 
+                ioNormal
+            );
+        }
     }
     
-    outFragmentColor = (c4AmbienceColor * c4TextureColor) + c4DiffuseSpecular;
+    outFragmentColor = (c4Ambience * c4Texture) + c4DiffuseSpecular;
 }

@@ -2,8 +2,6 @@ package johnengine.basic.game.components.geometry;
 
 import org.joml.Matrix4f;
 
-import johnengine.basic.game.components.geometry.IGeometryComponent.Calculatable;
-
 public class CProjection implements IGeometryComponent.Calculatable<Matrix4f> {
 
     public static final float DEFAULT_FOV_Y = (float) Math.toRadians(90.0f);

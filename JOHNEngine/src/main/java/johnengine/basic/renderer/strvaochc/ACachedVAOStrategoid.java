@@ -1,9 +1,9 @@
 package johnengine.basic.renderer.strvaochc;
 
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderStrategoid;
+import johnengine.core.renderer.IRenderBufferStrategoid;
 
-public abstract class ACachedVAOStrategoid<T extends IRenderable> implements IRenderStrategoid<T> {
+public abstract class ACachedVAOStrategoid<T extends IRenderable> implements IRenderBufferStrategoid<T> {
 
     protected CachedVAORenderStrategy strategy;
     

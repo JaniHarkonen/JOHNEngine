@@ -7,7 +7,9 @@ import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
+import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
+import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -46,13 +48,11 @@ public class TestGame extends AGame {
         
         SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
-        //objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()));
         objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
-        //textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getRenderStrategy());
         textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
         //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
@@ -86,9 +86,14 @@ public class TestGame extends AGame {
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
         
+        JDirectionalLight directionalLight = new JDirectionalLight(this.worldMain);
+        this.worldMain.createInstance(directionalLight);
+        
+        JSpotLight spotLight = new JSpotLight(this.worldMain);
         JPointLight pointLight = new JPointLight(this.worldMain);
-        pointLight.DEBUGmodel = debugmodel;
-        this.worldMain.createInstance(pointLight);
+        spotLight.setPointLight(pointLight);
+        //this.worldMain.createInstance(pointLight);
+        this.worldMain.createInstance(spotLight);
         
             // Update the active world of the renderer
         RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
