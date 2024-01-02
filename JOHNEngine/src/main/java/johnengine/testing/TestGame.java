@@ -38,8 +38,10 @@ public class TestGame extends AGame {
         
         this.window
         .hideCursor()
-        //.enterFullscreen()
         .disableVSync();
+        
+        //Window.class.cast(this.window).enterFullscreen();
+        //Window.class.cast(this.window).resize(1000, 1000);
         
         AssetManager am = this.assetManager;
         
@@ -63,17 +65,16 @@ public class TestGame extends AGame {
         
         this.worldMain = new JWorld(this);
         
-        for( int i = 0; i < 1; i++ )
-        {
-            CModel model = new CModel();
-            model.setMesh(mesh);
-            JTestBox box = new JTestBox(this.worldMain, model);
-            model.setPosition(box.getPosition());
-            model.setRotation(box.getRotation());
-            model.setScale(box.getScale());
-            //model.setTexture(texture);
-            this.worldMain.createInstance(box);
-        }
+        CModel model = new CModel();
+        model.setMesh(mesh);
+        JTestBox box = new JTestBox(this.worldMain, model);
+        box.attach(model);
+        model.getTransform().getScale().inherit();
+        //model.getTransform().inheritScale();
+        
+        //DebugUtils.log(this, model.getTransform().getScale());
+        
+        this.worldMain.createInstance(box);
         
         CModel debugmodel = new CModel();
         debugmodel.setMesh(mesh);
@@ -89,11 +90,10 @@ public class TestGame extends AGame {
         JDirectionalLight directionalLight = new JDirectionalLight(this.worldMain);
         this.worldMain.createInstance(directionalLight);
         
-        JSpotLight spotLight = new JSpotLight(this.worldMain);
         JPointLight pointLight = new JPointLight(this.worldMain);
+        JSpotLight spotLight = new JSpotLight(this.worldMain);
         spotLight.setPointLight(pointLight);
-        //this.worldMain.createInstance(pointLight);
-        this.worldMain.createInstance(spotLight);
+        camera.attach(spotLight);
         
             // Update the active world of the renderer
         RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
@@ -104,7 +104,6 @@ public class TestGame extends AGame {
                 tickCounter = 0;
             }
         };*/
-        
     }
 
     @Override
@@ -112,12 +111,10 @@ public class TestGame extends AGame {
         if( this.window.hasWindowClosed() )
         this.engine.stop();
         
-        //this.worldMain.tick(deltaTime);
         this.worldMain.tick(deltaTime);
-        //this.tickCounter++;
+        this.tickCounter++;
         this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
-        this.window.changeTitle(""+this.window.getFPS());
-        
+        this.window.changeTitle("FPS: " + this.window.getFPS());
         //this.timer.count();
     }
 

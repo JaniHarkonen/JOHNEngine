@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.geometry.CProjection;
-import johnengine.core.renderer.IRenderStrategy;
 
 public class JCamera extends AWorldObject implements IControllable {
     
@@ -17,11 +16,6 @@ public class JCamera extends AWorldObject implements IControllable {
         this.controller = null;
     }
 
-    
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
-    }
 
     @Override
     public void tick(float deltaTime) {
@@ -37,12 +31,16 @@ public class JCamera extends AWorldObject implements IControllable {
     
     @Override
     public void rotateX(float angle) {
-        this.rotation.rotateX(angle);
+        this.transform.getRotation().rotate(angle, 0, 0);
+        //this.transform.rotate(new Vector3f(angle, 0.0f, 0.0f));
+        //this.rotation.rotateX(angle);
     }
     
     @Override
     public void rotateY(float angle) {
-        this.rotation.rotateY(angle);
+        this.transform.getRotation().rotate(0, angle, 0);
+        //this.transform.rotate(new Vector3f(0.0f, angle, 0.0f));
+        //this.rotation.rotateY(angle);
     }
 
     
@@ -59,29 +57,56 @@ public class JCamera extends AWorldObject implements IControllable {
 
     @Override
     public void moveForward() {
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getForwardVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
+        //this.transform.getForwardVector(direction);
+        //this.transform.shift(direction.mul(0.05f));
+        /*
         Vector3f movementVector = new Vector3f();
         this.rotation.get().positiveZ(movementVector);
-        this.position.get().add(movementVector.mul(0.05f));
+        this.position.shift(movementVector.mul(0.05f));
+        */
     }
 
     @Override
     public void moveBackward() {
-        Vector3f movementVector = new Vector3f();
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getBackwardVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
+        /*Vector3f direction = new Vector3f();
+        this.transform.getBackwardVector(direction);
+        this.transform.shift(direction.mul(0.05f));*/
+        //Vector3f shift = new Vector3f(0.05f);
+        //this.transform.shift(shift.rotate(this.transform.getRotation()));
+        /*Vector3f movementVector = new Vector3f();
         this.rotation.get().positiveZ(movementVector);
-        this.position.get().sub(movementVector.mul(0.05f));
+        this.position.shift(movementVector.negate().mul(0.05f));*/
     }
     
     @Override
     public void moveLeft() {
-        Vector3f movementVector = new Vector3f();
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getLeftVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
+        /*Vector3f direction = new Vector3f();
+        this.transform.getLeftVector(direction);
+        this.transform.shift(direction.mul(0.05f));*/
+        /*Vector3f movementVector = new Vector3f();
         this.rotation.get().positiveX(movementVector);
-        this.position.get().add(movementVector.mul(0.05f));
+        this.position.shift(movementVector.mul(0.05f));*/
     }
 
     @Override
     public void moveRight() {
-        Vector3f movementVector = new Vector3f();
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getRightVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
+        /*Vector3f direction = new Vector3f();
+        this.transform.getRightVector(direction);
+        this.transform.shift(direction.mul(0.05f));*/
+        /*Vector3f movementVector = new Vector3f();
         this.rotation.get().positiveX(movementVector);
-        this.position.get().sub(movementVector.mul(0.05f));
+        this.position.shift(movementVector.negate().mul(0.05f));*/
     }
 }

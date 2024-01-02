@@ -203,50 +203,35 @@ public class CachedVAORenderStrategy implements
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
         this.preRender(renderBuffer);
         
+            // Issue draw calls based on the render units
         UNIMatrix4f modelMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
         for( RenderUnit unit : renderBuffer.getBuffer() )
         {
+                // Set position matrix
+            modelMatrix.set(unit.getPositionMatrix());
+            
                 // Get VAO and mesh data
             Mesh mesh = unit.getMesh();
             Mesh.Data meshData = unit.getMesh().getData();
             
-            MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
-            VAO vao = this.vaoCache.get(meshGraphics);
-            
-                // If a cache for the VAO of this mesh cannot be found, create it and
-                // store it
-            if( vao == null )
-            {
-                vao = new VAO();
-                VBOContainer vbos = meshGraphics.getData();
-                vao.addVBO(vbos.getVerticesVBO());
-                vao.addVBO(vbos.getNormalsVBO());   
-                vao.addVBO(vbos.getTextureCoordinatesVBO());
-                vao.setIndicesVBO(vbos.getIndicesVBO());
-                vao.generate();
-                
-                this.vaoCache.cacheItem(meshGraphics, vao);
-            }
-            
-                // Set position matrix
-            modelMatrix.set(unit.getPositionMatrix());
-            
-                // Bind texture and set material
+                // Create the material struct
             Material material = mesh.getMaterial();
-            Texture texture = material.getTexture();
-            TextureGL textureGraphics = (TextureGL) texture.getGraphics();
-            
             SMaterial materialStruct = new SMaterial();
             materialStruct.c4Diffuse = material.getDiffuseColor();
             materialStruct.c4Specular = material.getSpecularColor();
             materialStruct.fReflectance = material.getReflectance();
             
+                // Get and bind texture
+            Texture texture = material.getTexture();
+            TextureGL textureGraphics = (TextureGL) texture.getGraphics();
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
             GL30.glActiveTexture(GL30.GL_TEXTURE0);
             textureGraphics.bind();
             
-                // Bind mesh and draw
+                // Bind mesh and issue draw call
+            MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
+            VAO vao = this.fetchVAO(meshGraphics);
             vao.bind();
             GL30.glDrawElements(GL30.GL_TRIANGLES, meshData.getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
         }
@@ -264,6 +249,26 @@ public class CachedVAORenderStrategy implements
         this.vaoCache.update();
         //((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
         //.fill(() -> );
+    }
+    
+    private VAO fetchVAO(MeshGL meshGraphics) {
+        VAO vao = this.vaoCache.get(meshGraphics);
+        
+            // VAO found from the cache and return it
+        if( vao != null )
+        return vao;
+        
+            // Generate a new VAO and cache it
+        vao = new VAO();
+        VBOContainer vbos = meshGraphics.getData();
+        vao.addVBO(vbos.getVerticesVBO());
+        vao.addVBO(vbos.getNormalsVBO());   
+        vao.addVBO(vbos.getTextureCoordinatesVBO());
+        vao.setIndicesVBO(vbos.getIndicesVBO());
+        vao.generate();
+        
+        this.vaoCache.cacheItem(meshGraphics, vao);
+        return vao;
     }
     
     @Override

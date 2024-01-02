@@ -12,19 +12,10 @@ public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
 
     @Override
     public void execute(CModel instance) {
-        
-            // Calculate position matrix
-        Matrix4f positionMatrix = (new Matrix4f())
-        .translationRotateScale(
-            instance.getPosition().get(),
-            instance.getRotation().get(),
-            instance.getScale().get()
-        );
-        
         RenderUnit unit = new RenderUnit(
             instance.getMesh(), 
-            instance.getTexture(), 
-            positionMatrix
+            instance.getTexture(),
+            new Matrix4f(instance.getTransform().get())
         );
         
         this.strategy.addRenderUnit(unit);

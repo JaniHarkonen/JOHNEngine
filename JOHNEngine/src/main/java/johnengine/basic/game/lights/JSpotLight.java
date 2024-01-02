@@ -20,18 +20,19 @@ public class JSpotLight extends AWorldObject {
         super(world);
         this.coneDirection = DEFAULT_CONE_DIRECTION;
         this.cutOffAngle = DEFAULT_CUT_OFF_ANGLE;
+        this.pointLight = null;
     }
-    
-    
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        this.pointLight.render(renderStrategy);
-        renderStrategy.executeStrategoid(this);
-    }
+
 
     @Override
     public void tick(float deltaTime) {
-        this.pointLight.getPosition().set(this.position.get());
+        
+        //this.pointLight.getPosition().set(this.position.get());
+    }
+    
+    @Override
+    public void render(IRenderStrategy renderStrategy) {
+        super.render(renderStrategy);
     }
 
     
@@ -45,6 +46,12 @@ public class JSpotLight extends AWorldObject {
     }
     
     public void setPointLight(JPointLight pointLight) {
+            // If a point light has already been set (and thus attached)
+            // remove (detach) it first
+        if( this.pointLight != null )
+        this.detach(this.pointLight);
+        
+        this.attach(pointLight);
         this.pointLight = pointLight;
     }
     

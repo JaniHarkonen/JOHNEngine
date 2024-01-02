@@ -2,15 +2,17 @@
 
 import org.joml.Vector3f;
 
-public class CPosition implements IGeometryComponent.DirectAccess<Vector3f> {
+public class CPosition2 implements IGeometryComponent.DirectAccess<Vector3f> {
 
-    private Vector3f position;
+    private final Vector3f position;
+    private Vector3f offset;
     
-    public CPosition(Vector3f position) {
+    public CPosition2(Vector3f position) {
         this.position = position;
+        this.offset = new Vector3f(0.0f);
     }
     
-    public CPosition() {
+    public CPosition2() {
         this(new Vector3f());
     }
     
@@ -22,7 +24,7 @@ public class CPosition implements IGeometryComponent.DirectAccess<Vector3f> {
     
     @Override
     public Vector3f get() {
-        return this.position;
+        return this.position.add(v);
     }
     
     @Override

@@ -84,21 +84,20 @@ vec4 CalculatePointLight(vec4 c4Diffuse, vec4 c4Specular, PointLight light, vec3
     return c4Light / fInverseAttenuation;
 }
 
-vec4 CalculateSpotLight(vec4 diffuse, vec4 specular, SpotLight light, vec3 position, vec3 normal) {
-    vec3 light_direction = light.pointLight.v3Position - position;
-    vec3 to_light_dir  = normalize(light_direction);
-    vec3 from_light_dir  = -to_light_dir;
-    float spot_alfa = dot(from_light_dir, normalize(light.v3Direction));
+vec4 CalculateSpotLight(vec4 c4Diffuse, vec4 c4Specular, SpotLight light, vec3 v3Position, vec3 v3Normal) {
+    vec3 v3LightDirection = light.pointLight.v3Position - v3Position;
+    vec3 v3DirectionToLight = normalize(v3LightDirection);
+    vec3 v3DirectionFromLight = -v3DirectionToLight;
+    float fSpotLightAlpha = dot(v3DirectionFromLight, normalize(light.v3Direction));
+    vec4 c4Light = vec4(0, 0, 0, 0);
 
-    vec4 color = vec4(0, 0, 0, 0);
-
-    if( spot_alfa > light.fCutOff )
+    if( fSpotLightAlpha > light.fCutOff )
     {
-        color = CalculatePointLight(diffuse, specular, light.pointLight, position, normal);
-        color *= (1.0 - (1.0 - spot_alfa) / (1.0 - light.fCutOff));
+        c4Light = CalculatePointLight(c4Diffuse, c4Specular, light.pointLight, v3Position, v3Normal);
+        c4Light *= (1.0 - (1.0 - fSpotLightAlpha) / (1.0 - light.fCutOff));
     }
 
-    return color;
+    return c4Light;
 }
 
 void main()

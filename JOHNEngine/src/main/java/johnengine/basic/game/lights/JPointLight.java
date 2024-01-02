@@ -5,7 +5,6 @@ import org.joml.Vector3f;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CAttenuation;
-import johnengine.core.renderer.IRenderStrategy;
 
 public class JPointLight extends AWorldObject {
 
@@ -21,12 +20,6 @@ public class JPointLight extends AWorldObject {
         this.intensity = DEFAULT_INTENSITY;
         this.color = DEFAULT_COLOR;
         this.attenuation = new CAttenuation();
-        this.getPosition().set(new Vector3f(2.0f, 0.0f, 0.0f));
-    }
-
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
     }
 
     @Override

@@ -2,15 +2,15 @@ package johnengine.basic.game.components.geometry;
 
 import org.joml.Vector3f;
 
-public class CScale implements IGeometryComponent.DirectAccess<Vector3f> {
+public class CScale2 implements IGeometryComponent.DirectAccess<Vector3f> {
 
     private Vector3f scale;
     
-    public CScale(Vector3f scale) {
+    public CScale2(Vector3f scale) {
         this.scale = scale;
     }
     
-    public CScale() {
+    public CScale2() {
         this(new Vector3f(1.0f, 1.0f, 1.0f));
     }
     

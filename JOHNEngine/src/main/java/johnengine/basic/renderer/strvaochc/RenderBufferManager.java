@@ -17,7 +17,7 @@ public class RenderBufferManager {
     
     public void newBuffer() {
         this.renderBufferQueue.add(this.currentBuffer);
-        this.currentBuffer = new RenderBuffer();    
+        this.currentBuffer = new RenderBuffer();
     }
     
     public RenderBuffer peekNext() {

@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
-import johnengine.core.renderer.IRenderStrategy;
 
 public class JAmbientLight extends AWorldObject {
 
@@ -19,12 +18,7 @@ public class JAmbientLight extends AWorldObject {
         this.color = DEFAULT_COLOR;
         this.intensity = DEFAULT_INTENSITY;
     }
-
     
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
-    }
 
     @Override
     public void tick(float deltaTime) {

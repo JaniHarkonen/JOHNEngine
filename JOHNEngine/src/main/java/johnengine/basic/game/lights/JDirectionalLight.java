@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
-import johnengine.core.renderer.IRenderStrategy;
 
 public class JDirectionalLight extends AWorldObject {
 
@@ -47,11 +46,6 @@ public class JDirectionalLight extends AWorldObject {
     
     public float getIntensity() {
         return this.intensity;
-    }
-
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
     }
 
     @Override

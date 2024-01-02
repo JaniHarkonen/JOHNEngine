@@ -6,10 +6,10 @@ import johnengine.core.UUID;
 
 public abstract class AGameObject implements ITickable {
 
-    private final AGame game;
-    private long id;
-    private boolean isActive;
-    private boolean isDestroyed;
+    protected final AGame game;
+    protected long id;
+    protected boolean isActive;
+    protected boolean isDestroyed;
     
     protected AGameObject(AGame game) {
         this.game = game;
