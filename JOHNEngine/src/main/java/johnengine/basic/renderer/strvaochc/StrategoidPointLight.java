@@ -16,7 +16,7 @@ public class StrategoidPointLight extends ACachedVAOStrategoid<JPointLight> {
     public void execute(JPointLight instance) {
         SPointLight struct = new SPointLight();
         struct.c3Light = instance.getColor();
-        struct.v3Position = instance.getTransform().getPosition().get();//instance.getTransform().getPosition();
+        struct.v3Position = instance.getTransform().getPosition().get();
         struct.fIntensity = instance.getIntensity();
         
         CAttenuation attenuation = instance.getAttenuation();

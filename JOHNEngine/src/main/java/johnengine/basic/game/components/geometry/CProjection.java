@@ -2,7 +2,7 @@ package johnengine.basic.game.components.geometry;
 
 import org.joml.Matrix4f;
 
-public class CProjection implements IGeometryComponent.Calculatable<Matrix4f> {
+public class CProjection {
 
     public static final float DEFAULT_FOV_Y = (float) Math.toRadians(90.0f);
     public static final int DEFAULT_VIEW_WIDTH = 640;
@@ -49,7 +49,6 @@ public class CProjection implements IGeometryComponent.Calculatable<Matrix4f> {
     }
     
     
-    @Override
     public void calculate() {
         this.projectionMatrix.setPerspective(
             this.fovY, 
@@ -59,12 +58,10 @@ public class CProjection implements IGeometryComponent.Calculatable<Matrix4f> {
         );
     }
     
-    @Override
     public Matrix4f get() {
         return this.projectionMatrix;
     }
     
-    @Override
     public Matrix4f getCopy() {
         return new Matrix4f(this.projectionMatrix);
     }

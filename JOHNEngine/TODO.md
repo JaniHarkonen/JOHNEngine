@@ -30,5 +30,3 @@ of the game world
 - ARequest should be IRequest due to no internal state
 
 - add default material
-- all IGeometryComponents should be able to inherit their base values from parents
-- try to minimize the number of changed() calls in CTransform to avoid redundancy

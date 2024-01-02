@@ -3,7 +3,7 @@ package johnengine.basic.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import johnengine.basic.game.components.geometry.rewrite.CTransform;
+import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderStrategy;
 
@@ -15,9 +15,6 @@ public abstract class AWorldObject extends AGameObject implements
     
     protected JWorld world;
     protected boolean isVisible;
-    //protected CPosition position;
-    //protected CRotation rotation;
-    //protected CScale scale;
     protected CTransform transform;
     protected AWorldObject parent;
     protected List<ISceneGraphChild> children;
@@ -26,9 +23,6 @@ public abstract class AWorldObject extends AGameObject implements
         super(world.getGame());
         this.world = world;
         this.isVisible = true;
-        //this.position = new CPosition();
-        //this.rotation = new CRotation();
-        //this.scale = new CScale();
         this.transform = new CTransform();
         this.parent = null;
         this.children = new ArrayList<>();
@@ -86,17 +80,10 @@ public abstract class AWorldObject extends AGameObject implements
     public void attached(ISceneGraphParent parent) {
         this.parent = (AWorldObject) parent;
         this.transform.attachTo(this.parent.transform);
-        //this.parent.getTransform().attach(this.transform);
-        //this.position.setParent(this.parent.position);
-        //this.scale.setParent(this.parent.scale);
     }
     
     @Override
     public void detached() {
-        //this.position.unparent();
-        //this.scale.unparent();
-        
-        //this.parent.getTransform().detach(this.transform);
         this.transform.unparent();
         this.parent = null;
     }
@@ -121,18 +108,6 @@ public abstract class AWorldObject extends AGameObject implements
     public boolean isVisible() {
         return this.isVisible;
     }
-    
-    /*public CPosition getPosition() {
-        return this.position;
-    }
-    
-    public CRotation getRotation() {
-        return this.rotation;
-    }
-    
-    public CScale getScale() {
-        return this.scale;
-    }*/
     
     public AWorldObject getParent() {
         return this.parent;

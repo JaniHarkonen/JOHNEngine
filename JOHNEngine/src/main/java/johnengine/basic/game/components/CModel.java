@@ -3,10 +3,7 @@ package johnengine.basic.game.components;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.ISceneGraphChild;
 import johnengine.basic.game.ISceneGraphParent;
-import johnengine.basic.game.components.geometry.CRotation;
-import johnengine.basic.game.components.geometry.rewrite.CPosition;
-import johnengine.basic.game.components.geometry.rewrite.CScale;
-import johnengine.basic.game.components.geometry.rewrite.CTransform;
+import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.core.renderer.IRenderStrategy;
@@ -16,9 +13,8 @@ public class CModel implements ISceneGraphChild {
     private Mesh mesh;
     private Texture texture;
     private CTransform transform;
-
     
-    public CModel(CPosition position, CRotation rotation, CScale scale) {
+    public CModel() {
         this.transform = new CTransform();
         this.mesh = new Mesh("default");
         this.texture = new Texture("default");
@@ -26,10 +22,6 @@ public class CModel implements ISceneGraphChild {
         //this.getTransform().setPosition(new Vector3f(10.5f, 10.5f, 10.5f));
         //this.getTransform().setRotation(new Vector3f(90, 0, 0));
         //this.getTransform().rotate(new Vector3f(0, 0, 0));  
-    }
-    
-    public CModel() {
-        this(new CPosition(), new CRotation(), new CScale());
     }
     
     

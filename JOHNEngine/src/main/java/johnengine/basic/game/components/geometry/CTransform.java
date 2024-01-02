@@ -1,4 +1,4 @@
-package johnengine.basic.game.components.geometry.rewrite;
+package johnengine.basic.game.components.geometry;
 
 import java.util.ArrayList;
 import java.util.List;
