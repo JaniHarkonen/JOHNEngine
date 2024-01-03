@@ -9,7 +9,6 @@ import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
-import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -91,9 +90,11 @@ public class TestGame extends AGame {
         this.worldMain.createInstance(directionalLight);
         
         JPointLight pointLight = new JPointLight(this.worldMain);
-        JSpotLight spotLight = new JSpotLight(this.worldMain);
+        this.worldMain.createInstance(pointLight);
+        /*JSpotLight spotLight = new JSpotLight(this.worldMain);
         spotLight.setPointLight(pointLight);
-        camera.attach(spotLight);
+        camera.attach(spotLight);*/
+        //camera.attach(pointLight);
         
             // Update the active world of the renderer
         RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);

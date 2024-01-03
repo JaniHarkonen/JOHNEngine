@@ -24,7 +24,9 @@ public class JPointLight extends AWorldObject {
 
     @Override
     public void tick(float deltaTime) {
-        this.intensity += 0.01f;
+        //this.intensity += 0.01f;
+        Vector3f dir = new Vector3f();
+        this.transform.getPosition().shift(this.transform.getRotation().getForwardVector(new Vector3f()).mul(0.01f));
     }
 
     

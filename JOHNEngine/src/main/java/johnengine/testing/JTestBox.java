@@ -8,7 +8,7 @@ public class JTestBox extends AWorldObject {
 
     public JTestBox(JWorld world, CModel model) {
         super(world);
-        //this.getTransform().getScale().setScale(0.05f, 0.05f, 0.05f);
+        this.getTransform().getScale().setScale(0.15f, 0.15f, 0.15f);
         //this.getTransform().setScale(new Vector3f(0.05f));
         //this.getTransform().setPosition(new Vector3f(10.5f, 10.5f, 10.5f));
         //this.getTransform().setRotation(new Vector3f(10.5f, 10.5f, 10.5f));
