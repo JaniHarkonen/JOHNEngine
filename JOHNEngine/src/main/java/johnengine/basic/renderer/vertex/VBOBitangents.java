@@ -5,11 +5,11 @@ import java.nio.FloatBuffer;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
-public final class VBONormals extends AVBO<Vector3f[]> {
+public final class VBOBitangents extends AVBO<Vector3f[]> {
 
     public static final int SIZE = 3;
     
-    public VBONormals() {
+    public VBOBitangents() {
         super(GL30.GL_ARRAY_BUFFER, SIZE);
     }
 
@@ -20,20 +20,20 @@ public final class VBONormals extends AVBO<Vector3f[]> {
         
         this.genBuffers();
         this.bind();
-        FloatBuffer normalBuffer = this.allocateFloatBuffer(data.length);
+        FloatBuffer bitangentBuffer = this.allocateFloatBuffer(data.length);
         
         for( Vector3f vertex : data )
         {
-            normalBuffer.put(vertex.x());
-            normalBuffer.put(vertex.y());
-            normalBuffer.put(vertex.z());
+            bitangentBuffer.put(vertex.x());
+            bitangentBuffer.put(vertex.y());
+            bitangentBuffer.put(vertex.z());
         }
         
-        normalBuffer.flip();
+        bitangentBuffer.flip();
         
-        GL30.glBufferData(this.target, normalBuffer, GL30.GL_STATIC_DRAW);
+        GL30.glBufferData(this.target, bitangentBuffer, GL30.GL_STATIC_DRAW);
         
-        this.freeAllocation(normalBuffer);
+        this.freeAllocation(bitangentBuffer);
         this.unbind();
         
         return true;

@@ -11,6 +11,7 @@ public class Material {
     public static final float DEFAULT_REFLECTANCE = 0.4f;
     
     private Texture texture;
+    private Texture normal;
     private Vector4f diffuseColor;
     private Vector4f specularColor;
     private float reflectance;
@@ -20,6 +21,7 @@ public class Material {
         this.specularColor = specularColor;
         this.texture = texture;
         this.reflectance = reflectance;
+        this.normal = null;
     }
     
     public Material() {
@@ -34,6 +36,10 @@ public class Material {
     
     public void setTexture(Texture texture) {
         this.texture = texture;
+    }
+    
+    public void setNormalMap(Texture normal) {
+        this.normal = normal;
     }
     
     public void setDiffuseColor(Vector4f diffuseColor) {
@@ -51,6 +57,10 @@ public class Material {
     
     public Texture getTexture() {
         return this.texture;
+    }
+    
+    public Texture getNormalMap() {
+        return this.normal;
     }
     
     public Vector4f getDiffuseColor() {

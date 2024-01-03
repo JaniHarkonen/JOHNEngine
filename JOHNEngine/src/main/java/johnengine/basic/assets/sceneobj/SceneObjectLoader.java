@@ -19,7 +19,8 @@ public class SceneObjectLoader extends AAssetLoader {
         Assimp.aiProcess_JoinIdenticalVertices |
         Assimp.aiProcess_Triangulate |
         Assimp.aiProcess_FixInfacingNormals |
-        Assimp.aiProcess_LimitBoneWeights;
+        Assimp.aiProcess_LimitBoneWeights |
+        Assimp.aiProcess_CalcTangentSpace;
     
     private final List<Mesh> expectedMeshes;
     //private final List<Animation> expectedAnimations;

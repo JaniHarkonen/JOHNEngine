@@ -40,6 +40,7 @@ import johnengine.core.renderer.IRenderBufferStrategoid;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderStrategoidManager;
+import johnengine.testing.DebugUtils;
 
 public class CachedVAORenderStrategy implements 
     IRenderStrategy,
@@ -97,6 +98,7 @@ public class CachedVAORenderStrategy implements
         
             // Declare uniforms
         UNIInteger textureSampler = new UNIInteger("textureSampler", "uTextureSampler");
+        UNIInteger normalSampler = new UNIInteger("normalSampler", "uNormalSampler");
         UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
         UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix", "uCameraMatrix");
         UNIMatrix4f modelMatrix = new UNIMatrix4f("modelMatrix", "uModelMatrix");
@@ -123,6 +125,7 @@ public class CachedVAORenderStrategy implements
 
         this.shaderProgram
         .declareUniform(textureSampler)
+        .declareUniform(normalSampler)
         .declareUniform(projectionMatrix)
         .declareUniform(cameraMatrix)
         .declareUniform(modelMatrix)
@@ -153,6 +156,7 @@ public class CachedVAORenderStrategy implements
     public void preRender(RenderBuffer renderBuffer) {
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
+        this.shaderProgram.getUniform("normalSampler").set();
         
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
         .set(renderBuffer.getProjectionMatrix());
@@ -223,11 +227,19 @@ public class CachedVAORenderStrategy implements
             
                 // Get and bind texture
             Texture texture = material.getTexture();
+            Texture normalMap = material.getNormalMap();
             TextureGL textureGraphics = (TextureGL) texture.getGraphics();
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
+            
             GL30.glActiveTexture(GL30.GL_TEXTURE0);
             textureGraphics.bind();
+            
+            if( normalMap != null )
+            {
+                GL30.glActiveTexture(GL30.GL_TEXTURE1);
+                ((TextureGL) normalMap.getGraphics()).bind();
+            }
             
                 // Bind mesh and issue draw call
             MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
@@ -259,11 +271,13 @@ public class CachedVAORenderStrategy implements
         return vao;
         
             // Generate a new VAO and cache it
-        vao = new VAO();
         VBOContainer vbos = meshGraphics.getData();
-        vao.addVBO(vbos.getVerticesVBO());
-        vao.addVBO(vbos.getNormalsVBO());   
-        vao.addVBO(vbos.getTextureCoordinatesVBO());
+        vao = (new VAO())
+        .addVBO(vbos.getVerticesVBO())
+        .addVBO(vbos.getNormalsVBO())
+        .addVBO(vbos.getTangentsVBO())
+        .addVBO(vbos.getBitangentsVBO())
+        .addVBO(vbos.getTextureCoordinatesVBO());
         vao.setIndicesVBO(vbos.getIndicesVBO());
         vao.generate();
         

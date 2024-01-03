@@ -43,18 +43,21 @@ const vec4  FAIL_VEC = vec4(1,1,1,1);
 
 in vec3 ioPosition;
 in vec3 ioNormal;
+in vec3 ioTangent;
+in vec3 ioBitangent;
 in vec2 ioTexCoord;
 in mat4 ioModelViewMatrix;
 
 out vec4 outFragmentColor;
 
 uniform sampler2D           uTextureSampler;
+uniform sampler2D           uNormalSampler;
 uniform AmbientLight        uAmbientLight;
 uniform DirectionalLight    uDirectionalLight;
 uniform PointLight          uPointLight[MAX_POINT_LIGHT_COUNT];
 uniform SpotLight           uSpotLight[MAX_SPOT_LIGHT_COUNT];
 uniform Material            uMaterial;
-uniform mat4 uCameraMatrix;
+uniform mat4                uCameraMatrix;
 
 vec4 CalculateLightColor(vec4 c4BaseDiffuse, vec4 c4BaseSpecular, vec3 c3Light, float fLightIntensity, vec3 v3Position, vec3 v3DirectionToLight, vec3 v3Normal) {
     //vec4 c4ResultDiffuse = vec4(0, 0, 0, 1);
@@ -68,7 +71,7 @@ vec4 CalculateLightColor(vec4 c4BaseDiffuse, vec4 c4BaseSpecular, vec3 c3Light, 
     vec3 v3CameraDirection = normalize(-v3Position);
     vec3 v3DirectionFromLight = -v3DirectionToLight;
     vec3 v3ReflectedLight = normalize(reflect(v3DirectionFromLight, v3Normal));
-    float fSpecularFactor = max(dot(v3CameraDirection, v3ReflectedLight), 0.0);
+    float fSpecularFactor = max(dot(v3CameraDirection, v3ReflectedLight), 0.0);//max(dot(v3CameraDirection, v3ReflectedLight), 0.0);
     fSpecularFactor = pow(fSpecularFactor, SPECULAR_POWER);
     vec4 c4ResultSpecular = c4BaseSpecular * fLightIntensity * fSpecularFactor * uMaterial.fReflectance * vec4(c3Light, 1.0);
 
@@ -104,10 +107,19 @@ vec4 CalculateSpotLight(vec4 c4Diffuse, vec4 c4Specular, SpotLight light, vec3 v
     return c4Light;
 }
 
+vec3 CalculateNormal(vec3 v3Normal, vec3 v3Tangent, vec3 v3Bitangent, vec2 v2UVs) {
+    mat3 tbn = mat3(v3Tangent, v3Bitangent, v3Normal);
+    vec3 v3Result = texture(uNormalSampler, v2UVs).rgb;
+    v3Result = normalize(v3Result * 2.0 - 1.0);
+    v3Result = normalize(tbn * v3Result);
+    return v3Result;
+}
+
 void main()
 {
     vec4 c4Ambience = vec4(uAmbientLight.fIntensity * uAmbientLight.c3Ambient, 1);
     vec4 c4Texture = texture(uTextureSampler, ioTexCoord);
+    vec3 v3Normal = CalculateNormal(ioNormal, ioTangent, ioBitangent, ioTexCoord);
     /*vec4 c4DiffuseSpecular = CalculateLightColor(
         c4Texture + uMaterial.c4Diffuse, 
         c4Texture + uMaterial.c4Specular, 
@@ -115,18 +127,18 @@ void main()
         uDirectionalLight.fIntensity, 
         ioPosition, 
         normalize(uDirectionalLight.v3Direction), 
-        ioNormal
+        v3Normal
     );*/
     
     //uPointLight[0].v3Position = (ioModelViewMatrix * vec4(uPointLight[0].v3Position, 1.0)).xyz;
-    vec4 c4DiffuseSpecular = CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[0], ioPosition, ioNormal);
+    vec4 c4DiffuseSpecular = CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[0], ioPosition, v3Normal);
 
     for( int i = 1; i < MAX_POINT_LIGHT_COUNT; i++ )
     {
         if( uPointLight[i].fIntensity > 0 )
         {
             //uPointLight[i].v3Position = (ioModelViewMatrix * vec4(uPointLight[i].v3Position, 1.0)).xyz;
-            c4DiffuseSpecular += CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[i], ioPosition, ioNormal);
+            c4DiffuseSpecular += CalculatePointLight(uMaterial.c4Diffuse, uMaterial.c4Specular, uPointLight[i], ioPosition, v3Normal);
         }
     }
 
@@ -140,7 +152,7 @@ void main()
                 c4Texture + uMaterial.c4Specular, 
                 uSpotLight[i], 
                 ioPosition, 
-                ioNormal
+                v3Normal
             );
         }
     }*/

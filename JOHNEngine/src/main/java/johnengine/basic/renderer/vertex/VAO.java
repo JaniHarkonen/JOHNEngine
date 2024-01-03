@@ -72,8 +72,9 @@ public class VAO implements IGeneratable, IBindable {
         return true;
     }
     
-    public void addVBO(AVBO<?> vbo) {
+    public VAO addVBO(AVBO<?> vbo) {
         this.vbos.add(vbo);
+        return this;
     }
     
     public void setIndicesVBO(VBOIndices indicesVBO) {

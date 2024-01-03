@@ -56,10 +56,16 @@ public class TestGame extends AGame {
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        
+        Texture normalMap = new Texture("normale");
+        Texture.Loader normalMapLoader = new Texture.Loader(normalMap);
+        normalMapLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
         //am.loadFrom("D:\\jastur mille\\DeivantArt\\jastur retarted crop.png", textureLoader);
         
         Material material = new Material();
         material.setTexture(texture);
+        material.setNormalMap(normalMap);
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);

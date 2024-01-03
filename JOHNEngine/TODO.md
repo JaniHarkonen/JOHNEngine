@@ -30,3 +30,10 @@ of the game world
 - ARequest should be IRequest due to no internal state
 
 - add default material
+- refactor VBOVertices, VBONormals, VBOTangents and VBOBitangents into a single 
+VBOVector3f as they are all exactly alike
+- see if it makes sense to refactor MeshGL so that it is no longer necessary to
+dispose vbos individually
+	-> AUTOMATIZE IT!!
+- change every instance of "GL30." in the code base to "GL46."
+- see if Material can be refactored into binding all its textures through a method
