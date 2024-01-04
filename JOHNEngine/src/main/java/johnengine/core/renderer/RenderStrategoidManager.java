@@ -14,8 +14,9 @@ public class RenderStrategoidManager {
     }
     
     
-    public void addStrategoid(Class<?> clazz, IRenderBufferStrategoid<? extends IRenderable> strategoid) {
+    public RenderStrategoidManager addStrategoid(Class<?> clazz, IRenderBufferStrategoid<? extends IRenderable> strategoid) {
         this.strategoidMap.put(clazz, strategoid);
+        return this;
     }
     
     @SuppressWarnings("unchecked")

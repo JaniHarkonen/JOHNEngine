@@ -40,7 +40,6 @@ import johnengine.core.renderer.IRenderBufferStrategoid;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderStrategoidManager;
-import johnengine.testing.DebugUtils;
 
 public class CachedVAORenderStrategy implements 
     IRenderStrategy,
@@ -61,14 +60,14 @@ public class CachedVAORenderStrategy implements
         this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager();
-        this.strategoidManager = new RenderStrategoidManager();
         
-        this.strategoidManager.addStrategoid(CModel.class, new StrategoidModel(this));
-        this.strategoidManager.addStrategoid(JCamera.class, new StrategoidCamera(this));
-        this.strategoidManager.addStrategoid(JAmbientLight.class, new StrategoidAmbientLight(this));
-        this.strategoidManager.addStrategoid(JPointLight.class, new StrategoidPointLight(this));
-        this.strategoidManager.addStrategoid(JDirectionalLight.class, new StrategoidDirectionalLight(this));
-        this.strategoidManager.addStrategoid(JSpotLight.class, new StrategoidSpotLight(this));
+        this.strategoidManager = (new RenderStrategoidManager())
+        .addStrategoid(CModel.class, new StrategoidModel(this))
+        .addStrategoid(JCamera.class, new StrategoidCamera(this))
+        .addStrategoid(JAmbientLight.class, new StrategoidAmbientLight(this))
+        .addStrategoid(JPointLight.class, new StrategoidPointLight(this))
+        .addStrategoid(JDirectionalLight.class, new StrategoidDirectionalLight(this))
+        .addStrategoid(JSpotLight.class, new StrategoidSpotLight(this));
     }
     
     

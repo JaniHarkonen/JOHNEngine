@@ -58,14 +58,6 @@ public class SceneObjectLoader extends AAssetLoader {
             this.monitor.assetLoaded(expectedMesh);
         }
         
-        /*
-        AIMaterial aiMaterial = AIMaterial.create(scene.mMaterials().get(0));
-        AIColor4D color = AIColor4D.create();
-        Assimp.aiGetMaterialColor(aiMaterial, Assimp.ai_matkey_color, Assimp.aiTextureType_NONE, 0, color);
-        
-        DebugUtils.log(this, color.r(), color.g(), color.b(), color.a());
-        */
-        
             // Extract animations
         s = scene.mNumAnimations();
         //for( int i = 0; i < s; i++ )
@@ -85,6 +77,10 @@ public class SceneObjectLoader extends AAssetLoader {
     
     public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
         this.monitor = monitor;
+    }
+    
+    public void setImportFlags(int importFlags) {
+        this.importFlags = importFlags;
     }
     
     /*

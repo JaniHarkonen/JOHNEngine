@@ -1,7 +1,6 @@
 package johnengine.basic.renderer.strvaochc;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.components.geometry.CProjection;
@@ -33,7 +32,6 @@ public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
         Matrix4f cameraMatrix = (new Matrix4f())
         .rotate(cameraTransform.getRotation().getUnsafe())
         .translate(cameraTransform.getPosition().getUnsafe());
-        //.translate(new Vector3f(cameraTransform.getPosition().getUnsafe()).negate());
         
         this.strategy.setCameraMatrix(cameraMatrix);
     }

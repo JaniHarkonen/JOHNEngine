@@ -17,7 +17,6 @@ public class RendererGL implements IRenderer {
     private JWorld activeWorld;
     private IRenderStrategy renderStrategy;
     private IRenderBufferStrategy renderBufferStrategy;
-    //private IRenderStrategy renderBufferStrategy;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     
     public RendererGL(AWindowFramework hostWindow, IRenderStrategy renderStrategy) {
@@ -25,7 +24,6 @@ public class RendererGL implements IRenderer {
         this.activeWorld = null;
         this.renderStrategy = renderStrategy;
         this.renderBufferStrategy = new DefaultRenderBufferStrategy();
-        //this.renderBufferStrategy = renderBufferStrategy;
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
     }
     

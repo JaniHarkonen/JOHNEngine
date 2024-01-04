@@ -167,8 +167,8 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         dest.data = new Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
-            uvs,                                                // UVs
-            faces.toArray(new Face[faces.size()]),              // indices
+            uvs,                                             // UVs
+            faces.toArray(new Face[faces.size()]),           // indices
             aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         );

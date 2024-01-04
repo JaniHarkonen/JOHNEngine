@@ -66,7 +66,6 @@ public class TextureGL implements ITexture<Integer>, IBindable {
     @Override
     public boolean bind() {
         GL30.glBindTexture(TARGET, this.handle);
-        
         return true;
     }
 
