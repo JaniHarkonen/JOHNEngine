@@ -3,10 +3,9 @@ package johnengine.basic.window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.basic.renderer.Renderer3D;
+import johnengine.basic.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
-import johnengine.core.input.Input;
-import johnengine.core.renderer.ARenderer;
+import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
@@ -39,7 +38,7 @@ public final class Window extends AWindowFramework
     
     public static Window setup3D() {
         Window instance = new Window();
-        instance.setRenderer(new Renderer3D(instance));
+        instance.setRenderer(new RendererGL(instance));
         return instance;
     }
     
@@ -79,9 +78,13 @@ public final class Window extends AWindowFramework
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
         
-        while( this.updatingProperties.windowState != STATE_CLOSED )
+        while( true )
         {
+            if( this.isWindowClosing() )
+            break;
+            
             this.requestManager.processRequests();
+            GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
@@ -106,13 +109,14 @@ public final class Window extends AWindowFramework
                 fpsCounter = 0;
                 startTime = currentTime;
             }
-            
-            GLFW.glfwPollEvents();
         }
     }
     
     @Override
     public void stop() {
+        if( this.isWindowClosing() )
+        return;
+        
         GLFW.glfwTerminate();
         this.reset();
         this.setWindowState(STATE_CLOSED);
@@ -235,11 +239,11 @@ public final class Window extends AWindowFramework
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
     
-    public Input.State getInput() {
-        return this.input.getState();
+    public Input getInput() {
+        return this.input;
     }
     
-    public ARenderer getRenderer() {
+    public IRenderer getRenderer() {
         return this.renderer;
     }
     

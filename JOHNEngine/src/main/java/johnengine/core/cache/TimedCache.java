@@ -35,14 +35,14 @@ public class TimedCache<K, I> {
     private long expirationTime;
     
     public TimedCache(long expirationTime) {
-        this.cacheMap = new HashMap<K, CachedItem>();
+        this.cacheMap = new HashMap<>();
         this.expirationTime = expirationTime;
     }
 
     
     public void update() {
         long currentTime = System.currentTimeMillis();
-        List<K> expiredKeys = new ArrayList<K>();
+        List<K> expiredKeys = new ArrayList<>();
         for( Map.Entry<K, CachedItem> en : this.cacheMap.entrySet() )
         {
             CachedItem cachedItem = en.getValue();

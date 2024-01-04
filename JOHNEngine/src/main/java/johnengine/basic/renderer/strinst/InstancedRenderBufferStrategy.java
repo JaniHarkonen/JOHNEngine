@@ -1,8 +1,8 @@
 package johnengine.basic.renderer.strinst;
 
-import johnengine.basic.game.CModel;
+import johnengine.basic.game.components.CModel;
 import johnengine.core.renderer.ARenderBufferStrategy;
-import johnengine.core.renderer.ARenderer;
+import johnengine.core.renderer.ARendererOLD;
 
 public class InstancedRenderBufferStrategy extends ARenderBufferStrategy {
     InstancedRenderBuffer renderBuffer;
@@ -25,7 +25,7 @@ public class InstancedRenderBufferStrategy extends ARenderBufferStrategy {
     }
     
     @Override
-    public void render(ARenderer renderer) {
+    public void render(ARendererOLD renderer) {
         
     }
 }

@@ -11,6 +11,7 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
 import johnengine.basic.assets.IMesh;
+import johnengine.basic.assets.sceneobj.Material;
 
 public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {    
     public static class Face {
@@ -30,22 +31,47 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     
     public static class Data {
         private Vector3f[] vertices;
+        private Vector3f[] normals;
+        private Vector3f[] tangents;
+        private Vector3f[] bitangents;
         private Vector2f[] uvs;
         private Face[] faces;
         
-        public Data(Vector3f[] vertices, Vector2f[] uvs, Face[] faces) {
+        public Data(
+            Vector3f[] vertices, 
+            Vector3f[] normals, 
+            Vector2f[] uvs, 
+            Face[] faces,
+            Vector3f[] tangents,
+            Vector3f[] bitangents
+        ) {
             this.vertices = vertices;
+            this.normals = normals;
+            this.tangents = tangents;
+            this.bitangents = bitangents;
             this.uvs = uvs;
             this.faces = faces;
         }
         
         public Data() {
-            this(new Vector3f[0], new Vector2f[0], new Face[0]);
+            this(null, null, null, null, null, null);
         }
         
         
         public Vector3f[] getVertices() {
             return this.vertices;
+        }
+        
+        public Vector3f[] getNormals() {
+            return this.normals;
+        }
+        
+        public Vector3f[] getTangents() {
+            return this.tangents;
+        }
+        
+        public Vector3f[] getBitangents() {
+            return this.bitangents;
         }
         
         public Vector2f[] getUVs() {
@@ -58,6 +84,10 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
 
         public int getVertexCount() {
             return this.vertices.length;
+        }
+        
+        public int getNormalCount() {
+            return this.normals.length;
         }
         
         public int getUVCount() {
@@ -79,11 +109,12 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         DEFAULT_INSTANCE.data = new Mesh.Data(
                 // Vertices
             new Vector3f[] {
-                new Vector3f(-0.5f, 0.5f, 0.0f),        // top left
-                new Vector3f(-0.5f, -0.5f, 0.0f),       // bottom left
-                new Vector3f(0.5f, -0.5f, 0.0f),        // bottom right
-                new Vector3f(0.5f, 0.5f, 0.0f)          // top right
+                new Vector3f(-0.5f, 0.5f, -1.0f),        // top left
+                new Vector3f(-0.5f, -0.5f, -1.0f),       // bottom left
+                new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
+                new Vector3f(0.5f, 0.5f, -1.0f)          // top right
             }, 
+            new Vector3f[0],        // FIX THIS
                 // UVs
             new Vector2f[] {
                 new Vector2f(0.0f, 1.0f), 
@@ -95,22 +126,15 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
             new Mesh.Face[] {
                 new Mesh.Face(new int[] {0, 1, 3}),
                 new Mesh.Face(new int[] {3, 1, 2})
-            }
+            },
+            new Vector3f[0],        // FIX THIS
+            new Vector3f[0]         // FIX THIS
         );
     }
     
     public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
         if( dest == null || src == null )
         return;
-        
-            // Extract vertices
-        AIVector3D.Buffer aiVertexBuffer = src.mVertices();
-        List<Vector3f> vertexList = new ArrayList<>();
-        while( aiVertexBuffer.remaining() > 0 )
-        {
-            AIVector3D vertex = aiVertexBuffer.get();
-            vertexList.add(new Vector3f(vertex.x(), vertex.y(), vertex.z()));
-        }
         
             // Extract UV-coordinates
         AIVector3D.Buffer aiUVBuffer = src.mTextureCoords(0);
@@ -141,16 +165,38 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
         
             // Populate
         dest.data = new Data(
-            vertexList.toArray(new Vector3f[vertexList.size()]),
-            uvs,
-            faces.toArray(new Face[faces.size()])
+            aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
+            aiVectorBufferToVector3fArray(src.mNormals()),   // normals
+            uvs,                                             // UVs
+            faces.toArray(new Face[faces.size()]),           // indices
+            aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
+            aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         );
     }
     
+    private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {
+        Vector3f[] result = new Vector3f[src.remaining()];
+        
+        int i = 0;
+        while( src.remaining() > 0 )
+        {
+            AIVector3D aiVector = src.get();
+            result[i] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
+            
+            i++;
+        }
+        
+        return result;
+    }
+    
+    
     /********************** Class body **********************/
+    
+    private Material material;
     
     public Mesh(String name, boolean isPersistent) {
         super(name, isPersistent);
+        this.material = null;
     }
     
     public Mesh(String name) {
@@ -158,6 +204,11 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     }
 
 
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+    
+    
     @Override
     public Mesh.Data getDefault() {
         return DEFAULT_INSTANCE.data;
@@ -166,5 +217,9 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     @Override
     public IMesh<?> getDefaultGraphics() {
         return DEFAULT_INSTANCE.graphics;
+    }
+    
+    public Material getMaterial() {
+        return this.material;
     }
 }

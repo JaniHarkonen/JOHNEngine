@@ -4,9 +4,6 @@
 ??? should ABasicWindowRequests be implemented using lambdas instead???
 - remove cringe
 ???? new exception class??
-- MAJOR: instead of spawning threads each time there are new load requests,
-AssetRequestManager should spawn the threads once and then distribute the 
-work in real time
 - consider what renderer functionalities can be defined in ARenderer
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
@@ -29,6 +26,14 @@ to render (using OpenGL-commands) after window.stop() has been called
 	-> GLFWterminate() is called upon window.stop()
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
-of the game world 
-- WARNING!: core.renderer.shdprog.Shader imports assets from "basic" package
-THIS IS NOT ALLOWED -> REFACTOR
+of the game world
+- ARequest should be IRequest due to no internal state
+
+- add default material
+- refactor VBOVertices, VBONormals, VBOTangents and VBOBitangents into a single 
+VBOVector3f as they are all exactly alike
+- see if it makes sense to refactor MeshGL so that it is no longer necessary to
+dispose vbos individually
+	-> AUTOMATIZE IT!!
+- change every instance of "GL30." in the code base to "GL46."
+- see if Material can be refactored into binding all its textures through a method

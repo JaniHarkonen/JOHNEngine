@@ -10,29 +10,15 @@ public class AssetGroup implements IAsset {
     protected final AssetManager assetManager;
     protected final String name;
     protected final List<String> assets;
-    //protected final List<AssetGroup> subGroups;
     
     public AssetGroup(String name, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.name = name;
         this.assets = new ArrayList<>();
-        //this.subGroups = new ArrayList<>();
     }
-    
-    
-    /*public void load() {
-        for( AssetGroup assetGroup : this.subGroups )
-        assetGroup.load();
-        
-        for( String assetName : this.assets )
-        this.assetManager.loadAsset(assetName);
-    }*/
     
     @Override
     public void deload() {
-        /*for( AssetGroup assetGroup : this.subGroups )
-        assetGroup.deload();*/
-        
         for( String assetName : this.assets )
         this.assetManager.deloadAsset(assetName);
     }
@@ -69,29 +55,6 @@ public class AssetGroup implements IAsset {
         
         return this;
     }
-    
-    /*public AssetGroup putGroup(AssetGroup assetGroup) {
-        if( assetGroup != null )
-        this.subGroups.add(assetGroup);
-        
-        return this;
-    }
-    
-    public AssetGroup removeGroup(String assetGroupName) {
-        if( assetGroupName != null )
-        {
-            for( int i = 0; i < this.subGroups.size(); i++ )
-            {
-                if( this.subGroups.get(i).getName() != assetGroupName )
-                {
-                    this.subGroups.remove(i);
-                    break;
-                }
-            }
-        }
-        
-        return this;
-    }*/
     
     
     /************************** GETTERS **************************/

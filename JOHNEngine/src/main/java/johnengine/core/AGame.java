@@ -12,16 +12,16 @@ public abstract class AGame {
     protected AssetManager assetManager;
     protected Engine engine;
 
-    public static Window getWindow() {
-        return game.window;
+    public Window getWindow() {
+        return this.window;
     }
     
-    public static AssetManager getAssetManager() {
-        return game.assetManager;
+    public AssetManager getAssetManager() {
+        return this.assetManager;
     }
     
-    public static Engine getEngine() {
-        return game.engine;
+    public Engine getEngine() {
+        return this.engine;
     }
     
     

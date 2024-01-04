@@ -1,6 +1,6 @@
 package johnengine.basic.renderer.strinst;
 
-import johnengine.basic.game.CModel;
+import johnengine.basic.game.components.CModel;
 import johnengine.basic.renderer.strinst.InstancedRenderBuffer.TextureBuffer;
 import johnengine.core.renderer.ARenderBufferStrategoid;
 

@@ -1,11 +1,12 @@
 package johnengine.basic.renderer.strvaochc;
 
-import johnengine.basic.game.CModel;
-import johnengine.core.renderer.ARenderBufferStrategoid;
+import org.joml.Matrix4f;
 
-public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORenderBufferStrategy> {
+import johnengine.basic.game.components.CModel;
 
-    protected StrategoidModel(CachedVAORenderBufferStrategy strategy) {
+public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
+
+    public StrategoidModel(CachedVAORenderStrategy strategy) {
         super(strategy);
     }
 
@@ -13,8 +14,8 @@ public class StrategoidModel extends ARenderBufferStrategoid<CModel, CachedVAORe
     public void execute(CModel instance) {
         RenderUnit unit = new RenderUnit(
             instance.getMesh(), 
-            instance.getTexture(), 
-            instance.getPosition().getCopy()
+            instance.getTexture(),
+            new Matrix4f(instance.getTransform().get())
         );
         
         this.strategy.addRenderUnit(unit);

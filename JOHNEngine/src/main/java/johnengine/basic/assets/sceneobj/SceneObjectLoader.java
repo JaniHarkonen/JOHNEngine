@@ -19,10 +19,10 @@ public class SceneObjectLoader extends AAssetLoader {
         Assimp.aiProcess_JoinIdenticalVertices |
         Assimp.aiProcess_Triangulate |
         Assimp.aiProcess_FixInfacingNormals |
-        Assimp.aiProcess_LimitBoneWeights;
+        Assimp.aiProcess_LimitBoneWeights |
+        Assimp.aiProcess_CalcTangentSpace;
     
     private final List<Mesh> expectedMeshes;
-    //private final List<Material> expectedMaterials;
     //private final List<Animation> expectedAnimations;
     
     private int importFlags;
@@ -31,7 +31,6 @@ public class SceneObjectLoader extends AAssetLoader {
     public SceneObjectLoader(String path) {
         super(path);
         this.expectedMeshes = new ArrayList<>();
-        //this.expectedMaterials = new ArrayList<>();
         //this.expectedAnimations = new ArrayList<>();
         this.importFlags = DEFAULT_IMPORT_FLAGS;
         this.monitor = null;
@@ -48,7 +47,7 @@ public class SceneObjectLoader extends AAssetLoader {
         int s;
         
             // Extract meshes
-        s = scene.mNumMeshes();
+        s = Math.min(this.expectedMeshes.size(), scene.mNumMeshes());
         for( int i = 0; i < s; i++ )
         {
             Mesh expectedMesh = this.expectedMeshes.get(i);
@@ -58,11 +57,6 @@ public class SceneObjectLoader extends AAssetLoader {
             if( this.monitor != null )
             this.monitor.assetLoaded(expectedMesh);
         }
-        
-            // Extract materials
-        s = scene.mNumMaterials();
-        //for( int i = 0; i < s; i++ )
-        //this.expectedMaterials.get(i).setData(AIMaterial.create(scene.mMaterials().get(i)));
         
             // Extract animations
         s = scene.mNumAnimations();
@@ -81,10 +75,15 @@ public class SceneObjectLoader extends AAssetLoader {
         this.expect(mesh, this.expectedMeshes);
     }
     
-    /*public void expectMaterial(Material mesh) {
-        this.expect(mesh, this.expectedMaterials);
+    public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
+        this.monitor = monitor;
     }
     
+    public void setImportFlags(int importFlags) {
+        this.importFlags = importFlags;
+    }
+    
+    /*
     public void expectAnimation(Animation mesh) {
         this.expect(mesh, this.expectedAnimations);
     }*/

@@ -1,82 +1,81 @@
 package johnengine.basic.game;
 
-import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
-import johnengine.basic.window.Window;
-import johnengine.core.renderer.ARenderer;
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.basic.game.components.CController;
+import johnengine.basic.game.components.geometry.CProjection;
 
-public class JCamera extends AWorldObject {
+public class JCamera extends AWorldObject implements IControllable {
+    
+    private CProjection viewProjection;
+    private CController controller;
 
-    public static final float DEFAULT_NEAR = 0.001f;
-    public static final float DEFAULT_FAR = 1000.0f;
-    
-    private static final float FOV_Y = (float) Math.toRadians(90.0f);
-    
-    private int viewWidth;
-    private int viewHeight;
-    private float near;
-    private float far;
-    private Matrix4f projectionMatrix;
-    private Matrix4f orientationMatrix;
-    
     public JCamera(JWorld world) {
         super(world);
-        this.near = DEFAULT_NEAR;
-        this.far = DEFAULT_FAR;
-        this.viewWidth = Window.WindowProperties.DEFAULT_WIDTH;
-        this.viewHeight = Window.WindowProperties.DEFAULT_HEIGHT;
-        this.projectionMatrix = new Matrix4f();
-        this.orientationMatrix = new Matrix4f();
+        this.viewProjection = new CProjection();
+        this.controller = null;
+    }
+
+
+    @Override
+    public void tick(float deltaTime) {
+        if( this.controller != null )
+        this.controller.tick(deltaTime);
+    }
+    
+    
+    public CProjection getProjection() {
+        return this.viewProjection;
+    }
+    
+    
+    @Override
+    public void rotateX(float angle) {
+        this.transform.getRotation().rotate(angle, 0, 0);
+    }
+    
+    @Override
+    public void rotateY(float angle) {
+        this.transform.getRotation().rotate(0, angle, 0);
     }
 
     
     @Override
-    public void tick(float deltaTime) {
-        
+    public CController getController() {
+        return this.controller;
+    }
+
+    @Override
+    public void setController(CController controller) {
+        this.controller = controller;
+    }
+
+
+    @Override
+    public void moveForward() {
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getForwardVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
+    }
+
+    @Override
+    public void moveBackward() {
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getBackwardVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
     }
     
     @Override
-    public void render(ARenderer renderer) {
-        AWindowFramework window = renderer.getWindow();
-        int width = window.getWidth();
-        int height = window.getHeight();
-        
-        if( this.viewWidth != width || this.viewHeight != height )
-        this.setViewDimensions(width, height);
+    public void moveLeft() {
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getLeftVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
     }
-    
-    private void recalculateProjectionMatrix() {
-        this.projectionMatrix = (new Matrix4f())
-        .setPerspective(FOV_Y, this.viewWidth / this.viewHeight, this.near, this.far);
-    }
-    
-    private void recalculateOrientationMatrix() {
-        
-    }
-    
-    
-    public void setViewDimensions(int viewWidth, int viewHeight) {
-        this.viewWidth = viewWidth;
-        this.viewHeight = viewHeight;
-        this.recalculateProjectionMatrix();
-    }
-    
-    public void setNear(float near) {
-        this.near = near;
-        this.recalculateProjectionMatrix();
-    }
-    
-    public void setFar(float far) {
-        this.far = far;
-        this.recalculateProjectionMatrix();
-    }
-    
-    public Matrix4f getProjectionMatrix() {
-        return this.projectionMatrix;
-    }
-    
-    public Matrix4f getOrientationMatrix() {
-        return this.orientationMatrix;
+
+    @Override
+    public void moveRight() {
+        Vector3f direction = new Vector3f();
+        this.transform.getRotation().getRightVector(direction);
+        this.transform.getPosition().shift(direction.mul(0.05f));
     }
 }

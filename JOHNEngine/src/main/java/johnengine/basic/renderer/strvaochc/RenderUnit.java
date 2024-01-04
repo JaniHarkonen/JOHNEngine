@@ -1,6 +1,6 @@
 package johnengine.basic.renderer.strvaochc;
 
-import org.joml.Vector3f;
+import org.joml.Matrix4f;
 
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
@@ -8,12 +8,12 @@ import johnengine.basic.renderer.asset.Texture;
 public class RenderUnit {
     private Mesh mesh;
     private Texture texture;
-    private Vector3f position;
+    private Matrix4f positionMatrix;
     
-    public RenderUnit(Mesh mesh, Texture texture, Vector3f position) {
+    public RenderUnit(Mesh mesh, Texture texture, Matrix4f positionMatrix) {
         this.mesh = mesh;
         this.texture = texture;
-        this.position = position;
+        this.positionMatrix = positionMatrix;
     }
     
     
@@ -25,7 +25,7 @@ public class RenderUnit {
         return this.texture;
     }
     
-    Vector3f getPosition() {
-        return this.position;
+    Matrix4f getPositionMatrix() {
+        return this.positionMatrix;
     }
 }
