@@ -2,8 +2,8 @@ package johnengine.core.input;
 
 public interface IInput {
 
-    public interface State<S> {
-        public void takeSnapshot(S dest);
+    public interface State {
+        public void takeSnapshot(State dest);
         
         public boolean isKeyDown(int key);
         
@@ -22,5 +22,5 @@ public interface IInput {
     
     public void snapshot();
     
-    public IInput.State<?> getState();
+    public IInput.State getState();
 }
