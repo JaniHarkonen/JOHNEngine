@@ -37,3 +37,23 @@ dispose vbos individually
 	-> AUTOMATIZE IT!!
 - change every instance of "GL30." in the code base to "GL46."
 - see if Material can be refactored into binding all its textures through a method
+- Input classes should probably convert mouse coordinates into floats instead of 
+deferring this to the controllers
+- reconsider the way that Input is being handled
+	1. is AInput needed, what about IInput (probably the ladder)
+	2. how would gamepad controllers be implemented?
+	3. what changes as opposed to GLFW mouse and keyboard input?
+	4. can this be generalized to the way that the input is being handled currently?
+- there are two IRenderBufferStrategy classes?
+	
+	
+## Controller architecture
+
+Input has a State
+State is queried via ControlSchema
+
+ControlSchema produces Actions
+
+Controller has a ControlSchema
+Controller uses ControlSchema to query State of Input
+Controller executes Actions produced by ControlSchema

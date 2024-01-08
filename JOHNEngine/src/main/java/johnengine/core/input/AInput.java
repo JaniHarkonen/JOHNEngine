@@ -6,7 +6,7 @@ public abstract class AInput implements IInput {
 
         // The state has been promoted to its own class because a snapshot has 
         // to be maintained for each tick
-    public static class State implements IInput.State<State> {
+    public static class State implements IInput.State {
         private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
         private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
         
@@ -28,7 +28,8 @@ public abstract class AInput implements IInput {
         
         
         @Override
-        public void takeSnapshot(State dest) {
+        public void takeSnapshot(IInput.State destState) {
+            State dest = (State) destState;
             for( int i = 0; i < KEY_MAP_SIZE; i++ )
             {
                 dest.keyMap[i] = this.keyMap[i];

@@ -34,7 +34,7 @@ public final class Window extends AWindowFramework
     
     /*************************** Window-class ****************************/
     
-    protected Input input;
+    protected MouseKeyboardInput input;
     
     public static Window setup3D() {
         Window instance = new Window();
@@ -51,7 +51,7 @@ public final class Window extends AWindowFramework
         super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
-        this.input = new Input(this);
+        this.input = new MouseKeyboardInput(this);
     }
     
     
@@ -239,7 +239,7 @@ public final class Window extends AWindowFramework
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
     
-    public Input getInput() {
+    public MouseKeyboardInput getInput() {
         return this.input;
     }
     
