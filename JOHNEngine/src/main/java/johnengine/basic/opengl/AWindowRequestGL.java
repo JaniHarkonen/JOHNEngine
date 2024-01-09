@@ -5,18 +5,18 @@ import org.lwjgl.system.MemoryUtil;
 import johnengine.core.reqmngr.ARequest;
 import johnengine.core.reqmngr.IRequestContext;
 
-public abstract class AWindowRequest extends ARequest {
+public abstract class AWindowRequestGL extends ARequest {
 
     @Override
     public void process(IRequestContext context) {
-        WindowRequestContext winContext = (WindowRequestContext) context;
+        WindowRequestContextGL winContext = (WindowRequestContextGL) context;
         this.setState(winContext);
         
         if( winContext.window.getWindowID() != MemoryUtil.NULL )
         this.setGLFW(winContext);
     }
     
-    protected abstract void setState(WindowRequestContext context);
+    protected abstract void setState(WindowRequestContextGL context);
     
-    protected abstract void setGLFW(WindowRequestContext context);
+    protected abstract void setGLFW(WindowRequestContextGL context);
 }

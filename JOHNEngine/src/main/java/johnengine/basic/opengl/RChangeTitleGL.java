@@ -2,21 +2,21 @@ package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RChangeTitle extends AWindowRequest {
+public final class RChangeTitleGL extends AWindowRequestGL {
     private final String title;
     
-    public RChangeTitle(String title) {
+    public RChangeTitleGL(String title) {
         this.title = title;
     }
 
 
     @Override
-    protected void setState(WindowRequestContext context) {
+    protected void setState(WindowRequestContextGL context) {
         context.window.setTitle(title);
     }
 
     @Override
-    protected void setGLFW(WindowRequestContext context) {
+    protected void setGLFW(WindowRequestContextGL context) {
         GLFW.glfwSetWindowTitle(context.window.getWindowID(), this.title);
     }
 }

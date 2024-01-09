@@ -1,18 +1,18 @@
 package johnengine.basic.opengl;
 
-public final class RLockCursor extends AWindowRequest {
+public final class RLockCursorGL extends AWindowRequestGL {
     private final boolean isCursorLockedToCenter;
     
-    public RLockCursor(boolean isCursorLockedToCenter) {
+    public RLockCursorGL(boolean isCursorLockedToCenter) {
         this.isCursorLockedToCenter = isCursorLockedToCenter;
     }
 
     
     @Override
-    protected void setState(WindowRequestContext context) {
+    protected void setState(WindowRequestContextGL context) {
         context.window.setCursorLockedToCenter(this.isCursorLockedToCenter);
     }
 
     @Override
-    protected void setGLFW(WindowRequestContext context) { }
+    protected void setGLFW(WindowRequestContextGL context) { }
 }

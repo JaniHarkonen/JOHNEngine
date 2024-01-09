@@ -2,23 +2,23 @@ package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RMove extends AWindowRequest {
+public final class RMoveGL extends AWindowRequestGL {
     private final int x;
     private final int y;
     
-    public RMove(int x, int y) {
+    public RMoveGL(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
 
     @Override
-    protected void setState(WindowRequestContext context) {
+    protected void setState(WindowRequestContextGL context) {
         context.window.setPosition(x, y);
     }
     
     @Override
-    protected void setGLFW(WindowRequestContext context) {
+    protected void setGLFW(WindowRequestContextGL context) {
         GLFW.glfwSetWindowPos(context.window.getWindowID(), this.x, this.y);
     }
 }

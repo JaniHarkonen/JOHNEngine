@@ -33,7 +33,7 @@ public final class WindowGL extends AWindowFramework
         super(new Properties(), new Properties(), new BufferedRequestManager());
         
         this.reset();
-        this.requestManager.setContext(new WindowRequestContext(this));
+        this.requestManager.setContext(new WindowRequestContextGL(this));
         this.input = new MouseKeyboardInputGL(this);
         this.primaryMonitorID = 0;
         this.windowID = 0;
@@ -201,73 +201,73 @@ public final class WindowGL extends AWindowFramework
     
     @Override
     public AWindowFramework move(int x, int y) {
-        this.requestManager.request(new RMove(x, y));
+        this.requestManager.request(new RMoveGL(x, y));
         return this;
     }
 
     @Override
     public AWindowFramework resize(int width, int height) {
-        this.requestManager.request(new RResize(width, height));
+        this.requestManager.request(new RResizeGL(width, height));
         return this;
     }
 
     @Override
     public AWindowFramework changeTitle(String title) {
-        this.requestManager.request(new RChangeTitle(title));
+        this.requestManager.request(new RChangeTitleGL(title));
         return this;
     }
 
     @Override
     public AWindowFramework lockCursorToCenter() {
-        this.requestManager.request(new RLockCursor(true));
+        this.requestManager.request(new RLockCursorGL(true));
         return this;
     }
 
     @Override
     public AWindowFramework freeCursorLock() {
-        this.requestManager.request(new RLockCursor(false));
+        this.requestManager.request(new RLockCursorGL(false));
         return this;
     }
 
     @Override
     public AWindowFramework showCursor() {
-        this.requestManager.request(new RChangeCursorVisibility(true));
+        this.requestManager.request(new RChangeCursorVisibilityGL(true));
         return this;
     }
 
     @Override
     public AWindowFramework hideCursor() {
-        this.requestManager.request(new RChangeCursorVisibility(false));
+        this.requestManager.request(new RChangeCursorVisibilityGL(false));
         return this;
     }
 
     @Override
     public AWindowFramework enableVSync() {
-        this.requestManager.request(new RVSync(true));
+        this.requestManager.request(new RVSyncGL(true));
         return this;
     }
 
     @Override
     public AWindowFramework disableVSync() {
-        this.requestManager.request(new RVSync(false));
+        this.requestManager.request(new RVSyncGL(false));
         return this;
     }
 
     @Override
     public AWindowFramework moveMouse(int x, int y) {
-        this.requestManager.request(new RMoveMouse(x, y));
+        this.requestManager.request(new RMoveMouseGL(x, y));
         return this;
     }
     
     @Override
     public WindowGL enterFullscreen() {
-        this.requestManager.request(new RFullscreen(true));
+        this.requestManager.request(new RFullscreenGL(true));
         return this;
     }
     
     @Override
     public WindowGL exitFullscreen() {
-        this.requestManager.request(new RFullscreen(false));
+        this.requestManager.request(new RFullscreenGL(false));
         return this;
     }
     
