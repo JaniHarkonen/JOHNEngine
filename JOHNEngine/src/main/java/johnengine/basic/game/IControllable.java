@@ -1,4 +1,6 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.game;
+
+import johnengine.basic.game.components.CController;
 
 public interface IControllable {
 

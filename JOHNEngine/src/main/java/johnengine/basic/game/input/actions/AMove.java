@@ -1,6 +1,6 @@
-package johnengine.basic.game.rewrite.actions;
+package johnengine.basic.game.input.actions;
 
-import johnengine.basic.game.rewrite.AControllerAction;
+import johnengine.basic.game.input.AControllerAction;
 import johnengine.core.input.IInput;
 import johnengine.core.input.IInputConverter;
 

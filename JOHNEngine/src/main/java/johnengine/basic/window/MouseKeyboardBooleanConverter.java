@@ -1,4 +1,4 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.window;
 
 import johnengine.core.input.IInput;
 import johnengine.core.input.IInputConverter;

@@ -2,9 +2,8 @@ package johnengine.basic.game;
 
 import org.joml.Vector3f;
 
+import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.geometry.CProjection;
-import johnengine.basic.game.rewrite.CController;
-import johnengine.basic.game.rewrite.IControllable;
 
 public class JCamera extends AWorldObject implements IControllable {
     

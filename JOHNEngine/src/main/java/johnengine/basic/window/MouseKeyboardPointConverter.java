@@ -1,4 +1,4 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.window;
 
 import java.awt.geom.Point2D;
 

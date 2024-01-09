@@ -1,4 +1,4 @@
-package johnengine.basic.game.rewrite;
+package johnengine.basic.game.input;
 
 import java.util.HashMap;
 import java.util.LinkedList;
