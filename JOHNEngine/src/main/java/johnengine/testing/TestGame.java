@@ -1,17 +1,28 @@
 package johnengine.testing;
 
+import org.lwjgl.glfw.GLFW;
+
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
-import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
+import johnengine.basic.game.rewrite.CController;
+import johnengine.basic.game.rewrite.ControlSchema;
+import johnengine.basic.game.rewrite.MouseKeyboardBooleanConverter;
+import johnengine.basic.game.rewrite.MouseKeyboardPointConverter;
+import johnengine.basic.game.rewrite.actions.ACTMoveBackward;
+import johnengine.basic.game.rewrite.actions.ACTMoveForward;
+import johnengine.basic.game.rewrite.actions.ACTMoveLeft;
+import johnengine.basic.game.rewrite.actions.ACTMoveRight;
+import johnengine.basic.game.rewrite.actions.ACTTurn;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.window.MouseKeyboardInput;
 import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
@@ -74,18 +85,39 @@ public class TestGame extends AGame {
         JTestBox box = new JTestBox(this.worldMain, model);
         box.attach(model);
         model.getTransform().getScale().inherit();
-        //model.getTransform().inheritScale();
-        
-        //DebugUtils.log(this, model.getTransform().getScale());
-        
+
         this.worldMain.createInstance(box);
         
-        CModel debugmodel = new CModel();
-        debugmodel.setMesh(mesh);
-        debugmodel.setTexture(texture);
+        ControlSchema cs = new ControlSchema();
+        cs.addBinding(
+            new ACTMoveForward(), 
+            new MouseKeyboardBooleanConverter(), 
+            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_W)
+        ).addBinding(
+            new ACTMoveBackward(), 
+            new MouseKeyboardBooleanConverter(), 
+            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_S)
+        ).addBinding(
+            new ACTMoveLeft(), 
+            new MouseKeyboardBooleanConverter(), 
+            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_A)
+        ).addBinding(
+            new ACTMoveRight(), 
+            new MouseKeyboardBooleanConverter(), 
+            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_D)
+        ).addBinding(
+            new ACTTurn(), 
+            new MouseKeyboardPointConverter(), 
+            new MouseKeyboardInput.MouseMove()
+        );
         
         JCamera camera = new JCamera(this.worldMain);
-        camera.setController(new CController(this.window.getInput(), camera));
+        CController controller = new CController();
+        controller.setSchema(cs);
+        controller.setSource(this.window.getInput());
+        controller.setTarget(camera);
+        camera.setController(controller);
+        
         this.worldMain.createInstance(camera);
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
@@ -119,7 +151,7 @@ public class TestGame extends AGame {
         
         this.worldMain.tick(deltaTime);
         this.tickCounter++;
-        this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
+        //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         this.window.changeTitle("FPS: " + this.window.getFPS());
         //this.timer.count();
     }

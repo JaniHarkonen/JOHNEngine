@@ -7,4 +7,6 @@ public interface IControllable {
     public void moveLeft(float intensity);
     public void moveRight(float intensity);
     public void turn(float deltaX, float deltaY);
+    
+    public void setController(CController controller);
 }

@@ -1,6 +1,6 @@
 package johnengine.basic.game.rewrite;
 
-import java.util.Map;
+import java.util.Queue;
 
 import johnengine.core.ITickable;
 import johnengine.core.input.IInput;
@@ -11,18 +11,25 @@ public class CController implements ITickable {
     private ControlSchema controlSchema;
     private IControllable controlledInstance;
     
-    public CController() {
-        this.inputSource = null;
+    public CController(IInput inputSource, IControllable controlledInstance) {
+        this.inputSource = inputSource;
+        this.controlledInstance = controlledInstance;
         this.controlSchema = null;
-        this.controlledInstance = null;
+    }
+    
+    public CController() {
+        this(null, null);
     }
 
     
     @Override
     public void tick(float deltaTime) {
         IInput.State state = this.inputSource.getState();
-        for( Map.Entry<AControllerAction, ControlSchema.ConverterEventPair> entry : this.controlSchema.generateActions(state) )
-        entry.getKey().perform(this.controlledInstance, entry.getValue().inputEvent, entry.getValue().converter);
+        Queue<AControllerAction> actionQueue = this.controlSchema.generateActions(state);
+        
+        AControllerAction action;
+        while( (action = actionQueue.poll()) != null )
+        action.perform(this.controlledInstance);
     }
     
     

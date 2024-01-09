@@ -1,16 +1,20 @@
 package johnengine.basic.game.rewrite.actions;
 
-import johnengine.basic.game.rewrite.AInputConverter;
 import johnengine.basic.game.rewrite.IControllable;
-import johnengine.basic.game.rewrite.IInputConverter;
-import johnengine.core.input.IInputEvent;
+import johnengine.core.input.IInput;
+import johnengine.core.input.IInputConverter;
 
 public class ACTMoveBackward extends AMove {
-
+    
+    @Override
+    public void perform(IControllable target) {
+        target.moveBackward(this.intensity);
+    }
 
     @Override
-    public void perform(IControllable target, IInputEvent<?> inputEvent, IInputConverter<?, ?> converter) {
-        IInputConverter<?, ?> c = (IInputConverter<?, ?>) converter; 
-        target.moveBackward(c.convert(inputEvent));
+    public ACTMoveBackward createInstance(IInput.Event<?> event, IInputConverter<?> converter) {
+        ACTMoveBackward action = new ACTMoveBackward();
+        action.setIntensityFromInputEvent(event, converter);
+        return action;
     }
 }

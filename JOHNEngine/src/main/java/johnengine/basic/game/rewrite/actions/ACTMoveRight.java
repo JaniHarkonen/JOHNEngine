@@ -1,7 +1,8 @@
 package johnengine.basic.game.rewrite.actions;
 
-import johnengine.basic.game.rewrite.AControllerAction;
 import johnengine.basic.game.rewrite.IControllable;
+import johnengine.core.input.IInput;
+import johnengine.core.input.IInputConverter;
 
 public class ACTMoveRight extends AMove {
 
@@ -11,8 +12,9 @@ public class ACTMoveRight extends AMove {
     }
 
     @Override
-    public AControllerAction createInstance() {
-        return new ACTMoveRight();
+    public ACTMoveRight createInstance(IInput.Event<?> event, IInputConverter<?> converter) {
+        ACTMoveRight action = new ACTMoveRight();
+        action.setIntensityFromInputEvent(event, converter);
+        return action;
     }
-    
 }

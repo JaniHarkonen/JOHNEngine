@@ -1,27 +1,20 @@
 package johnengine.basic.game.rewrite;
 
-import johnengine.core.input.IInputEvent;
+import johnengine.core.input.IInput;
+import johnengine.core.input.IInputConverter;
 
-//public class MouseKeyboardBooleanConverter extends AInputConverter<Boolean, Float> {
-public class MouseKeyboardBooleanConverter implements IInputConverter<Boolean, Float> {
+public class MouseKeyboardBooleanConverter implements IInputConverter<Float>{
     
-    private IInputEvent<Boolean> inputEvent;
-
-    public MouseKeyboardBooleanConverter(IInputEvent<Boolean> inputEvent) {
-        this.inputEvent = inputEvent;
-    }
-    /*@Override
-    public Float convert(IInputEvent<?> inputEvent) {
-        return (((IInputEvent<Boolean>) inputEvent).getValue() ? 1.0f : 0.0f);
-    }*/
+    private IInput.Event<Boolean> inputEvent;
     
     @Override
     public Float convert() {
         return (this.inputEvent.getValue() ? 1.0f : 0.0f);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setEvent(IInputEvent<Boolean> event) {
-        this.inputEvent = event;
+    public void setEvent(IInput.Event<?> event) {
+        this.inputEvent = (IInput.Event<Boolean>) event;
     }
 }

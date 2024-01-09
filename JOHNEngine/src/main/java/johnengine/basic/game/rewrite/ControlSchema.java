@@ -1,20 +1,19 @@
 package johnengine.basic.game.rewrite;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 
 import johnengine.core.input.IInput;
-import johnengine.core.input.IInputEvent;
+import johnengine.core.input.IInputConverter;
 
 public class ControlSchema {
         
     public static class ConverterEventPair {
-        public IInputConverter<?, ?> converter;
-        public IInputEvent<?> inputEvent;
+        public final IInputConverter<?> converter;
+        public final IInput.Event<?> inputEvent;
         
-        public ConverterEventPair(IInputConverter<?, ?> converter, IInputEvent<?> inputEvent) {
+        public ConverterEventPair(IInputConverter<?> converter, IInput.Event<?> inputEvent) {
             this.converter = converter;
             this.inputEvent = inputEvent;
         }
@@ -26,22 +25,39 @@ public class ControlSchema {
     public ControlSchema() {
         this.bindings = new HashMap<>();
     }
+    
+        // Copy constructor
+    /*public ControlSchema(ControlSchema source) {
+        this();
+        
+        for(  )
+    }*/
 
     
-    public List<Map.Entry<AControllerAction, ConverterEventPair>> generateActions(IInput.State targetState) {
-        List<Map.Entry<AControllerAction, ConverterEventPair>> generatedActions = new ArrayList<>();
+    public LinkedList<AControllerAction> generateActions(IInput.State targetState) {
+        LinkedList<AControllerAction> generatedActions = new LinkedList<>();
         for( Map.Entry<AControllerAction, ConverterEventPair> en : this.bindings.entrySet() )
         {
-            if( en.getValue().inputEvent.check(targetState) )
-            generatedActions.add(en);
+            ConverterEventPair pair = en.getValue();
+            IInput.Event<?> inputEvent = pair.inputEvent;
+            
+                // Check whether the input event was triggered
+            if( !inputEvent.check(targetState) )
+            continue;
+            
+                // Create an action based on the input event and pass on the 
+                // associated converter which will be used to convert the value
+                // of the input event into a format accepted by the action
+            IInputConverter<?> converter = pair.converter;
+            generatedActions.add(en.getKey().createInstance(inputEvent, converter));
         }
-        
+            
         return generatedActions;
     }
     
-    
-    public void addBinding(AControllerAction action, IInputConverter<?, ?> converter, IInputEvent<?> inputEvent) {
+    public ControlSchema addBinding(AControllerAction action, IInputConverter<?> converter, IInput.Event<?> inputEvent) {
         this.bindings.put(action, new ConverterEventPair(converter, inputEvent));
+        return this;
     }
     
     /*protected Combo buildComboFromString(String bindingString) {
