@@ -1,8 +1,8 @@
-package johnengine.core.winframe;
+package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RMove extends ABasicWindowRequest {
+public final class RMove extends AWindowRequest {
     private final int x;
     private final int y;
     
@@ -13,12 +13,12 @@ public final class RMove extends ABasicWindowRequest {
 
 
     @Override
-    protected void setState(BasicWindowRequestContext context) {
+    protected void setState(WindowRequestContext context) {
         context.window.setPosition(x, y);
     }
     
     @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
+    protected void setGLFW(WindowRequestContext context) {
         GLFW.glfwSetWindowPos(context.window.getWindowID(), this.x, this.y);
     }
 }

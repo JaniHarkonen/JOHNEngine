@@ -1,8 +1,8 @@
-package johnengine.core.winframe;
+package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RMoveMouse extends ABasicWindowRequest {
+public final class RMoveMouse extends AWindowRequest {
     private final int x;
     private final int y;
     
@@ -13,10 +13,10 @@ public final class RMoveMouse extends ABasicWindowRequest {
 
 
     @Override
-    protected void setState(BasicWindowRequestContext context) { }
+    protected void setState(WindowRequestContext context) { }
     
     @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
+    protected void setGLFW(WindowRequestContext context) {
         GLFW.glfwSetCursorPos(context.window.getWindowID(), this.x, this.y);
     }
 }

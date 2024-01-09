@@ -1,4 +1,4 @@
-package johnengine.basic.opengl.rewrite;
+package johnengine.basic.opengl;
 
 public final class RLockCursor extends AWindowRequest {
     private final boolean isCursorLockedToCenter;

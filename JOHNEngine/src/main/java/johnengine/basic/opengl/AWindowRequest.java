@@ -1,18 +1,19 @@
 package johnengine.basic.opengl;
 
-import johnengine.core.winframe.ABasicWindowRequest;
-import johnengine.core.winframe.BasicWindowRequestContext;
+import org.lwjgl.system.MemoryUtil;
 
-public abstract class AWindowRequest extends ABasicWindowRequest {
-    
+import johnengine.core.reqmngr.ARequest;
+import johnengine.core.reqmngr.IRequestContext;
+
+public abstract class AWindowRequest extends ARequest {
+
     @Override
-    protected void setState(BasicWindowRequestContext context) {
-        this.setState((WindowRequestContext) context);
-    }
-    
-    @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
-        this.setGLFW((WindowRequestContext) context);
+    public void process(IRequestContext context) {
+        WindowRequestContext winContext = (WindowRequestContext) context;
+        this.setState(winContext);
+        
+        if( winContext.window.getWindowID() != MemoryUtil.NULL )
+        this.setGLFW(winContext);
     }
     
     protected abstract void setState(WindowRequestContext context);

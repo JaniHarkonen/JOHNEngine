@@ -5,7 +5,7 @@ import org.joml.Matrix4f;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.components.geometry.CProjection;
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.core.winframe.rewrite.AWindowFramework;
+import johnengine.core.winframe.AWindowFramework;
 
 public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
 

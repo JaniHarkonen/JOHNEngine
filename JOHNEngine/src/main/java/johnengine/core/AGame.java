@@ -1,6 +1,6 @@
 package johnengine.core;
 
-import johnengine.basic.opengl.rewrite.WindowGL;
+import johnengine.basic.opengl.WindowGL;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 

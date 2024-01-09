@@ -1,5 +1,5 @@
 package johnengine.basic.opengl;
-/*
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
@@ -10,50 +10,33 @@ import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
-import johnengine.core.winframe.BasicWindowRequestContext;
 
 public final class WindowGL extends AWindowFramework 
     implements IEngineComponent, IThreadable {
     
-    public static class WindowProperties extends Properties {
-        public static final boolean DEFAULT_IS_FULLSCREEN = false;
-        
-        public boolean isFullscreen;
-        
-        public WindowProperties() {
-            super();
-            this.isFullscreen = DEFAULT_IS_FULLSCREEN;
-        }
-        
-        
-        public void copy(WindowProperties source) {
-            super.copy(source);
-            this.isFullscreen = source.isFullscreen;
-        }
-    }*/
-    
-    
-    /*************************** Window-class ****************************/
-    /*
-    protected MouseKeyboardInputGL input;
+    private MouseKeyboardInputGL input;
+    private long primaryMonitorID;
+    private long windowID;
     
     public static WindowGL setup3D() {
         WindowGL instance = new WindowGL();
         instance.setRenderer(new RendererGL(instance));
         return instance;
     }
-    */
+    
         // TO BE IMPLEMENTED
     /*public static Window setup2D() {
         return null;
     }*/
     
-/*
-    protected WindowGL() {
-        super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
+    public WindowGL() {
+        super(new Properties(), new Properties(), new BufferedRequestManager());
         
-        this.requestManager.setContext(new BasicWindowRequestContext(this));
+        this.reset();
+        this.requestManager.setContext(new WindowRequestContext(this));
         this.input = new MouseKeyboardInputGL(this);
+        this.primaryMonitorID = 0;
+        this.windowID = 0;
     }
     
     
@@ -141,7 +124,7 @@ public final class WindowGL extends AWindowFramework
             // Remove deocration (borders) when in fullscreen mode
         GLFW.glfwWindowHint(
             GLFW.GLFW_DECORATED,
-            ((WindowProperties) this.updatingProperties).isFullscreen ? 
+            this.updatingProperties.isFullscreen ? 
             GLFW.GLFW_FALSE : 
             GLFW.GLFW_TRUE
         );
@@ -198,9 +181,9 @@ public final class WindowGL extends AWindowFramework
         return winID;
     }
     
-    @Override
     protected void reset() {
-        super.reset();
+        this.windowID = 0;
+        this.primaryMonitorID = 0;
         this.renderer = null;
         this.input = null;
     }
@@ -212,33 +195,95 @@ public final class WindowGL extends AWindowFramework
         this.setWindowState(STATE_OPEN);
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
-    */
+    
     
     /************************* REQUESTS ***************************/
-    /*
+    
+    @Override
+    public AWindowFramework move(int x, int y) {
+        this.requestManager.request(new RMove(x, y));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework resize(int width, int height) {
+        this.requestManager.request(new RResize(width, height));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework changeTitle(String title) {
+        this.requestManager.request(new RChangeTitle(title));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework lockCursorToCenter() {
+        this.requestManager.request(new RLockCursor(true));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework freeCursorLock() {
+        this.requestManager.request(new RLockCursor(false));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework showCursor() {
+        this.requestManager.request(new RChangeCursorVisibility(true));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework hideCursor() {
+        this.requestManager.request(new RChangeCursorVisibility(false));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework enableVSync() {
+        this.requestManager.request(new RVSync(true));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework disableVSync() {
+        this.requestManager.request(new RVSync(false));
+        return this;
+    }
+
+    @Override
+    public AWindowFramework moveMouse(int x, int y) {
+        this.requestManager.request(new RMoveMouse(x, y));
+        return this;
+    }
+    
+    @Override
     public WindowGL enterFullscreen() {
         this.requestManager.request(new RFullscreen(true));
         return this;
     }
     
+    @Override
     public WindowGL exitFullscreen() {
         this.requestManager.request(new RFullscreen(false));
         return this;
-    }*/
+    }
     
     
     /*********************** GETTERS ****************************/
-    /*
-    void setFullscreen(boolean isFullscreen) {
-        ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
-    }
     
-    long getPrimaryMonitorID() {
+    public long getPrimaryMonitorID() {
         return this.primaryMonitorID;
     }
     
+    public long getWindowID() {
+        return this.windowID;
+    }
+    
     public boolean isFullscreen() {
-        return ((WindowProperties) this.snapshotProperties).isFullscreen;
+        return this.snapshotProperties.isFullscreen;
     }
     
     public MouseKeyboardInputGL getInput() {
@@ -248,20 +293,4 @@ public final class WindowGL extends AWindowFramework
     public IRenderer getRenderer() {
         return this.renderer;
     }
-    */
-    
-    /********************* HOISTED METHODS ************************/
-    
-    // Some inherited methods may have to be hoisted in order for them
-    // to be visible inside the current package as AWindowFramework
-    // and its protected methods are declared in another package.
-    /*
-    protected void setPosition(int x, int y) {
-        super.setPosition(x, y);
-    }
-    
-    protected void setSize(int width, int height) {
-        super.setSize(width, height);
-    }
 }
-*/

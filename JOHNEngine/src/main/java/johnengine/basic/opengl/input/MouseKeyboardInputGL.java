@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.basic.opengl.rewrite.WindowGL;
+import johnengine.basic.opengl.WindowGL;
 import johnengine.core.input.IInput;
 
 public final class MouseKeyboardInputGL implements IInput {

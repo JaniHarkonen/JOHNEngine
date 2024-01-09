@@ -19,7 +19,7 @@ import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
-import johnengine.basic.opengl.rewrite.WindowGL;
+import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;

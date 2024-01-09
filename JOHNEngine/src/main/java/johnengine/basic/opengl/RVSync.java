@@ -1,8 +1,8 @@
-package johnengine.core.winframe;
+package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RVSync extends ABasicWindowRequest {
+public final class RVSync extends AWindowRequest {
     private final boolean useVSync;
     
     public RVSync(boolean useVSync) {
@@ -11,12 +11,12 @@ public final class RVSync extends ABasicWindowRequest {
 
 
     @Override
-    protected void setState(BasicWindowRequestContext context) {
+    protected void setState(WindowRequestContext context) {
         context.window.setVSync(this.useVSync);
     }
 
     @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
+    protected void setGLFW(WindowRequestContext context) {
         GLFW.glfwSwapInterval(this.useVSync ? 1 : 0);
     }
 }

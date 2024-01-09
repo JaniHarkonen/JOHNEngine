@@ -1,8 +1,8 @@
-package johnengine.core.winframe;
+package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 
-public final class RChangeTitle extends ABasicWindowRequest {
+public final class RChangeTitle extends AWindowRequest {
     private final String title;
     
     public RChangeTitle(String title) {
@@ -11,12 +11,12 @@ public final class RChangeTitle extends ABasicWindowRequest {
 
 
     @Override
-    protected void setState(BasicWindowRequestContext context) {
+    protected void setState(WindowRequestContext context) {
         context.window.setTitle(title);
     }
 
     @Override
-    protected void setGLFW(BasicWindowRequestContext context) {
+    protected void setGLFW(WindowRequestContext context) {
         GLFW.glfwSetWindowTitle(context.window.getWindowID(), this.title);
     }
 }

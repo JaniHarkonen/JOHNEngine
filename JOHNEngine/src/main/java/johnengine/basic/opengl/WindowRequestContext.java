@@ -1,13 +1,12 @@
 package johnengine.basic.opengl;
 
-import johnengine.core.winframe.BasicWindowRequestContext;
+import johnengine.core.reqmngr.IRequestContext;
 
-public class WindowRequestContext extends BasicWindowRequestContext {
+public class WindowRequestContext implements IRequestContext {
 
-    public WindowGL window;   // "Overrides" super.window to avoid casting
+    public WindowGL window;
     
     public WindowRequestContext(WindowGL window) {
-        super(window);
         this.window = window;
     }
 }
