@@ -1,4 +1,4 @@
-package johnengine.basic.window;
+package johnengine.basic.opengl;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -15,14 +15,14 @@ public final class RFullscreen extends ABasicWindowRequest {
 
     @Override
     protected void setState(BasicWindowRequestContext context) {
-        Window window = (Window) context.window;
+        WindowGL window = (WindowGL) context.window;
         window.setFullscreen(this.isFullscreen);
         window.setPosition(0, 0);
     }
 
     @Override
     protected void setGLFW(BasicWindowRequestContext context) {
-        Window window = (Window) context.window;
+        WindowGL window = (WindowGL) context.window;
         GLFWVidMode videoMode = GLFW.glfwGetVideoMode(window.getPrimaryMonitorID());
         window.setSize(videoMode.width(), videoMode.height());
         

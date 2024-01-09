@@ -1,12 +1,13 @@
-package johnengine.basic.window;
+package johnengine.basic.opengl.input;
 
 import java.awt.geom.Point2D;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.opengl.rewrite.WindowGL;
 import johnengine.core.input.IInput;
 
-public final class MouseKeyboardInput implements IInput {
+public final class MouseKeyboardInputGL implements IInput {
     
     /************************ BooleanEvent-class ************************/
     
@@ -53,7 +54,7 @@ public final class MouseKeyboardInput implements IInput {
 
         @Override
         public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInput.State) state).isKeyDown(this.key);
+            this.didOccur = ((MouseKeyboardInputGL.State) state).isKeyDown(this.key);
             return this.didOccur;
         }
         
@@ -74,7 +75,7 @@ public final class MouseKeyboardInput implements IInput {
 
         @Override
         public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInput.State) state).isKeyReleased(this.key);
+            this.didOccur = ((MouseKeyboardInputGL.State) state).isKeyReleased(this.key);
             return this.didOccur;
         }
         
@@ -95,7 +96,7 @@ public final class MouseKeyboardInput implements IInput {
 
         @Override
         public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInput.State) state).isMouseDown(this.mouseButton);
+            this.didOccur = ((MouseKeyboardInputGL.State) state).isMouseDown(this.mouseButton);
             return this.didOccur;
         }
         
@@ -116,7 +117,7 @@ public final class MouseKeyboardInput implements IInput {
 
         @Override
         public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInput.State) state).isMouseReleased(this.mouseButton);
+            this.didOccur = ((MouseKeyboardInputGL.State) state).isMouseReleased(this.mouseButton);
             return this.didOccur;
         }
         
@@ -138,7 +139,7 @@ public final class MouseKeyboardInput implements IInput {
 
         @Override
         public boolean check(IInput.State state) {
-            MouseKeyboardInput.State cstate = (MouseKeyboardInput.State) state;
+            MouseKeyboardInputGL.State cstate = (MouseKeyboardInputGL.State) state;
             this.mouseDelta.x = cstate.getMouseDeltaX();
             this.mouseDelta.y = cstate.getMouseDeltaY();
             return true;
@@ -251,11 +252,11 @@ public final class MouseKeyboardInput implements IInput {
     
     /************************ MouseKeyboardInput-class ************************/
     
-    private final Window hostWindow;
+    private final WindowGL hostWindow;
     private final State updatingState;
     private final State snapshotState;
 
-    public MouseKeyboardInput(Window hostWindow) {
+    public MouseKeyboardInputGL(WindowGL hostWindow) {
         this.hostWindow = hostWindow;
         this.updatingState = new State();
         this.snapshotState = new State();

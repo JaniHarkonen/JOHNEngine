@@ -1,8 +1,9 @@
-package johnengine.basic.window;
-
+package johnengine.basic.opengl;
+/*
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
 import johnengine.core.renderer.IRenderer;
@@ -11,7 +12,7 @@ import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
 import johnengine.core.winframe.BasicWindowRequestContext;
 
-public final class Window extends AWindowFramework 
+public final class WindowGL extends AWindowFramework 
     implements IEngineComponent, IThreadable {
     
     public static class WindowProperties extends Properties {
@@ -29,29 +30,30 @@ public final class Window extends AWindowFramework
             super.copy(source);
             this.isFullscreen = source.isFullscreen;
         }
-    }
+    }*/
     
     
     /*************************** Window-class ****************************/
+    /*
+    protected MouseKeyboardInputGL input;
     
-    protected MouseKeyboardInput input;
-    
-    public static Window setup3D() {
-        Window instance = new Window();
+    public static WindowGL setup3D() {
+        WindowGL instance = new WindowGL();
         instance.setRenderer(new RendererGL(instance));
         return instance;
     }
-    
+    */
         // TO BE IMPLEMENTED
     /*public static Window setup2D() {
         return null;
     }*/
     
-    protected Window() {
+/*
+    protected WindowGL() {
         super(new WindowProperties(), new WindowProperties(), new BufferedRequestManager());
         
         this.requestManager.setContext(new BasicWindowRequestContext(this));
-        this.input = new MouseKeyboardInput(this);
+        this.input = new MouseKeyboardInputGL(this);
     }
     
     
@@ -210,23 +212,23 @@ public final class Window extends AWindowFramework
         this.setWindowState(STATE_OPEN);
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
-    
+    */
     
     /************************* REQUESTS ***************************/
-    
-    public Window enterFullscreen() {
+    /*
+    public WindowGL enterFullscreen() {
         this.requestManager.request(new RFullscreen(true));
         return this;
     }
     
-    public Window exitFullscreen() {
+    public WindowGL exitFullscreen() {
         this.requestManager.request(new RFullscreen(false));
         return this;
-    }
+    }*/
     
     
     /*********************** GETTERS ****************************/
-    
+    /*
     void setFullscreen(boolean isFullscreen) {
         ((WindowProperties) this.updatingProperties).isFullscreen = isFullscreen;
     }
@@ -239,21 +241,21 @@ public final class Window extends AWindowFramework
         return ((WindowProperties) this.snapshotProperties).isFullscreen;
     }
     
-    public MouseKeyboardInput getInput() {
+    public MouseKeyboardInputGL getInput() {
         return this.input;
     }
     
     public IRenderer getRenderer() {
         return this.renderer;
     }
-    
+    */
     
     /********************* HOISTED METHODS ************************/
     
     // Some inherited methods may have to be hoisted in order for them
     // to be visible inside the current package as AWindowFramework
     // and its protected methods are declared in another package.
-    
+    /*
     protected void setPosition(int x, int y) {
         super.setPosition(x, y);
     }
@@ -262,3 +264,4 @@ public final class Window extends AWindowFramework
         super.setSize(width, height);
     }
 }
+*/

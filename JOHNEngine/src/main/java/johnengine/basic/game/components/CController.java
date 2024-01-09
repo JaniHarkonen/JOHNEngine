@@ -2,9 +2,9 @@ package johnengine.basic.game.components;
 
 import java.util.Queue;
 
-import johnengine.basic.game.IControllable;
 import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.ControlSchema;
+import johnengine.basic.game.input.IControllable;
 import johnengine.core.ITickable;
 import johnengine.core.input.IInput;
 

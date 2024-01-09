@@ -1,4 +1,4 @@
-package johnengine.basic.window;
+package johnengine.basic.game.input.cvrters;
 
 import java.awt.geom.Point2D;
 

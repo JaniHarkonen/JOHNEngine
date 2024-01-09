@@ -1,4 +1,4 @@
-package johnengine.basic.game;
+package johnengine.basic.game.input;
 
 import johnengine.basic.game.components.CController;
 

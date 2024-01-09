@@ -1,6 +1,5 @@
 package johnengine.basic.game.input;
 
-import johnengine.basic.game.IControllable;
 import johnengine.core.input.IInput;
 import johnengine.core.input.IInputConverter;
 

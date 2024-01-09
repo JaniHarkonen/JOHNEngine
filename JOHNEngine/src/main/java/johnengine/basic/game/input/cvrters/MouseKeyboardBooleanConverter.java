@@ -1,4 +1,4 @@
-package johnengine.basic.window;
+package johnengine.basic.game.input.cvrters;
 
 import johnengine.core.input.IInput;
 import johnengine.core.input.IInputConverter;

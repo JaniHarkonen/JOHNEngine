@@ -14,16 +14,16 @@ import johnengine.basic.game.input.actions.ACTMoveForward;
 import johnengine.basic.game.input.actions.ACTMoveLeft;
 import johnengine.basic.game.input.actions.ACTMoveRight;
 import johnengine.basic.game.input.actions.ACTTurn;
+import johnengine.basic.game.input.cvrters.MouseKeyboardBooleanConverter;
+import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
+import johnengine.basic.opengl.rewrite.WindowGL;
+import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.Texture;
-import johnengine.basic.window.MouseKeyboardBooleanConverter;
-import johnengine.basic.window.MouseKeyboardInput;
-import johnengine.basic.window.MouseKeyboardPointConverter;
-import johnengine.basic.window.Window;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
@@ -41,7 +41,7 @@ public class TestGame extends AGame {
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
         this.engine = engine;
-        this.window = (Window) engineComponents[0];
+        this.window = (WindowGL) engineComponents[0];
         this.assetManager = (AssetManager) engineComponents[1];
         
         this.tickCounter = 0;
@@ -92,23 +92,23 @@ public class TestGame extends AGame {
         cs.addBinding(
             new ACTMoveForward(), 
             new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_W)
+            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_W)
         ).addBinding(
             new ACTMoveBackward(), 
             new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_S)
+            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_S)
         ).addBinding(
             new ACTMoveLeft(), 
             new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_A)
+            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_A)
         ).addBinding(
             new ACTMoveRight(), 
             new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInput.KeyDown(GLFW.GLFW_KEY_D)
+            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_D)
         ).addBinding(
             new ACTTurn(), 
             new MouseKeyboardPointConverter(), 
-            new MouseKeyboardInput.MouseMove()
+            new MouseKeyboardInputGL.MouseMove()
         );
         
         JCamera camera = new JCamera(this.worldMain);

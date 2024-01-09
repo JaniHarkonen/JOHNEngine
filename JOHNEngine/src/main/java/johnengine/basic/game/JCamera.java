@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.geometry.CProjection;
+import johnengine.basic.game.input.IControllable;
 
 public class JCamera extends AWorldObject implements IControllable {
     
