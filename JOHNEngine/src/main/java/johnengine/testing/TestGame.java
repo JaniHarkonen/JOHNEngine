@@ -48,7 +48,8 @@ public class TestGame extends AGame {
         
         this.window
         .hideCursor()
-        .disableVSync();
+        .disableVSync()
+        .resize(1000, 1000);
         
         //Window.class.cast(this.window).enterFullscreen();
         //Window.class.cast(this.window).resize(1000, 1000);
@@ -112,13 +113,15 @@ public class TestGame extends AGame {
         );
         
         JCamera camera = new JCamera(this.worldMain);
+        JTestPlayer player = new JTestPlayer(this.worldMain);
         CController controller = new CController();
         controller.setSchema(cs);
         controller.setSource(this.window.getInput());
-        controller.setTarget(camera);
-        camera.setController(controller);
+        player.attach(camera);
+        player.setController(controller);
         
-        this.worldMain.createInstance(camera);
+        //this.worldMain.createInstance(camera);
+        this.worldMain.createInstance(player);
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
