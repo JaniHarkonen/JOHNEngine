@@ -1,9 +1,9 @@
-package johnengine.basic.game.physics.shapes;
+package johnengine.basic.game.physics.collision.shapes;
 
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.CollisionData;
+import johnengine.basic.game.physics.collision.CollisionData;
 
 public class Shape {
 
@@ -20,13 +20,19 @@ public class Shape {
     }
     
     
-    public CollisionData checkCollision(CTransform myTransform, Vector3f myVelocity, CTransform otherTransform, Shape other) {
+    public boolean checkCollision(
+        CTransform myTransform, 
+        Vector3f myVelocity, 
+        CTransform otherTransform, 
+        Shape other,
+        CollisionData result
+    ) {
         ICollisionCheck checker = CollisionShapes.getChecker(other, this);
         
         if( this.precedence > other.precedence )
-        return checker.checkCollision(otherTransform, myVelocity, myTransform);
+        return checker.checkCollision(otherTransform, myVelocity, myTransform, result);
         
-        return checker.checkCollision(myTransform, myVelocity, otherTransform);
+        return checker.checkCollision(myTransform, myVelocity, otherTransform, result);
     }
     
     

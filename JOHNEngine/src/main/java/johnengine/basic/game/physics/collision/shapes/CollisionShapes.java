@@ -1,14 +1,14 @@
-package johnengine.basic.game.physics.shapes;
+package johnengine.basic.game.physics.collision.shapes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import johnengine.basic.game.physics.shapes.plane.CheckPlaneAndBox;
-import johnengine.basic.game.physics.shapes.plane.CheckPlaneAndPlane;
-import johnengine.basic.game.physics.shapes.plane.CheckPlaneAndSphere;
-import johnengine.basic.game.physics.shapes.sphere.CheckSphereAndSphere;
+import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndBox;
+import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndPlane;
+import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndSphere;
+import johnengine.basic.game.physics.collision.shapes.sphere.CheckSphereAndSphere;
 
 public class CollisionShapes {
     

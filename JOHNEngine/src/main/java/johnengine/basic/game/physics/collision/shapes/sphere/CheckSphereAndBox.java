@@ -1,68 +1,69 @@
-package johnengine.basic.game.physics.shapes.sphere;
+package johnengine.basic.game.physics.collision.shapes.sphere;
 
 import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.CollisionData;
 import johnengine.basic.game.physics.Physics;
-import johnengine.basic.game.physics.shapes.ICollisionCheck;
+import johnengine.basic.game.physics.collision.CollisionData;
+import johnengine.basic.game.physics.collision.shapes.ICollisionCheck;
 
 public class CheckSphereAndBox implements ICollisionCheck {
 
     @Override
-    public CollisionData checkCollision(
+    public boolean checkCollision(
         CTransform t1, 
         float velocityX, 
         float velocityY, 
         float velocityZ, 
-        CTransform t2
+        CTransform t2,
+        CollisionData result
     ) {
             // Update the transform components so that unsafe getters
             // can be used for better performance
         t1.update();
         t2.update();
         
-        Vector3f origin = t1.getPosition().getUnsafe();
-        Vector3f otherOrigin = t2.getPosition().getUnsafe();
-        Vector3f otherScale = t2.getScale().getUnsafe();
+        Vector3f originT1 = t1.getPosition().getUnsafe();
+        Vector3f originT2 = t2.getPosition().getUnsafe();
+        Vector3f scaleT2 = t2.getScale().getUnsafe();
         
-        float otherX = otherOrigin.x;
-        float otherY = otherOrigin.y;
-        float otherZ = otherOrigin.z;
-        float otherHalfScaleX = otherScale.x / 2;
-        float otherHalfScaleY = otherScale.y / 2;
-        float otherHalfScaleZ = otherScale.z / 2;
+        float xT2 = originT2.x;
+        float yT2 = originT2.y;
+        float zT2 = originT2.z;
+        float halfScaleXT2 = scaleT2.x / 2;
+        float halfScaleYT2 = scaleT2.y / 2;
+        float halfScaleZT2 = scaleT2.z / 2;
         float normalizationScalar = Physics.calculateNormalizationScalar(
             velocityX, 
             velocityY, 
             velocityZ
         );
         
+            // Collision check
         Vector2f nearFar = new Vector2f();
         if( 
             !Intersectionf.intersectRayAab(
-                origin.x, 
-                origin.y, 
-                origin.z, 
+                originT1.x, 
+                originT1.y, 
+                originT1.z, 
                 velocityX * normalizationScalar, 
                 velocityY * normalizationScalar, 
                 velocityZ * normalizationScalar, 
-                otherX - otherHalfScaleX, 
-                otherY - otherHalfScaleY, 
-                otherZ - otherHalfScaleZ, 
-                otherX + otherHalfScaleX, 
-                otherY + otherHalfScaleY, 
-                otherZ + otherHalfScaleZ, 
+                xT2 - halfScaleXT2, 
+                yT2 - halfScaleYT2, 
+                zT2 - halfScaleZT2, 
+                xT2 + halfScaleXT2, 
+                yT2 + halfScaleYT2, 
+                zT2 + halfScaleZT2, 
                 nearFar
             )
         )
-        return null;
+        return false;
         
-        CollisionData result = new CollisionData();
         result.collisionDistanceNear = nearFar.x;
         result.collisionDistanceFar = nearFar.y;
-        return result;
+        return true;
     }
 }

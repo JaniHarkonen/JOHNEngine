@@ -1,22 +1,22 @@
-package johnengine.basic.game.physics.shapes.plane;
+package johnengine.basic.game.physics.collision.shapes.plane;
 
-import org.joml.Intersectionf;
 import org.joml.Math;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.Physics;
-import johnengine.basic.game.physics.shapes.ICollisionCheck;
+import johnengine.basic.game.physics.collision.CollisionData;
+import johnengine.basic.game.physics.collision.shapes.ICollisionCheck;
 
 public class CheckPlaneAndSphere implements ICollisionCheck {
 
     @Override
-    public float checkCollision(
+    public boolean checkCollision(
         CTransform t1, 
         float velocityX, 
         float velocityY, 
         float velocityZ, 
-        CTransform t2
+        CTransform t2,
+        CollisionData result
     ) {
             // Update the transform components so that unsafe getters can be used
             // for increased performance
@@ -38,7 +38,7 @@ public class CheckPlaneAndSphere implements ICollisionCheck {
         float planeNormalY = 0;
         float planeNormalZ = 0;
         
-        return Intersectionf.intersectRayPlane(
+        /*return Intersectionf.intersectRayPlane(
             origin.x, 
             origin.y, 
             origin.z, 
@@ -50,6 +50,7 @@ public class CheckPlaneAndSphere implements ICollisionCheck {
             planeNormalZ, 
             d, 
             Physics.INTERSECTION_EPSILON
-        );
+        );*/
+        return false;
     }
 }

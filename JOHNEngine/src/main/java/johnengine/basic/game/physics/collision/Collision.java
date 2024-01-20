@@ -1,9 +1,9 @@
-package johnengine.basic.game.physics;
+package johnengine.basic.game.physics.collision;
 
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.shapes.Shape;
+import johnengine.basic.game.physics.collision.shapes.Shape;
 
 public class Collision {
 
@@ -22,33 +22,40 @@ public class Collision {
     }
     
     
-    public CollisionData checkCollision(CTransform myTransform, Vector3f velocity, CTransform otherTransform, Collision other) {
+    public boolean checkCollision(
+        CTransform myTransform, 
+        Vector3f myVelocity, 
+        CTransform otherTransform, 
+        Collision otherCollision, 
+        boolean ignoreSelf,
+        CollisionData result
+    ) {
         
             // Perform an low resolution collision check before iterating over 
-            // the collision meshes
-        CollisionData result = this.lodShape.checkCollision(
-            myTransform, 
-            velocity, 
-            otherTransform, 
-            other.lodShape
-        );
+            // the collision meshes, also ignore self if needed
+        if( ignoreSelf && myTransform == otherTransform )
+        return false;
         
-        if( result == null )
-        return null;
+        if( !this.lodShape.checkCollision(
+            myTransform, 
+            myVelocity, 
+            otherTransform, 
+            otherCollision.lodShape,
+            result
+        ) )
+        return false;
         
             // Perform a more detailed collision check
         for( CollisionMesh myMesh : this.collisionMeshes )
         {
-            for( CollisionMesh otherMesh : other.collisionMeshes )
+            for( CollisionMesh otherMesh : otherCollision.collisionMeshes )
             {
-                result = myMesh.checkCollision(myTransform, velocity, otherTransform, otherMesh);
-                
-                if( result != null )
-                return result;
+                if( myMesh.checkCollision(myTransform, myVelocity, otherTransform, otherMesh, result) )
+                return true;
             }
         }
         
-        return null;
+        return false;
     }
     
     

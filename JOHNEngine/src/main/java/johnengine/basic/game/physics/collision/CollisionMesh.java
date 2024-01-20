@@ -1,9 +1,10 @@
-package johnengine.basic.game.physics;
+package johnengine.basic.game.physics.collision;
 
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.shapes.Shape;
+import johnengine.basic.game.physics.PhysicsMaterial;
+import johnengine.basic.game.physics.collision.shapes.Shape;
 
 public class CollisionMesh {
     private Shape[] shapes;
@@ -15,23 +16,28 @@ public class CollisionMesh {
     }
     
     
-    public CollisionData checkCollision(CTransform myTransform, Vector3f velocity, CTransform otherTransform, CollisionMesh other) {
+    public boolean checkCollision(
+        CTransform myTransform, 
+        Vector3f velocity, 
+        CTransform otherTransform, 
+        CollisionMesh other,
+        CollisionData result
+    ) {
         for( Shape myShape : this.shapes )
         {
             for( Shape otherShape : other.shapes )
             {
-                CollisionData result = myShape.checkCollision(myTransform, velocity, otherTransform, otherShape);
-                if( result != null )
+                if( myShape.checkCollision(myTransform, velocity, otherTransform, otherShape, result) )
                 {
                     result.collidedShape = otherShape;
                     result.collidedMaterial = this.physicsMaterial;
                     result.collidedMesh = this;
-                    return result;
+                    return true;
                 }
             }
         }
         
-        return null;
+        return false;
     }
     
     
