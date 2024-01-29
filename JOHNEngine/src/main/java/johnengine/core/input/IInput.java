@@ -1,9 +1,13 @@
 package johnengine.core.input;
 
+import johnengine.core.winframe.AWindowFramework;
+
 public interface IInput {
 
     public interface State {
         public void takeSnapshot(IInput.State dest);
+        public long getTimestamp();
+        public IInput getInput();
     }
     
     public interface Event<T> {
@@ -17,4 +21,6 @@ public interface IInput {
     public void snapshot();
     
     public IInput.State getState();
+    
+    public AWindowFramework getWindow();
 }

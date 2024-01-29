@@ -5,12 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import johnengine.basic.game.physics.collision.shapes.box.CheckBoxAndBox;
 import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndBox;
 import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndPlane;
 import johnengine.basic.game.physics.collision.shapes.plane.CheckPlaneAndSphere;
+import johnengine.basic.game.physics.collision.shapes.sphere.CheckSphereAndBox;
 import johnengine.basic.game.physics.collision.shapes.sphere.CheckSphereAndSphere;
 
 public class CollisionShapes {
+    
+    /********************** CollisionShapeException-class **********************/
+    
+    public static class CollisionShapeException extends RuntimeException {
+
+        public CollisionShapeException(String message, String shapeName) {
+            super(
+                message
+                .replaceAll("%shapeName", shapeName)
+            );
+        }
+    }
+    
     
     /********************** Table-class **********************/
     
@@ -110,7 +125,10 @@ public class CollisionShapes {
         if( shapePrecedence != null )
         return shapePrecedence;
         
-        return -1;
+        throw new CollisionShapeException(
+            "Trying to fetch the precedence of a non-existing shape '%shapeName'!", 
+            shapeName
+        );
     }
     
     
@@ -129,7 +147,7 @@ public class CollisionShapes {
         addChecker(new CheckPlaneAndSphere(), "plane", "sphere");
         addChecker(new CheckPlaneAndBox(), "plane", "box");
         addChecker(new CheckSphereAndSphere(), "sphere", "sphere");
-        addChecker(new CheckPlaneAndPlane(), "sphere", "box");
-        addChecker(new CheckPlaneAndPlane(), "box", "box");
+        addChecker(new CheckSphereAndBox(), "sphere", "box");
+        addChecker(new CheckBoxAndBox(), "box", "box");
     }
 }

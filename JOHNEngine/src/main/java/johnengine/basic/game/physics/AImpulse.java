@@ -20,4 +20,12 @@ public abstract class AImpulse implements ITickable {
     public boolean hasExpired() {
         return this.hasExpired;
     }
+    
+    public void restore() {
+        this.hasExpired = false;
+    }
+    
+    public void expire() {
+        this.hasExpired = true;
+    }
 }

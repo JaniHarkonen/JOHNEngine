@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.opengl.WindowGL;
 import johnengine.core.input.IInput;
+import johnengine.core.winframe.AWindowFramework;
 
 public final class MouseKeyboardInputGL implements IInput {
     
@@ -131,23 +132,23 @@ public final class MouseKeyboardInputGL implements IInput {
     /************************ MouseMove-class ************************/
     
     public static class MouseMove implements IInput.Event<Point2D.Double> {
-        protected Point2D.Double mouseDelta;
+        protected Point2D.Double mouseFromCenter;
         
         public MouseMove() {
-            this.mouseDelta = new Point2D.Double();
+            this.mouseFromCenter = new Point2D.Double();
         }
 
         @Override
         public boolean check(IInput.State state) {
             MouseKeyboardInputGL.State cstate = (MouseKeyboardInputGL.State) state;
-            this.mouseDelta.x = cstate.getMouseDeltaX();
-            this.mouseDelta.y = cstate.getMouseDeltaY();
+            this.mouseFromCenter.x = cstate.getMouseFromCenterX();
+            this.mouseFromCenter.y = cstate.getMouseFromCenterY();
             return true;
         }
         
         @Override
         public Point2D.Double getValue() {
-            return this.mouseDelta;
+            return this.mouseFromCenter;
         }
     }
     
@@ -168,16 +169,21 @@ public final class MouseKeyboardInputGL implements IInput {
         private final int[] buttonMap;
         private double mouseX;
         private double mouseY;
-        private double mouseDeltaX;
-        private double mouseDeltaY;
+        private double mouseFromCenterX;
+        private double mouseFromCenterY;
         
-        public State() {
+        private long timestamp;
+        private final IInput input;
+        
+        public State(IInput input) {
+            this.input = input;
             this.keyMap = new int[KEY_MAP_SIZE];
             this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
             this.mouseX = 0;
             this.mouseY = 0;
-            this.mouseDeltaX = 0;
-            this.mouseDeltaY = 0;
+            this.mouseFromCenterX = 0;
+            this.mouseFromCenterY = 0;
+            this.timestamp = 0;
         }
         
         
@@ -202,10 +208,32 @@ public final class MouseKeyboardInputGL implements IInput {
                 this.buttonMap[i] = INPUT_NO_ACTION;
             }
             
-            dest.mouseDeltaX = this.mouseX - dest.mouseX;
-            dest.mouseDeltaY = this.mouseY - dest.mouseY;
+            AWindowFramework window = this.input.getWindow();
+            
+            if( window.isWindowOpen() )
+            {
+                double xCenter = window.getWidth() / 2;
+                double yCenter = window.getHeight() / 2;
+                
+                dest.mouseFromCenterX = this.mouseX - xCenter;
+                dest.mouseFromCenterY = this.mouseY - yCenter;
+            }
+            
             dest.mouseX = this.mouseX;
             dest.mouseY = this.mouseY;
+            
+            dest.timestamp = System.nanoTime();
+        }
+        
+        
+        @Override
+        public long getTimestamp() {
+            return this.timestamp;
+        }
+        
+        @Override
+        public IInput getInput() {
+            return this.input;
         }
         
         private boolean checkKey(int key, int state) {
@@ -240,12 +268,12 @@ public final class MouseKeyboardInputGL implements IInput {
             return this.mouseY;
         }
     
-        public double getMouseDeltaX() {
-            return this.mouseDeltaX;
+        public double getMouseFromCenterX() {
+            return this.mouseFromCenterX;
         }
     
-        public double getMouseDeltaY() {
-            return this.mouseDeltaY;
+        public double getMouseFromCenterY() {
+            return this.mouseFromCenterY;
         }
     }
     
@@ -258,8 +286,8 @@ public final class MouseKeyboardInputGL implements IInput {
 
     public MouseKeyboardInputGL(WindowGL hostWindow) {
         this.hostWindow = hostWindow;
-        this.updatingState = new State();
-        this.snapshotState = new State();
+        this.updatingState = new State(this);
+        this.snapshotState = new State(this);
     }
     
     
@@ -312,5 +340,11 @@ public final class MouseKeyboardInputGL implements IInput {
     @Override
     public State getState() {
         return this.snapshotState;
+    }
+
+
+    @Override
+    public AWindowFramework getWindow() {
+        return this.hostWindow;
     }
 }

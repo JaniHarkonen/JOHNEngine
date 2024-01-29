@@ -49,3 +49,9 @@ deferring this to the controllers
 - THERE ARE READ-ONLY VECTORS (Vector3fc, Quaternionfc)
 	-- see if these can be implemented throughout the codebase
 	-- don't forget Quaternions
+- instead of having MouseKeyboardInputGL, have InputGL which handles all OpenGL-
+based input
+- KeyDown should be Key instead so that key release can be handled with the same
+InputEvent by setting intensity to 0.0f
+- have a single final class where global declarations are made
+	-- perhaps split the class up into different classes

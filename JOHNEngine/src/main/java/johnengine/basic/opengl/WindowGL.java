@@ -62,25 +62,24 @@ public final class WindowGL extends AWindowFramework
     public void loop() {
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
+        long previousInputTimestamp = 0;
         
-        while( true )
+        while( !this.isWindowClosing() )
         {
-            if( this.isWindowClosing() )
-            break;
-            
             this.requestManager.processRequests();
             GLFW.glfwPollEvents();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
                 // Lock cursor to the center of the screen if enabled
-            if( this.isCursorLockedToCenter() )
+            long inputTimestamp = this.input.getState().getTimestamp();
+            if( this.isCursorLockedToCenter() && previousInputTimestamp != inputTimestamp )
             {
                 Properties updating = this.updatingProperties;
                 GLFW.glfwSetCursorPos(
                     this.windowID,
-                    updating.x + updating.width / 2,
-                    updating.y + updating.height / 2
+                    /*updating.x + */updating.width / 2,
+                    /*updating.y +*/ updating.height / 2
                 );
             }
             
@@ -95,6 +94,8 @@ public final class WindowGL extends AWindowFramework
                 startTime = currentTime;
             }
         }
+        
+        this.dispose();
     }
     
     @Override
@@ -102,11 +103,14 @@ public final class WindowGL extends AWindowFramework
         if( this.isWindowClosing() )
         return;
         
-        GLFW.glfwTerminate();
-        this.reset();
         this.setWindowState(STATE_CLOSED);
     }
 
+    public void dispose() {
+        GLFW.glfwTerminate();
+        this.reset();
+    }
+    
     @Override
     public void beforeTick(float deltaTime) {
         this.input.snapshot();

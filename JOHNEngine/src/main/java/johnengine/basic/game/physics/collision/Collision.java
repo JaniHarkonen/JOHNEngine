@@ -3,22 +3,25 @@ package johnengine.basic.game.physics.collision;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
+import johnengine.basic.game.physics.IPhysicsObject;
 import johnengine.basic.game.physics.collision.shapes.Shape;
 
 public class Collision {
 
+    private IPhysicsObject target;
     private CollisionMesh[] collisionMeshes;
     private Shape lodShape;
     private float weight;
     
-    public Collision(CollisionMesh... collisionMeshes) {
+    public Collision(IPhysicsObject target, CollisionMesh... collisionMeshes) {
+        this.target = target;
         this.collisionMeshes = collisionMeshes;
         this.weight = 0.0f;
-        this.lodShape = new Shape("box");
+        this.lodShape = new Shape("sphere");
     }
     
-    public Collision() {
-        this(new CollisionMesh[0]);
+    public Collision(IPhysicsObject target) {
+        this(target, new CollisionMesh[0]);
     }
     
     
@@ -30,27 +33,39 @@ public class Collision {
         boolean ignoreSelf,
         CollisionData result
     ) {
-        
-            // Perform an low resolution collision check before iterating over 
+            // Perform a crude collision check before iterating over 
             // the collision meshes, also ignore self if needed
         if( ignoreSelf && myTransform == otherTransform )
         return false;
         
-        if( !this.lodShape.checkCollision(
-            myTransform, 
-            myVelocity, 
-            otherTransform, 
-            otherCollision.lodShape,
-            result
-        ) )
-        return false;
+        if( !this.lodShape.checkCollision
+            (
+                myTransform, 
+                myVelocity, 
+                otherTransform, 
+                otherCollision.lodShape,
+                result
+            )
+        ) return false;
         
-            // Perform a more detailed collision check
+            // Perform a more comprehensive collision check
         for( CollisionMesh myMesh : this.collisionMeshes )
         {
             for( CollisionMesh otherMesh : otherCollision.collisionMeshes )
             {
-                if( myMesh.checkCollision(myTransform, myVelocity, otherTransform, otherMesh, result) )
+                myMesh.checkCollision(
+                    myTransform, 
+                    myVelocity, 
+                    otherTransform, 
+                    otherMesh, 
+                    result
+                );
+                
+                if( !result.didCollide )
+                continue;
+                
+                result.collision = otherCollision;
+                result.collidedObject = otherCollision.target;
                 return true;
             }
         }
@@ -59,8 +74,14 @@ public class Collision {
     }
     
     
-    public void setCollisionMeshes(CollisionMesh[] collisionMeshes) {
+    /*********************** SETTERS ***********************/
+    
+    public void setCollisionMeshes(CollisionMesh... collisionMeshes) {
         this.collisionMeshes = collisionMeshes;
+    }
+    
+    public void setCollisionMesh(CollisionMesh collisionMesh) {
+        this.setCollisionMeshes(collisionMesh);
     }
     
     public void setWeight(float weight) {
@@ -71,6 +92,8 @@ public class Collision {
         this.lodShape = lodShape;
     }
     
+    
+    /*********************** GETTERS ***********************/
     
     public CollisionMesh[] getCollisionMeshes() {
         return this.collisionMeshes;

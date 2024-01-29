@@ -1,5 +1,6 @@
 package johnengine.testing;
 
+
 import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.assets.sceneobj.Material;
@@ -19,6 +20,7 @@ import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
+import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.renderer.RendererGL;
@@ -37,6 +39,8 @@ public class TestGame extends AGame {
     private MilliCounter timer;
     private JWorld worldMain;
     private long tickCounter;
+    private Physics physics;
+    private Physics.World physicsWorld;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -47,12 +51,14 @@ public class TestGame extends AGame {
         this.tickCounter = 0;
         
         this.window
-        .hideCursor()
-        .disableVSync()
-        .resize(1000, 1000);
+        //.hideCursor()
+        .disableVSync();
+        //.resize(1000, 1000);
         
         //Window.class.cast(this.window).enterFullscreen();
         //Window.class.cast(this.window).resize(1000, 1000);
+        //this.engine.setTickRate(24);
+        WindowGL.class.cast(this.window).lockCursorToCenter();
         
         AssetManager am = this.assetManager;
         
@@ -62,7 +68,7 @@ public class TestGame extends AGame {
         SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
         objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\man.fbx", objLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
@@ -145,6 +151,11 @@ public class TestGame extends AGame {
                 tickCounter = 0;
             }
         };*/
+        
+        this.physics = new Physics();
+        this.physicsWorld = new Physics.World();
+        this.physicsWorld.addObject(player);
+        this.physicsWorld.addObject(box);
     }
 
     @Override
@@ -153,6 +164,7 @@ public class TestGame extends AGame {
         this.engine.stop();
         
         this.worldMain.tick(deltaTime);
+        this.physics.update(deltaTime, this.physicsWorld);
         this.tickCounter++;
         //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         this.window.changeTitle("FPS: " + this.window.getFPS());

@@ -5,7 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.game.physics.Physics;
+import johnengine.basic.game.physics.PhysicsUtils;
 import johnengine.basic.game.physics.collision.CollisionData;
 import johnengine.basic.game.physics.collision.shapes.ICollisionCheck;
 
@@ -14,9 +14,7 @@ public class CheckSphereAndBox implements ICollisionCheck {
     @Override
     public boolean checkCollision(
         CTransform t1, 
-        float velocityX, 
-        float velocityY, 
-        float velocityZ, 
+        Vector3f velocity,
         CTransform t2,
         CollisionData result
     ) {
@@ -29,13 +27,16 @@ public class CheckSphereAndBox implements ICollisionCheck {
         Vector3f originT2 = t2.getPosition().getUnsafe();
         Vector3f scaleT2 = t2.getScale().getUnsafe();
         
+        float velocityX = velocity.x;
+        float velocityY = velocity.y;
+        float velocityZ = velocity.z;
         float xT2 = originT2.x;
         float yT2 = originT2.y;
         float zT2 = originT2.z;
         float halfScaleXT2 = scaleT2.x / 2;
         float halfScaleYT2 = scaleT2.y / 2;
         float halfScaleZT2 = scaleT2.z / 2;
-        float normalizationScalar = Physics.calculateNormalizationScalar(
+        float normalizationScalar = PhysicsUtils.calculateNormalizationScalar(
             velocityX, 
             velocityY, 
             velocityZ
@@ -44,7 +45,8 @@ public class CheckSphereAndBox implements ICollisionCheck {
             // Collision check
         Vector2f nearFar = new Vector2f();
         if( 
-            !Intersectionf.intersectRayAab(
+            !Intersectionf.intersectRayAab
+            (
                 originT1.x, 
                 originT1.y, 
                 originT1.z, 
@@ -59,11 +61,13 @@ public class CheckSphereAndBox implements ICollisionCheck {
                 zT2 + halfScaleZT2, 
                 nearFar
             )
-        )
+        ) return false;
+        
+        if( nearFar.x > velocity.length() )
         return false;
         
-        result.collisionDistanceNear = nearFar.x;
-        result.collisionDistanceFar = nearFar.y;
+        result.didCollide = true;
+        result.collisionDistance = nearFar.x;
         return true;
     }
 }

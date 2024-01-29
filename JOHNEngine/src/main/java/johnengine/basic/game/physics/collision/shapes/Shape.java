@@ -9,6 +9,7 @@ public class Shape {
 
     private Vector3f offset;
     private int precedence;
+    private String shapeName;
     
     public Shape(String shapeName) {
         this.offset = null;
@@ -38,6 +39,7 @@ public class Shape {
     
     public void setShape(String shapeName) {
         this.precedence = CollisionShapes.getShapePrecedence(shapeName);
+        this.shapeName = shapeName;
     }
     
     public void setOffset(Vector3f offset) {
@@ -51,5 +53,9 @@ public class Shape {
     
     public Vector3f getOffset() {
         return this.offset;
+    }
+    
+    public String getShapeName() {
+        return this.shapeName;
     }
 }

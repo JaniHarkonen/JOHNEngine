@@ -27,13 +27,13 @@ public class CollisionMesh {
         {
             for( Shape otherShape : other.shapes )
             {
-                if( myShape.checkCollision(myTransform, velocity, otherTransform, otherShape, result) )
-                {
-                    result.collidedShape = otherShape;
-                    result.collidedMaterial = this.physicsMaterial;
-                    result.collidedMesh = this;
-                    return true;
-                }
+                if( !myShape.checkCollision(myTransform, velocity, otherTransform, otherShape, result) )
+                continue;
+                
+                result.collidedShape = otherShape;
+                result.collidedMaterial = other.physicsMaterial;
+                result.collidedMesh = other;
+                return true;
             }
         }
         
