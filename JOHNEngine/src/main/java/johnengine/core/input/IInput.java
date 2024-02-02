@@ -1,21 +1,19 @@
 package johnengine.core.input;
 
+import johnengine.core.winframe.AWindowFramework;
+
 public interface IInput {
 
     public interface State {
-        public void takeSnapshot(State dest);
+        public void takeSnapshot(IInput.State dest);
+        public long getTimestamp();
+        public IInput getInput();
+    }
+    
+    public interface Event<T> {
+        public boolean check(IInput.State targetState);
         
-        public boolean isKeyDown(int key);
-        
-        public boolean isKeyReleased(int key);
-        
-        public boolean isMouseDown(int mouseButton);
-        
-        public boolean isMouseReleased(int mouseButton);
-        
-        public double getMouseX();
-        
-        public double getMouseY();
+        public T getValue();
     }
     
     public void setup();
@@ -23,4 +21,6 @@ public interface IInput {
     public void snapshot();
     
     public IInput.State getState();
+    
+    public AWindowFramework getWindow();
 }

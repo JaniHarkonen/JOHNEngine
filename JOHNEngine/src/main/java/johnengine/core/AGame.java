@@ -1,6 +1,6 @@
 package johnengine.core;
 
-import johnengine.basic.window.Window;
+import johnengine.basic.opengl.WindowGL;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 
@@ -8,11 +8,11 @@ public abstract class AGame {
     
     protected static AGame game;
     
-    protected Window window;
+    protected WindowGL window;
     protected AssetManager assetManager;
     protected Engine engine;
 
-    public Window getWindow() {
+    public WindowGL getWindow() {
         return this.window;
     }
     

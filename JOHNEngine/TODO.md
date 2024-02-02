@@ -45,15 +45,13 @@ deferring this to the controllers
 	3. what changes as opposed to GLFW mouse and keyboard input?
 	4. can this be generalized to the way that the input is being handled currently?
 - there are two IRenderBufferStrategy classes?
-	
-	
-## Controller architecture
-
-Input has a State
-State is queried via ControlSchema
-
-ControlSchema produces Actions
-
-Controller has a ControlSchema
-Controller uses ControlSchema to query State of Input
-Controller executes Actions produced by ControlSchema
+- could compute shaders be used to calculate collisions?
+- THERE ARE READ-ONLY VECTORS (Vector3fc, Quaternionfc)
+	-- see if these can be implemented throughout the codebase
+	-- don't forget Quaternions
+- instead of having MouseKeyboardInputGL, have InputGL which handles all OpenGL-
+based input
+- KeyDown should be Key instead so that key release can be handled with the same
+InputEvent by setting intensity to 0.0f
+- have a single final class where global declarations are made
+	-- perhaps split the class up into different classes

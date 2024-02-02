@@ -4,23 +4,23 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import johnengine.basic.game.JWorld;
+import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.renderer.asset.MeshGL;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.strvaochc.CachedVAORenderStrategy;
-import johnengine.basic.window.Window;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.winframe.AWindowFramework;
 
 public class RendererGL implements IRenderer {
-    private Window hostWindow;
+    private WindowGL hostWindow;
     private JWorld activeWorld;
     private IRenderStrategy renderStrategy;
     private IRenderBufferStrategy renderBufferStrategy;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     
     public RendererGL(AWindowFramework hostWindow, IRenderStrategy renderStrategy) {
-        this.hostWindow = (Window) hostWindow;
+        this.hostWindow = (WindowGL) hostWindow;
         this.activeWorld = null;
         this.renderStrategy = renderStrategy;
         this.renderBufferStrategy = new DefaultRenderBufferStrategy();

@@ -1,7 +1,5 @@
 package johnengine.core.winframe;
 
-import org.lwjgl.system.MemoryUtil;
-
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 
@@ -60,6 +58,9 @@ public abstract class AWindowFramework {
         public static final boolean DEFAULT_LOCK_CURSOR_TO_CENTER = false;
         public static final boolean DEFAULT_IS_CURSOR_VISIBLE = true;
         public static final boolean DEFAULT_USE_VSYNC = false;
+        public static final boolean DEFAULT_ENABLE_FULLSCREEN = false;
+        public static final boolean DEFAULT_IS_FOCUSED = true;
+        public static final boolean DEFAULT_IS_MAXIMIZED = false;
         
         public int width;
         public int height;
@@ -77,6 +78,7 @@ public abstract class AWindowFramework {
         public boolean useVSync;
         public boolean isFocused;
         public boolean isMaximized;
+        public boolean isFullscreen;
         
         public Properties() {
             this.width = DEFAULT_WIDTH;
@@ -92,8 +94,9 @@ public abstract class AWindowFramework {
             this.lockCursorToCenter = DEFAULT_LOCK_CURSOR_TO_CENTER;
             this.isCursorVisible = DEFAULT_IS_CURSOR_VISIBLE;
             this.useVSync = DEFAULT_USE_VSYNC;
-            this.isFocused = true;
-            this.isMaximized = false;
+            this.isFocused = DEFAULT_IS_FOCUSED;
+            this.isMaximized = DEFAULT_IS_MAXIMIZED;
+            this.isFullscreen = DEFAULT_ENABLE_FULLSCREEN;
             
             this.windowState = STATE_INITIALIZING;
         }
@@ -115,6 +118,7 @@ public abstract class AWindowFramework {
             this.useVSync = source.useVSync;
             this.isFocused = source.isFocused;
             this.isMaximized = source.isMaximized;
+            this.isFullscreen = source.isFullscreen;
             
             this.windowState = source.windowState;
         }
@@ -127,8 +131,6 @@ public abstract class AWindowFramework {
     protected final Properties snapshotProperties;
     protected final BufferedRequestManager requestManager;
     protected IRenderer renderer;
-    protected long windowID;
-    protected long primaryMonitorID;
     
     protected AWindowFramework(
         Properties updatingProperties, 
@@ -139,14 +141,6 @@ public abstract class AWindowFramework {
         this.updatingProperties = updatingProperties;
         this.snapshotProperties = snapshotProperties;
         this.requestManager = requestManager;
-        
-        this.reset();
-    }
-    
-    
-    protected void reset() {
-        this.windowID = MemoryUtil.NULL;
-        this.primaryMonitorID = MemoryUtil.NULL;
     }
     
     
@@ -175,107 +169,85 @@ public abstract class AWindowFramework {
     
     /************************* REQUESTS ***************************/
     
-    public AWindowFramework move(int x, int y) {
-        this.requestManager.request(new RMove(x, y));
-        return this;
-    }
+    public abstract AWindowFramework move(int x, int y);
     
-    public AWindowFramework resize(int width, int height) {
-        this.requestManager.request(new RResize(width, height));
-        return this;
-    }
+    public abstract AWindowFramework resize(int width, int height);
     
-    public AWindowFramework changeTitle(String title) {
-        this.requestManager.request(new RChangeTitle(title));
-        return this;
-    }
+    public abstract AWindowFramework changeTitle(String title);
 
-    public AWindowFramework lockCursorToCenter() {
-        this.requestManager.request(new RLockCursor(true));
-        return this;
-    }
+    public abstract AWindowFramework lockCursorToCenter();
     
-    public AWindowFramework freeCursorLock() {
-        this.requestManager.request(new RLockCursor(false));
-        return this;
-    }
+    public abstract AWindowFramework freeCursorLock();
     
-    public AWindowFramework showCursor() {
-        this.requestManager.request(new RChangeCursorVisibility(true));
-        return this;
-    }
+    public abstract AWindowFramework showCursor();
     
-    public AWindowFramework hideCursor() {
-        this.requestManager.request(new RChangeCursorVisibility(false));
-        return this;
-    }
+    public abstract AWindowFramework hideCursor();
 
-    public AWindowFramework enableVSync() {
-        this.requestManager.request(new RVSync(true));
-        return this;
-    }
+    public abstract AWindowFramework enableVSync();
     
-    public AWindowFramework disableVSync() {
-        this.requestManager.request(new RVSync(false));
-        return this;
-    }
+    public abstract AWindowFramework disableVSync();
     
-    public AWindowFramework moveMouse(int x, int y) {
-        this.requestManager.request(new RMoveMouse(x, y));
-        return this;
-    }
+    public abstract AWindowFramework moveMouse(int x, int y);
+    
+    public abstract AWindowFramework enterFullscreen();
+    
+    public abstract AWindowFramework exitFullscreen();
 
     
     /************************** SETTERS ***************************/
     
-    protected void setPosition(int x, int y) {
+    public void setPosition(int x, int y) {
         this.updatingProperties.x = x;
         this.updatingProperties.y = y;
     }
     
-    protected void setSize(int width, int height) {
+    public void setSize(int width, int height) {
         this.updatingProperties.width = width;
         this.updatingProperties.height = height;
     }
 
-    protected void setMonitorSize(int width, int height) {
+    public void setMonitorSize(int width, int height) {
         this.updatingProperties.monitorWidth = width;
     }
     
-    protected void setFPS(long fps) {
+    public void setFPS(long fps) {
         this.updatingProperties.fps = fps;
     }
     
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         this.updatingProperties.title = title;
     }
     
-    protected void setBorder(boolean hasBorder) {
+    public void setBorder(boolean hasBorder) {
         this.updatingProperties.hasBorder = hasBorder;
     }
 
-    protected void setCursorLockedToCenter(boolean isLockedToCenter) {
+    public void setCursorLockedToCenter(boolean isLockedToCenter) {
         this.updatingProperties.lockCursorToCenter = isLockedToCenter;
     }
 
-    protected void setCursorVisibility(boolean isVisible) {
+    public void setCursorVisibility(boolean isVisible) {
         this.updatingProperties.isCursorVisible = isVisible;
     }
 
-    protected void setVSync(boolean useVSync) {
+    public void setVSync(boolean useVSync) {
         this.updatingProperties.useVSync = useVSync;
     }
 
-    protected void setFocused(boolean isFocused) {
+    public void setFocused(boolean isFocused) {
         this.updatingProperties.isFocused = isFocused;
     }
     
-    protected void setMaximized(boolean isMaximized) {
+    public void setMaximized(boolean isMaximized) {
         this.updatingProperties.isMaximized = isMaximized;
     }
     
-    protected void setWindowState(int state) {
+    public void setWindowState(int state) {
         this.updatingProperties.windowState = state;
+    }
+    
+    public void setFullscreen(boolean isFullscreen) {
+        this.updatingProperties.isFullscreen = isFullscreen;
     }
     
     public void setRenderer(IRenderer renderer) {
@@ -355,9 +327,5 @@ public abstract class AWindowFramework {
     
     public boolean isWindowOpen() {
         return (this.snapshotProperties.windowState == STATE_OPEN);
-    }
-    
-    public long getWindowID() {
-        return this.windowID;
     }
 }

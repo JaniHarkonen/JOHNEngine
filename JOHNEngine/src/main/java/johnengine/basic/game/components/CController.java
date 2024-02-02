@@ -1,64 +1,50 @@
 package johnengine.basic.game.components;
 
-import org.lwjgl.glfw.GLFW;
+import java.util.Queue;
 
-import johnengine.basic.game.AGameObject;
-import johnengine.basic.game.IControllable;
+import johnengine.basic.game.input.AControllerAction;
+import johnengine.basic.game.input.ControlSchema;
+import johnengine.basic.game.input.IControllable;
 import johnengine.core.ITickable;
 import johnengine.core.input.IInput;
 
 public class CController implements ITickable {
 
     private IInput inputSource;
+    private ControlSchema controlSchema;
     private IControllable controlledInstance;
     
     public CController(IInput inputSource, IControllable controlledInstance) {
         this.inputSource = inputSource;
         this.controlledInstance = controlledInstance;
+        this.controlSchema = null;
     }
     
+    public CController() {
+        this(null, null);
+    }
+
     
     @Override
     public void tick(float deltaTime) {
-        IInput.State<?> state = this.inputSource.getState();
-        double mouseX = state.getMouseX();
-        double mouseY = state.getMouseY();
-        double mouseDeltaX = mouseX - (AGameObject.class.cast(this.controlledInstance).getGame().getWindow().getWidth() / 2);
-        double mouseDeltaY = mouseY - (AGameObject.class.cast(this.controlledInstance).getGame().getWindow().getHeight() / 2);
-        float sensitivity = 0.1f;
+        IInput.State state = this.inputSource.getState();
+        Queue<AControllerAction> actionQueue = this.controlSchema.generateActions(state);
         
-        if( mouseDeltaX != 0 )
-        this.controlledInstance.rotateY((float) mouseDeltaX * sensitivity);
-        
-        if( mouseDeltaY != 0 )
-        this.controlledInstance.rotateX((float) mouseDeltaY * sensitivity);
-        
-        float speed = 20.0f;
-        if( state.isKeyDown(GLFW.GLFW_KEY_LEFT) )
-        this.controlledInstance.rotateY(-speed * sensitivity);
-        
-        if( state.isKeyDown(GLFW.GLFW_KEY_RIGHT) )
-        this.controlledInstance.rotateY(speed * sensitivity);
-        
-        if( state.isKeyDown(GLFW.GLFW_KEY_UP) )
-        this.controlledInstance.rotateX(-speed * sensitivity);
-        //this.controlledInstance.moveForward();
-        
-        if( state.isKeyDown(GLFW.GLFW_KEY_DOWN) )
-        this.controlledInstance.rotateX(speed * sensitivity);
-        
-        if( state.isKeyDown(GLFW.GLFW_KEY_W) )
-        this.controlledInstance.moveForward();
-            
-        if( state.isKeyDown(GLFW.GLFW_KEY_S) )
-        this.controlledInstance.moveBackward();
-        
-        if( state.isKeyDown(GLFW.GLFW_KEY_A) )
-        this.controlledInstance.moveLeft();
-            
-        if( state.isKeyDown(GLFW.GLFW_KEY_D) )
-        this.controlledInstance.moveRight();
-        //this.controlledInstance.moveBackward();
+        AControllerAction action;
+        while( (action = actionQueue.poll()) != null )
+        action.perform(this.controlledInstance);
     }
     
+    
+    public void setSchema(ControlSchema schema) {
+        this.controlSchema = schema;
+    }
+    
+    public void setTarget(IControllable target) {
+        this.controlledInstance = target;
+    }
+    
+    public void setSource(IInput inputSource) {
+        this.inputSource = inputSource;
+    }
 }
