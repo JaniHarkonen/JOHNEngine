@@ -4,7 +4,13 @@ import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CMovement;
+import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.IControllable;
+import johnengine.basic.game.input.actions.ACTMoveBackward;
+import johnengine.basic.game.input.actions.ACTMoveForward;
+import johnengine.basic.game.input.actions.ACTMoveLeft;
+import johnengine.basic.game.input.actions.ACTMoveRight;
+import johnengine.basic.game.input.actions.ACTTurn;
 import johnengine.basic.game.physics.CPhysics;
 import johnengine.basic.game.physics.IPhysicsObject;
 import johnengine.basic.game.physics.PhysicsMaterial;
@@ -46,34 +52,35 @@ public class JTestPlayer extends AWorldObject implements IControllable, IPhysics
         this.movement.tick(deltaTime);
     }
 
+    @Override
+    public void control(AControllerAction action) {
+        switch( action.action )
+        {
+            case MOVE_FORWARD: {
+                this.movement.moveZ(((ACTMoveForward) action).intensity);
+            } break;
+            
+            case MOVE_BACKWARD: {
+                this.movement.moveZ(-((ACTMoveBackward) action).intensity);
+            } break;
+            
+            case MOVE_LEFT: {
+                this.movement.moveX(-((ACTMoveLeft) action).intensity);
+            } break;
+            
+            case MOVE_RIGHT: {
+                this.movement.moveX(((ACTMoveRight) action).intensity);
+            } break;
+            
+            case TURN: {
+                ACTTurn actionTurn = (ACTTurn) action;
+                float sens = 1f;
+                this.transform.getRotation().rotate(0, actionTurn.deltaX * sens, 0);
+                this.transform.getRotation().rotate(actionTurn.deltaY * sens, 0, 0);
+            } break;
+        }
+    }
     
-    @Override
-    public void moveForward(float intensity) {
-        this.movement.moveZ(intensity);
-    }
-
-    @Override
-    public void moveBackward(float intensity) {
-        this.movement.moveZ(-intensity);
-    }
-
-    @Override
-    public void moveLeft(float intensity) {
-        this.movement.moveX(-intensity);
-    }
-
-    @Override
-    public void moveRight(float intensity) {
-        this.movement.moveX(intensity);
-    }
-
-    @Override
-    public void turn(float deltaX, float deltaY) {
-        float sens = 1f;
-        this.transform.getRotation().rotate(0, deltaX * sens, 0);
-        this.transform.getRotation().rotate(deltaY * sens, 0, 0);
-    }
-
     @Override
     public void setController(CController controller) {
         IControllable.super.setController(controller);

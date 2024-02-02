@@ -1,6 +1,7 @@
 package johnengine.basic.game.input.actions;
 
 import johnengine.basic.game.input.AControllerAction;
+import johnengine.basic.game.input.Action;
 import johnengine.core.input.IInput;
 import johnengine.core.input.IInputConverter;
 
@@ -10,7 +11,8 @@ public abstract class AMove extends AControllerAction {
 
     public float intensity;
     
-    public AMove() {
+    public AMove(Action action) {
+        super(action);
         this.intensity = DEFAULT_INTENSITY;
     }
     
