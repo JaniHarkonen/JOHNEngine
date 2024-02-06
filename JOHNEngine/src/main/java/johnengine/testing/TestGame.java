@@ -18,7 +18,6 @@ import johnengine.basic.game.input.actions.ACTTurn;
 import johnengine.basic.game.input.cvrters.MouseKeyboardBooleanConverter;
 import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
-import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
@@ -68,17 +67,21 @@ public class TestGame extends AGame {
         SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
         objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Brick.fbx", objLoader);
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_Color.jpg", textureLoader);
+        
         
         Texture normalMap = new Texture("normale");
         Texture.Loader normalMapLoader = new Texture.Loader(normalMap);
         normalMapLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_NormalDX.jpg", normalMapLoader);
         
         Material material = new Material();
         material.setTexture(texture);
@@ -131,9 +134,9 @@ public class TestGame extends AGame {
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
-        
+        /*
         JDirectionalLight directionalLight = new JDirectionalLight(this.worldMain);
-        this.worldMain.createInstance(directionalLight);
+        this.worldMain.createInstance(directionalLight);*/
         
         JPointLight pointLight = new JPointLight(this.worldMain);
         this.worldMain.createInstance(pointLight);
@@ -143,7 +146,7 @@ public class TestGame extends AGame {
         //camera.attach(pointLight);
         
             // Update the active world of the renderer
-        RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
+        RendererGL.class.cast(this.window.getRenderer()).getStrategyOfRenderingPass("scene-renderer").setRenderContext(this.worldMain);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {

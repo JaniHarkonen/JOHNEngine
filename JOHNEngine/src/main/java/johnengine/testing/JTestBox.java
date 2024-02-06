@@ -36,7 +36,8 @@ public class JTestBox extends AWorldObject implements IPhysicsObject {
     public void tick(float deltaTime) {
         if( !this.settedup )
         {
-            this.transform.getScale().setScale(100, 1, 100);
+            this.transform.getScale().setScale(0.5f, 0.5f, 0.5f);
+            this.transform.getRotation().setRotation(90, 0, 0);
             this.settedup = true;
         }
         //this.position.shift(0.01f, 0.01f, 0.01f);

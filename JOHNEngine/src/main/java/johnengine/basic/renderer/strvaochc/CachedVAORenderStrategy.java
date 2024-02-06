@@ -3,11 +3,13 @@ package johnengine.basic.renderer.strvaochc;
 import java.util.Map;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
@@ -37,6 +39,7 @@ import johnengine.basic.renderer.vertex.VAO;
 import johnengine.core.IRenderable;
 import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.IRenderBufferStrategoid;
+import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderStrategoidManager;
@@ -55,11 +58,14 @@ public class CachedVAORenderStrategy implements
     private RenderBufferManager renderBufferManager;
     private RenderStrategoidManager strategoidManager;
     
+    private JWorld activeWorld;
+    
     public CachedVAORenderStrategy(IRenderer renderer) {
         this.renderer = renderer;
         this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager();
+        this.activeWorld = null;
         
         this.strategoidManager = (new RenderStrategoidManager())
         .addStrategoid(CModel.class, new StrategoidModel(this))
@@ -133,6 +139,12 @@ public class CachedVAORenderStrategy implements
         .declareUniform(pointLight)
         .declareUniform(directionalLight)
         .declareUniform(spotLight);
+        
+            // OpenGL configuration
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        //GL11.glEnable(GL11.GL_CULL_FACE);
+        //GL13.glEnable(GL13.GL_MULTISAMPLE);
+        //GL11.glCullFace(GL11.GL_BACK);
     }
     
     @Override
@@ -155,7 +167,9 @@ public class CachedVAORenderStrategy implements
     public void preRender(RenderBuffer renderBuffer) {
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
-        this.shaderProgram.getUniform("normalSampler").set();
+        
+        ((UNIInteger) this.shaderProgram.getUniform("normalSampler"))
+        .set(1);
         
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
         .set(renderBuffer.getProjectionMatrix());
@@ -330,8 +344,19 @@ public class CachedVAORenderStrategy implements
     }
 
     @Override
+    public void setRenderContext(IRenderContext activeWorld) {
+        if( activeWorld != null )
+        this.activeWorld = (JWorld) activeWorld;
+    }
+
+    @Override
     public IRenderer getRenderer() {
         return this.renderer;
+    }
+    
+    @Override
+    public IRenderContext getRenderContext() {
+        return this.activeWorld;
     }
     
     @Override

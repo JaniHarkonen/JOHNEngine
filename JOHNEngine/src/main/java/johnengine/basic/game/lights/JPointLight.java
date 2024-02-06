@@ -8,7 +8,7 @@ import johnengine.basic.game.components.CAttenuation;
 
 public class JPointLight extends AWorldObject {
 
-    public static final float DEFAULT_INTENSITY = 10.0f;
+    public static final float DEFAULT_INTENSITY = 50.0f;
     public static final Vector3f DEFAULT_COLOR = new Vector3f(1.0f, 1.0f, 1.0f);
     
     private float intensity;
@@ -27,6 +27,10 @@ public class JPointLight extends AWorldObject {
         //this.intensity += 0.01f;
         //Vector3f dir = new Vector3f();
         //this.transform.getPosition().shift(this.transform.getRotation().getForwardVector(new Vector3f()).mul(0.01f));
+        //this.transform.getPosition().setPosition(-57f/25f, 86f/25f, -85f/25f);
+        this.transform.getPosition().setPosition(15, 3, 15);
+        //this.transform.getPosition().setPosition(this.transform.getPosition().get().x, this.transform.getPosition().get().y, 3);
+        //this.transform.getPosition().shift(0.0f, -0.01f, 0f);
     }
 
     
