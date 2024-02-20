@@ -18,10 +18,6 @@ public class CModel implements ISceneGraphChild {
         this.transform = new CTransform();
         this.mesh = new Mesh("default");
         this.texture = new Texture("default");
-        //this.getTransform().setScale(new Vector3f(0.25f, 0.25f, 0.25f));
-        //this.getTransform().setPosition(new Vector3f(10.5f, 10.5f, 10.5f));
-        //this.getTransform().setRotation(new Vector3f(90, 0, 0));
-        //this.getTransform().rotate(new Vector3f(0, 0, 0));  
     }
     
     

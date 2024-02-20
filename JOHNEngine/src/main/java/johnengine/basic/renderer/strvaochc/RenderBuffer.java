@@ -16,8 +16,9 @@ import johnengine.basic.renderer.strvaochc.structs.SAmbientLight;
 import johnengine.basic.renderer.strvaochc.structs.SDirectionalLight;
 import johnengine.basic.renderer.strvaochc.structs.SPointLight;
 import johnengine.basic.renderer.strvaochc.structs.SSpotLight;
+import johnengine.core.renderer.IRenderBuffer;
 
-public class RenderBuffer implements IHasRenderBuffer {
+public class RenderBuffer implements IHasRenderBuffer, IRenderBuffer<RenderBuffer> {
     private static final SAmbientLight STRUCT_DEFAULT_AMBIENT_LIGHT = new SAmbientLight(
         JAmbientLight.DEFAULT_COLOR,
         JAmbientLight.DEFAULT_INTENSITY
@@ -52,6 +53,11 @@ public class RenderBuffer implements IHasRenderBuffer {
     @Override
     public void addRenderUnit(RenderUnit unit) {
         this.buffer.add(unit);
+    }
+    
+    @Override
+    public RenderBuffer createInstance() {
+        return new RenderBuffer();
     }
     
     

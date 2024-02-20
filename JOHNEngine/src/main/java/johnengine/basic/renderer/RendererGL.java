@@ -1,6 +1,8 @@
 package johnengine.basic.renderer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL;
@@ -9,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.renderer.asset.MeshGL;
 import johnengine.basic.renderer.asset.TextureGL;
+import johnengine.basic.renderer.strgui.GUIRenderStrategy;
 import johnengine.basic.renderer.strvaochc.CachedVAORenderStrategy;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
@@ -19,6 +22,7 @@ public class RendererGL implements IRenderer {
     //private JWorld activeWorld;
     //private IRenderStrategy renderStrategy;
     private Map<String, IRenderStrategy> renderingPasses;
+    private List<String> renderingPassOrder;
     private IRenderBufferStrategy renderBufferStrategy;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     
@@ -27,14 +31,15 @@ public class RendererGL implements IRenderer {
         //this.activeWorld = null;
         //this.renderStrategy = renderStrategy;
         this.renderingPasses = new HashMap<>();
+        this.renderingPassOrder = new ArrayList<>();
         this.renderBufferStrategy = new DefaultRenderBufferStrategy();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
     }
     
     public RendererGL(AWindowFramework hostWindow) {
         this(hostWindow, null);
-        //this.renderStrategy = new CachedVAORenderStrategy(this);
-        this.renderingPasses.put("scene-renderer", new CachedVAORenderStrategy(this));
+        this.addRenderingPass("scene-renderer", new CachedVAORenderStrategy(this));
+        this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
     }
     
     
@@ -58,9 +63,9 @@ public class RendererGL implements IRenderer {
     @Override
     public void generateRenderBuffer() {
         //this.renderBufferStrategy.execute(this.activeWorld, this.renderStrategy);
-        for( Map.Entry<String, IRenderStrategy> en : this.renderingPasses.entrySet() )
+        for( String passKey : this.renderingPassOrder )
         {
-            IRenderStrategy renderStrategy = en.getValue();
+            IRenderStrategy renderStrategy = this.renderingPasses.get(passKey);
             this.renderBufferStrategy.execute(renderStrategy.getRenderContext(), renderStrategy);
         }
     }
@@ -74,13 +79,13 @@ public class RendererGL implements IRenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
-        for( Map.Entry<String, IRenderStrategy> en : this.renderingPasses.entrySet() )
-        en.getValue().render();
-        //this.renderStrategy.render();
+        for( String passKey : this.renderingPassOrder )
+        this.renderingPasses.get(passKey).render();
     }
     
     public void addRenderingPass(String passKey, IRenderStrategy passStrategy) {
         this.renderingPasses.put(passKey, passStrategy);
+        this.renderingPassOrder.add(passKey);
     }
     
     

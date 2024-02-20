@@ -3,12 +3,16 @@ package johnengine.testing;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.assets.IRendererAsset;
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JGUI;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
+import johnengine.basic.game.gui.CText;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.actions.ACTMoveBackward;
 import johnengine.basic.game.input.actions.ACTMoveForward;
@@ -28,6 +32,7 @@ import johnengine.basic.renderer.asset.Texture;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.assetmngr.asset.ILoaderMonitor;
 import johnengine.core.engine.Engine;
 import johnengine.utils.counter.MilliCounter;
 
@@ -37,6 +42,7 @@ public class TestGame extends AGame {
 
     private MilliCounter timer;
     private JWorld worldMain;
+    private JGUI gui;
     private long tickCounter;
     private Physics physics;
     private Physics.World physicsWorld;
@@ -50,7 +56,7 @@ public class TestGame extends AGame {
         this.tickCounter = 0;
         
         this.window
-        //.hideCursor()
+        .hideCursor()
         .disableVSync();
         //.resize(1000, 1000);
         
@@ -83,12 +89,18 @@ public class TestGame extends AGame {
         //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
         am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_NormalDX.jpg", normalMapLoader);
         
+        Texture testFont = new Texture("fon");
+        Texture.Loader fontTextureLoader = new Texture.Loader(testFont);
+        fontTextureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\font.png", fontTextureLoader);
+        
         Material material = new Material();
         material.setTexture(texture);
         material.setNormalMap(normalMap);
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
+        this.gui = new JGUI(this);
         
         CModel model = new CModel();
         model.setMesh(mesh);
@@ -145,8 +157,29 @@ public class TestGame extends AGame {
         camera.attach(spotLight);*/
         //camera.attach(pointLight);
         
-            // Update the active world of the renderer
-        RendererGL.class.cast(this.window.getRenderer()).getStrategyOfRenderingPass("scene-renderer").setRenderContext(this.worldMain);
+            // Populate GUI
+        Font textFont = new Font("gui-font", testFont, "helowrd :)", 17, 8);
+        textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        textFont.generate();
+        
+        try {
+        Thread.sleep(1000);
+        }
+        catch(Exception e) {}
+        
+        CText guiText = new CText("hello world :)");
+        guiText.setFont(textFont);
+        this.gui.addElement(guiText);
+        
+            // Update the active world and the GUI of the renderer
+        RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
+        renderer
+        .getStrategyOfRenderingPass("scene-renderer")
+        .setRenderContext(this.worldMain);
+        
+        renderer
+        .getStrategyOfRenderingPass("gui-renderer")
+        .setRenderContext(this.gui);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {
