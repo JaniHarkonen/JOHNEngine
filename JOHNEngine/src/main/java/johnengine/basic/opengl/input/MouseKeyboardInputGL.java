@@ -87,6 +87,22 @@ public final class MouseKeyboardInputGL implements IInput {
     }
     
     
+    /************************ KeyboardString-class ************************/
+    
+    public static class KeyboardString implements IInput.Event<String> {
+
+        @Override
+        public boolean check(IInput.State targetState) {
+            return false;
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+    }
+    
+    
     /************************ MouseDown-class ************************/
     
     public static class MouseDown extends MouseEvent implements IInput.Event<Boolean> {
@@ -171,6 +187,7 @@ public final class MouseKeyboardInputGL implements IInput {
         private double mouseY;
         private double mouseFromCenterX;
         private double mouseFromCenterY;
+        private String keyboardString;
         
         private long timestamp;
         private final IInput input;
@@ -183,6 +200,7 @@ public final class MouseKeyboardInputGL implements IInput {
             this.mouseY = 0;
             this.mouseFromCenterX = 0;
             this.mouseFromCenterY = 0;
+            this.keyboardString = "";
             this.timestamp = 0;
         }
         
@@ -192,11 +210,16 @@ public final class MouseKeyboardInputGL implements IInput {
             State dest = (State) destState;
             for( int i = 0; i < KEY_MAP_SIZE; i++ )
             {
-                dest.keyMap[i] = this.keyMap[i];
+                int keyMapValue = this.keyMap[i];
+                dest.keyMap[i] = keyMapValue;
                 
                     // Reset released keys
-                if( this.keyMap[i] == INPUT_RELEASED )
+                if( keyMapValue == INPUT_RELEASED )
                 this.keyMap[i] = INPUT_NO_ACTION;
+                
+                    // Log held keys to the keyboar string
+                if( keyMapValue == INPUT_PRESSED )
+                this.keyboardString += Character.toString(i);
                 
                 if( i >= MOUSE_BUTTON_MAP_SIZE )
                 continue;
@@ -222,6 +245,7 @@ public final class MouseKeyboardInputGL implements IInput {
             dest.mouseX = this.mouseX;
             dest.mouseY = this.mouseY;
             
+            dest.keyboardString = this.keyboardString;
             dest.timestamp = System.nanoTime();
         }
         
@@ -274,6 +298,10 @@ public final class MouseKeyboardInputGL implements IInput {
     
         public double getMouseFromCenterY() {
             return this.mouseFromCenterY;
+        }
+        
+        public String getKeyboardString() {
+            return this.keyboardString;
         }
     }
     

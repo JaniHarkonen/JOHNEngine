@@ -34,7 +34,7 @@ public class RenderBuffer implements IHasRenderBuffer, IRenderBuffer<RenderBuffe
     private Matrix4f projectionMatrix;
     private Matrix4f cameraMatrix;
     private SDirectionalLight directionalLight;
-        
+    
     private SAmbientLight ambientLight;
     private Map<JPointLight, SPointLight> pointLights;
     private Map<JSpotLight, SSpotLight> spotLights;

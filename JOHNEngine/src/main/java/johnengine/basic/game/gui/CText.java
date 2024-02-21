@@ -4,6 +4,7 @@ import johnengine.basic.assets.font.Font;
 import johnengine.basic.game.ISceneGraphChild;
 import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
+import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderStrategy;
 
@@ -12,11 +13,13 @@ public class CText implements IRenderable, ISceneGraphChild {
     private String text;
     private Font font;
     private CTransform transform;
+    private MouseKeyboardInputGL DEBUGInput;
     
-    public CText(String text) {
+    public CText(String text, MouseKeyboardInputGL DEBUGInput) {
         this.text = text;
         this.font = null;
         this.transform = new CTransform();
+        this.DEBUGInput = DEBUGInput;
     }
     
     
@@ -41,6 +44,7 @@ public class CText implements IRenderable, ISceneGraphChild {
     /*********************** GETTERS ***********************/
     
     public String getText() {
+        this.text = this.DEBUGInput.getState().getKeyboardString() + "<";
         return this.text;
     }
     

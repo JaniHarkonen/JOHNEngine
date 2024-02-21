@@ -56,8 +56,8 @@ public class RendererGL implements IRenderer {
         GL.createCapabilities();
         this.generateDefaults();
         
-        for( Map.Entry<String, IRenderStrategy> en : this.renderingPasses.entrySet() )
-        en.getValue().prepare();
+        for( String passKey : this.renderingPassOrder )
+        this.renderingPasses.get(passKey).prepare();
     }
     
     @Override

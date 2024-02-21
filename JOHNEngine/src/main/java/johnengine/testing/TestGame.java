@@ -158,7 +158,13 @@ public class TestGame extends AGame {
         //camera.attach(pointLight);
         
             // Populate GUI
-        Font textFont = new Font("gui-font", testFont, "helowrd :)", 17, 8);
+        Font textFont = new Font(
+            "gui-font", 
+            testFont, 
+            " !\"#$%&'()*+´-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 
+            17, 
+            8
+        );
         textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         textFont.generate();
         
@@ -167,7 +173,7 @@ public class TestGame extends AGame {
         }
         catch(Exception e) {}
         
-        CText guiText = new CText("hello world :)");
+        CText guiText = new CText("hello world :)", this.window.getInput());
         guiText.setFont(textFont);
         this.gui.addElement(guiText);
         
