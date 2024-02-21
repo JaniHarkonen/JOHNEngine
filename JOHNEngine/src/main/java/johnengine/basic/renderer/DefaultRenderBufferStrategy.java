@@ -1,19 +1,22 @@
 package johnengine.basic.renderer;
 
-import johnengine.basic.InstanceManager;
-import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.core.IRenderable;
+import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderStrategy;
 
 public class DefaultRenderBufferStrategy implements IRenderBufferStrategy {
     
     @Override
-    public void execute(JWorld world, IRenderStrategy renderStrategy) {
-        InstanceManager<AWorldObject> worldManager = world.getInstances();
-        worldManager.resetIterator();
+    public void execute(IRenderContext renderContext, IRenderStrategy renderStrategy) {
+        //InstanceManager<AWorldObject> worldManager = world.getInstances();
+        //worldManager.resetIterator();
+        renderContext.startRenderBuffer();
         
-        AWorldObject instance;
+        /*AWorldObject instance;
         while( (instance = worldManager.nextActiveInstance()) != null )
+        instance.render(renderStrategy);*/
+        IRenderable instance;
+        while( (instance = renderContext.nextInstance()) != null )
         instance.render(renderStrategy);
         
         renderStrategy.newBuffer();

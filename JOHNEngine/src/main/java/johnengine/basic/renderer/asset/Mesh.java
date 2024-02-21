@@ -13,7 +13,7 @@ import org.lwjgl.assimp.AIVector3D;
 import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.sceneobj.Material;
 
-public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {    
+public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
     public static class Face {
         public static final int INDICES_PER_FACE = 3;
         
@@ -172,6 +172,12 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
             aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         );
+    }
+    
+    public static Mesh createMesh(String name, Mesh.Data meshData) {
+        Mesh mesh = new Mesh(name);
+        mesh.data = meshData;
+        return mesh;
     }
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {

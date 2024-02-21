@@ -34,7 +34,7 @@ public class CPhysics implements ITickable {
         
         this.gravity = new ConstantImpulse();
         this.gravity.getForce().set(0, 0.05f, 0);
-        this.applyImpulse(this.gravity);
+        //this.applyImpulse(this.gravity);
     }
     
     

@@ -45,7 +45,7 @@ public class VAO implements IGeneratable, IBindable {
         
         this.indicesVBO.bind();
         this.indicesVBO.unbind();
-        this.vbos = null;
+        this.vbos = null; // Set to null to free-up space as the VBOs are no longer needed
         
         this.unbind();
         return true;

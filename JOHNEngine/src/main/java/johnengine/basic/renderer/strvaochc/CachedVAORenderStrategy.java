@@ -3,11 +3,13 @@ package johnengine.basic.renderer.strvaochc;
 import java.util.Map;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
@@ -16,7 +18,6 @@ import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.MeshGL;
-import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.asset.Shader;
 import johnengine.basic.renderer.asset.Texture;
 import johnengine.basic.renderer.asset.TextureGL;
@@ -33,12 +34,14 @@ import johnengine.basic.renderer.strvaochc.uniforms.UNISpotLight;
 import johnengine.basic.renderer.uniforms.UNIInteger;
 import johnengine.basic.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.renderer.uniforms.UniformArray;
+import johnengine.basic.renderer.vaocache.VAOCache;
 import johnengine.basic.renderer.vertex.VAO;
 import johnengine.core.IRenderable;
-import johnengine.core.cache.TimedCache;
 import johnengine.core.renderer.IRenderBufferStrategoid;
+import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
+import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.RenderStrategoidManager;
 
 public class CachedVAORenderStrategy implements 
@@ -50,16 +53,21 @@ public class CachedVAORenderStrategy implements
     public static final int MAX_SPOT_LIGHT_COUNT = 5;
     
     private final IRenderer renderer;
-    private final TimedCache<MeshGL, VAO> vaoCache;
+    //private final TimedCache<MeshGL, VAO> vaoCache;
+    private final VAOCache vaoCache;
     private final ShaderProgram shaderProgram;
-    private RenderBufferManager renderBufferManager;
+    private RenderBufferManager<RenderBuffer> renderBufferManager;
     private RenderStrategoidManager strategoidManager;
+    
+    private JWorld activeWorld;
     
     public CachedVAORenderStrategy(IRenderer renderer) {
         this.renderer = renderer;
-        this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
+        //this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
+        this.vaoCache = new VAOCache(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
-        this.renderBufferManager = new RenderBufferManager();
+        this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
+        this.activeWorld = null;
         
         this.strategoidManager = (new RenderStrategoidManager())
         .addStrategoid(CModel.class, new StrategoidModel(this))
@@ -76,16 +84,10 @@ public class CachedVAORenderStrategy implements
         
             // Load shaders
         Shader vertexShader = new Shader(GL30.GL_VERTEX_SHADER, "vertex-shader", true, null);
+        this.loadShader(vertexShader, "default.vert");
+        
         Shader fragmentShader = new Shader(GL30.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
-        
-        TextAsset.Loader loader = new TextAsset.Loader();
-        loader.setTarget(vertexShader);
-        loader.setPath("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\default.vert");
-        loader.load();
-        
-        loader.setTarget(fragmentShader);
-        loader.setPath("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\default.frag");
-        loader.load();
+        this.loadShader(fragmentShader, "default.frag");
         
             // Add shaders
         this.shaderProgram
@@ -133,6 +135,21 @@ public class CachedVAORenderStrategy implements
         .declareUniform(pointLight)
         .declareUniform(directionalLight)
         .declareUniform(spotLight);
+        
+            // OpenGL configuration
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        //GL11.glEnable(GL11.GL_CULL_FACE);
+        //GL13.glEnable(GL13.GL_MULTISAMPLE);
+        //GL11.glCullFace(GL11.GL_BACK);
+    }
+    
+    private void loadShader(Shader targetShader, String filename) {
+        TextAsset.Loader loader = new TextAsset.Loader();
+        loader.setTarget(targetShader);
+        loader.setPath(
+            "C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\shaders\\" + filename
+        );
+        loader.load();
     }
     
     @Override
@@ -155,7 +172,9 @@ public class CachedVAORenderStrategy implements
     public void preRender(RenderBuffer renderBuffer) {
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
-        this.shaderProgram.getUniform("normalSampler").set();
+        
+        ((UNIInteger) this.shaderProgram.getUniform("normalSampler"))
+        .set(1);
         
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
         .set(renderBuffer.getProjectionMatrix());
@@ -242,7 +261,8 @@ public class CachedVAORenderStrategy implements
             
                 // Bind mesh and issue draw call
             MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
-            VAO vao = this.fetchVAO(meshGraphics);
+            //VAO vao = this.fetchVAO(meshGraphics);
+            VAO vao = this.vaoCache.fetchVAO(meshGraphics);
             vao.bind();
             GL30.glDrawElements(GL30.GL_TRIANGLES, meshData.getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
         }
@@ -261,7 +281,7 @@ public class CachedVAORenderStrategy implements
         //((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
         //.fill(() -> );
     }
-    
+    /*
     private VAO fetchVAO(MeshGL meshGraphics) {
         VAO vao = this.vaoCache.get(meshGraphics);
         
@@ -283,7 +303,7 @@ public class CachedVAORenderStrategy implements
         this.vaoCache.cacheItem(meshGraphics, vao);
         return vao;
     }
-    
+    */
     @Override
     public void dispose() {
         this.shaderProgram.dispose();
@@ -330,8 +350,19 @@ public class CachedVAORenderStrategy implements
     }
 
     @Override
+    public void setRenderContext(IRenderContext activeWorld) {
+        if( activeWorld != null )
+        this.activeWorld = (JWorld) activeWorld;
+    }
+
+    @Override
     public IRenderer getRenderer() {
         return this.renderer;
+    }
+    
+    @Override
+    public IRenderContext getRenderContext() {
+        return this.activeWorld;
     }
     
     @Override

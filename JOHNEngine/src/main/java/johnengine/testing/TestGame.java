@@ -3,12 +3,16 @@ package johnengine.testing;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.assets.IRendererAsset;
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
 import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JGUI;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
+import johnengine.basic.game.gui.CText;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.actions.ACTMoveBackward;
 import johnengine.basic.game.input.actions.ACTMoveForward;
@@ -18,7 +22,6 @@ import johnengine.basic.game.input.actions.ACTTurn;
 import johnengine.basic.game.input.cvrters.MouseKeyboardBooleanConverter;
 import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
-import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
@@ -29,6 +32,7 @@ import johnengine.basic.renderer.asset.Texture;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.assetmngr.asset.ILoaderMonitor;
 import johnengine.core.engine.Engine;
 import johnengine.utils.counter.MilliCounter;
 
@@ -38,6 +42,7 @@ public class TestGame extends AGame {
 
     private MilliCounter timer;
     private JWorld worldMain;
+    private JGUI gui;
     private long tickCounter;
     private Physics physics;
     private Physics.World physicsWorld;
@@ -51,7 +56,7 @@ public class TestGame extends AGame {
         this.tickCounter = 0;
         
         this.window
-        //.hideCursor()
+        .hideCursor()
         .disableVSync();
         //.resize(1000, 1000);
         
@@ -68,17 +73,26 @@ public class TestGame extends AGame {
         SceneObjectLoader objLoader = new SceneObjectLoader();
         objLoader.expectMesh(mesh);
         objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Brick.fbx", objLoader);
         
         Texture texture = new Texture("creep");
         Texture.Loader textureLoader = new Texture.Loader(texture);
         textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_Color.jpg", textureLoader);
+        
         
         Texture normalMap = new Texture("normale");
         Texture.Loader normalMapLoader = new Texture.Loader(normalMap);
         normalMapLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
+        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_NormalDX.jpg", normalMapLoader);
+        
+        Texture testFont = new Texture("fon");
+        Texture.Loader fontTextureLoader = new Texture.Loader(testFont);
+        fontTextureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\font.png", fontTextureLoader);
         
         Material material = new Material();
         material.setTexture(texture);
@@ -86,6 +100,7 @@ public class TestGame extends AGame {
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
+        this.gui = new JGUI(this);
         
         CModel model = new CModel();
         model.setMesh(mesh);
@@ -131,9 +146,9 @@ public class TestGame extends AGame {
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
-        
+        /*
         JDirectionalLight directionalLight = new JDirectionalLight(this.worldMain);
-        this.worldMain.createInstance(directionalLight);
+        this.worldMain.createInstance(directionalLight);*/
         
         JPointLight pointLight = new JPointLight(this.worldMain);
         this.worldMain.createInstance(pointLight);
@@ -142,8 +157,35 @@ public class TestGame extends AGame {
         camera.attach(spotLight);*/
         //camera.attach(pointLight);
         
-            // Update the active world of the renderer
-        RendererGL.class.cast(this.window.getRenderer()).setActiveWorld(this.worldMain);
+            // Populate GUI
+        Font textFont = new Font(
+            "gui-font", 
+            testFont, 
+            " !\"#$%&'()*+´-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 
+            17, 
+            8
+        );
+        textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        textFont.generate();
+        
+        try {
+        Thread.sleep(1000);
+        }
+        catch(Exception e) {}
+        
+        CText guiText = new CText("hello world :)", this.window.getInput());
+        guiText.setFont(textFont);
+        this.gui.addElement(guiText);
+        
+            // Update the active world and the GUI of the renderer
+        RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
+        renderer
+        .getStrategyOfRenderingPass("scene-renderer")
+        .setRenderContext(this.worldMain);
+        
+        renderer
+        .getStrategyOfRenderingPass("gui-renderer")
+        .setRenderContext(this.gui);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {

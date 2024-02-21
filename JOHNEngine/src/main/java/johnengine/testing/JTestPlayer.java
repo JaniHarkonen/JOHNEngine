@@ -44,7 +44,8 @@ public class JTestPlayer extends AWorldObject implements IControllable, IPhysics
     public void tick(float deltaTime) {
         if( !this.settedup )
         {
-            this.transform.getPosition().setPosition(0, -110, 0);
+            this.transform.getPosition().setPosition(0, 0, 0);
+            //this.transform.getRotation().setRotation(70, 47, 0);
             this.settedup = true;
         }
         

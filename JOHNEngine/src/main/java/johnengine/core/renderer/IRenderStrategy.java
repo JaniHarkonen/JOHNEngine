@@ -12,7 +12,11 @@ public interface IRenderStrategy {
     
     public void render();
     
+    public void setRenderContext(IRenderContext renderContext);
+    
     public IRenderer getRenderer();
+    
+    public IRenderContext getRenderContext();
     
     public boolean canRender();
     

@@ -55,3 +55,22 @@ based input
 InputEvent by setting intensity to 0.0f
 - have a single final class where global declarations are made
 	-- perhaps split the class up into different classes
+- assetManager should not use absolute paths
+	-- determine working directory
+- consider changing RenderStrategies to RenderPasses
+- move IRenderBufferStrategy to core as it is no longer dependent on JWorld
+- reconsider the whole idea of having the RequestManager in 'core'-package
+	-- inheritance should be removed as there's no reason for polymorphism
+	-- different types of RequestManagers should not share functionality via
+	inheritance
+- instead of having a deload monitor, render assets should use loading and 
+deloading strategies so that classes like Mesh and Texture are no longer dependent
+on any specific library
+	-- for example, Mesh and Texture are currently dependent on OpenGL as they
+	need to be loaded and deloaded on the renderer thread; other graphics libraries
+	may not impose such a restriction on those classes and, as such, the way that 
+	they are loaded and deloaded is considerably different
+- reconsider the idea of RenderUnits
+	-- at least RenderUnits shouldn't have private fields, rather, their fields 
+	should be package private
+- rename 'cells' to 'glyphs' in Font 

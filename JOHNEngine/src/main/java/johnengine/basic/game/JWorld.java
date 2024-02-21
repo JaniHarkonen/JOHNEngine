@@ -2,8 +2,10 @@ package johnengine.basic.game;
 
 import johnengine.basic.InstanceManager;
 import johnengine.core.AGame;
+import johnengine.core.IRenderable;
+import johnengine.core.renderer.IRenderContext;
 
-public class JWorld extends AGameObject {
+public class JWorld extends AGameObject implements IRenderContext {
     private final InstanceManager<AWorldObject> worldManager;
     
     public JWorld(AGame game) {
@@ -40,7 +42,17 @@ public class JWorld extends AGameObject {
     }
     
     
-    public InstanceManager<AWorldObject> getInstances() {
+    /*public InstanceManager<AWorldObject> getInstances() {
         return this.worldManager;
+    }*/
+    
+    @Override
+    public void startRenderBuffer() {
+        this.worldManager.resetIterator();
+    }
+    
+    @Override
+    public IRenderable nextInstance() {
+        return this.worldManager.nextInstance();
     }
 }
