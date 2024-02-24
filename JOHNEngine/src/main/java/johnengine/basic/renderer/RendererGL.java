@@ -13,6 +13,7 @@ import johnengine.basic.renderer.asset.MeshGL;
 import johnengine.basic.renderer.asset.TextureGL;
 import johnengine.basic.renderer.strgui.GUIRenderStrategy;
 import johnengine.basic.renderer.strvaochc.CachedVAORenderStrategy;
+import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.winframe.AWindowFramework;
@@ -25,6 +26,7 @@ public class RendererGL implements IRenderer {
     private List<String> renderingPassOrder;
     private IRenderBufferStrategy renderBufferStrategy;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
+    private String resourceRootFolder;
     
     public RendererGL(AWindowFramework hostWindow, IRenderStrategy renderStrategy) {
         this.hostWindow = (WindowGL) hostWindow;
@@ -34,6 +36,7 @@ public class RendererGL implements IRenderer {
         this.renderingPassOrder = new ArrayList<>();
         this.renderBufferStrategy = new DefaultRenderBufferStrategy();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
+        this.resourceRootFolder = "";
     }
     
     public RendererGL(AWindowFramework hostWindow) {
@@ -104,6 +107,11 @@ public class RendererGL implements IRenderer {
         return this.renderStrategy;
     }*/
     
+    public void setResourceRootFolder(String resourceRootFolder) {
+        this.resourceRootFolder = FileUtils.normalizePathSlashes(resourceRootFolder) + "/";
+    }
+    
+    
     public IRenderStrategy getStrategyOfRenderingPass(String passKey) {
         return this.renderingPasses.get(passKey);
     }
@@ -115,5 +123,9 @@ public class RendererGL implements IRenderer {
     @Override
     public AWindowFramework getWindow() {
         return this.hostWindow;
+    }
+    
+    public String getResourceRootFolder() {
+        return this.resourceRootFolder;
     }
 }

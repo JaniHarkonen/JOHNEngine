@@ -1,9 +1,10 @@
 package johnengine.testing;
 
 
+import java.io.File;
+
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoader;
@@ -32,7 +33,6 @@ import johnengine.basic.renderer.asset.Texture;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
-import johnengine.core.assetmngr.asset.ILoaderMonitor;
 import johnengine.core.engine.Engine;
 import johnengine.utils.counter.MilliCounter;
 
@@ -55,44 +55,33 @@ public class TestGame extends AGame {
         
         this.tickCounter = 0;
         
+        RendererGL renderer = this.window.getRenderer();
+        renderer.setResourceRootFolder((new File("src/main/resources/test")).getAbsolutePath());
+        
         this.window
         .hideCursor()
         .disableVSync();
         //.resize(1000, 1000);
         
-        //Window.class.cast(this.window).enterFullscreen();
-        //Window.class.cast(this.window).resize(1000, 1000);
+        //this.window.enterFullscreen();
+        //this.window.resize(1000, 1000);
         //this.engine.setTickRate(24);
-        WindowGL.class.cast(this.window).lockCursorToCenter();
+        this.window.lockCursorToCenter();
         
         AssetManager am = this.assetManager;
+        am.setRootDirectory((new File("src/main/resources/test")).getAbsolutePath());
         
         Mesh mesh = new Mesh("man");
-        am.declareAsset(mesh);
-        
-        SceneObjectLoader objLoader = new SceneObjectLoader();
-        objLoader.expectMesh(mesh);
-        objLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\box.fbx", objLoader);
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Brick.fbx", objLoader);
+        this.loadMesh("brick/Brick.fbx", mesh, am);
         
         Texture texture = new Texture("creep");
-        Texture.Loader textureLoader = new Texture.Loader(texture);
-        textureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\creep.png", textureLoader);
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_Color.jpg", textureLoader);
-        
+        this.loadTexture("brick/Bricks082B_4K_Color.jpg", texture, am);
         
         Texture normalMap = new Texture("normale");
-        Texture.Loader normalMapLoader = new Texture.Loader(normalMap);
-        normalMapLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        //am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\normale.png", normalMapLoader);
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\brick\\Bricks082B_4K_NormalDX.jpg", normalMapLoader);
+        this.loadTexture("brick/Bricks082B_4K_NormalDX.jpg", normalMap, am);
         
         Texture testFont = new Texture("fon");
-        Texture.Loader fontTextureLoader = new Texture.Loader(testFont);
-        fontTextureLoader.setMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        am.loadFrom("C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\font.png", fontTextureLoader);
+        this.loadTexture("font.png", testFont, am);
         
         Material material = new Material();
         material.setTexture(texture);
@@ -178,7 +167,7 @@ public class TestGame extends AGame {
         this.gui.addElement(guiText);
         
             // Update the active world and the GUI of the renderer
-        RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
+        //RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
         renderer
         .getStrategyOfRenderingPass("scene-renderer")
         .setRenderContext(this.worldMain);
@@ -198,6 +187,22 @@ public class TestGame extends AGame {
         this.physicsWorld = new Physics.World();
         this.physicsWorld.addObject(player);
         this.physicsWorld.addObject(box);
+    }
+    
+    private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
+        am.declareAsset(mesh);
+        SceneObjectLoader objLoader = new SceneObjectLoader();
+        objLoader.expectMesh(mesh);
+        objLoader.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        am.loadFrom(relativePath, objLoader);
+    }
+    
+    private void loadTexture(String relativePath, Texture texture, AssetManager am) {
+        am.declareAsset(texture);
+        
+        Texture.Loader textureLoader = new Texture.Loader(texture);
+        textureLoader.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        am.loadFrom(relativePath, textureLoader);
     }
 
     @Override

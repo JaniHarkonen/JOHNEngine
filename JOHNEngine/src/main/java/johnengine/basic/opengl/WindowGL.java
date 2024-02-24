@@ -6,7 +6,6 @@ import org.lwjgl.system.MemoryUtil;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
-import johnengine.core.renderer.IRenderer;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.winframe.AWindowFramework;
@@ -294,7 +293,7 @@ public final class WindowGL extends AWindowFramework
         return this.input;
     }
     
-    public IRenderer getRenderer() {
-        return this.renderer;
+    public RendererGL getRenderer() {
+        return (RendererGL) this.renderer;
     }
 }

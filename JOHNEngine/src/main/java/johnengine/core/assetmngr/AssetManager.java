@@ -1,10 +1,13 @@
 package johnengine.core.assetmngr;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import johnengine.core.FileUtils;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.asset.AAssetLoader;
 import johnengine.core.assetmngr.asset.AssetGroup;
@@ -13,6 +16,8 @@ import johnengine.core.threadable.AThreadable;
 import johnengine.testing.DebugUtils;
 
 public final class AssetManager implements IEngineComponent {
+    
+    /************************* LoaderProcess-class *************************/
     
     private static class LoaderProcess extends AThreadable {
         public static final long DEFAULT_SLEEP_TIME = 500;
@@ -84,16 +89,21 @@ public final class AssetManager implements IEngineComponent {
         return setup(DEFAULT_NUMBER_OF_THREADS);
     }
     
+    
+    /************************* Class body *************************/
+    
     private Map<String, IAsset> assets;
     private LoaderProcess[] loaderProcesses;
     private int nextThreadIndex;
     private int numberOfThreads;
+    private String rootDirectory;
     
     public AssetManager(int numberOfThreads) {
         this.assets = new HashMap<>();
         this.loaderProcesses = new LoaderProcess[numberOfThreads];
         this.nextThreadIndex = 0;
         this.numberOfThreads = numberOfThreads;
+        this.rootDirectory = "";
     }
     
     
@@ -124,7 +134,7 @@ public final class AssetManager implements IEngineComponent {
         if( loader == null )
         DebugUtils.log(this, "FAIL: null loader");
         else
-        loader.setPath(path);
+        loader.setPath(this.rootDirectory + FileUtils.normalizePathSlashes(path));
         
         return this.load(loader);
     }
@@ -164,10 +174,17 @@ public final class AssetManager implements IEngineComponent {
     }
 
     private LoaderProcess getNextLoaderProcess() {
-        if( this.nextThreadIndex >= numberOfThreads )
-        this.nextThreadIndex = 0;
-        
+        this.nextThreadIndex %= this.numberOfThreads;
         return this.loaderProcesses[this.nextThreadIndex++];
+    }
+    
+    public void setRootDirectory(String rootDirectory) {
+        String normalizedRootDirectory = FileUtils.normalizePathSlashes(rootDirectory);
+        
+        if( Files.exists(Paths.get(normalizedRootDirectory)) )
+        this.rootDirectory = normalizedRootDirectory + "/";
+        else
+        DebugUtils.log(this, "ERROR: Trying to set a non-existing root directory!");
     }
     
     public IAsset getAsset(String assetName) {

@@ -8,6 +8,7 @@ import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JGUI;
 import johnengine.basic.game.gui.CText;
+import johnengine.basic.renderer.RendererGL;
 import johnengine.basic.renderer.ShaderProgram;
 import johnengine.basic.renderer.asset.Mesh;
 import johnengine.basic.renderer.asset.MeshGL;
@@ -30,7 +31,7 @@ public class GUIRenderStrategy implements
     IRenderStrategy,
     IHasRenderBuffer
 {
-    private final IRenderer renderer;
+    private final RendererGL renderer;
     private final VAOCache vaoCache;
     private ShaderProgram shaderProgram;
     private RenderBufferManager<RenderBuffer> renderBufferManager;
@@ -38,7 +39,7 @@ public class GUIRenderStrategy implements
     
     private JGUI activeGUI;
     
-    public GUIRenderStrategy(IRenderer renderer) {
+    public GUIRenderStrategy(RendererGL renderer) {
         this.renderer = renderer;
         this.vaoCache = new VAOCache(10*1000);
         this.shaderProgram = new ShaderProgram();
@@ -78,9 +79,7 @@ public class GUIRenderStrategy implements
     private void loadShader(Shader targetShader, String filename) {
         TextAsset.Loader loader = new TextAsset.Loader();
         loader.setTarget(targetShader);
-        loader.setPath(
-            "C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\shaders\\" + filename
-        );
+        loader.setPath(this.renderer.getResourceRootFolder() + "shaders/" + filename);
         loader.load();
     }
 

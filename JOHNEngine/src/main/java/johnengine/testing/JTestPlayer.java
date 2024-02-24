@@ -75,7 +75,7 @@ public class JTestPlayer extends AWorldObject implements IControllable, IPhysics
             
             case TURN: {
                 ACTTurn actionTurn = (ACTTurn) action;
-                float sens = 1f;
+                float sens = 0.5f;
                 this.transform.getRotation().rotate(0, actionTurn.deltaX * sens, 0);
                 this.transform.getRotation().rotate(actionTurn.deltaY * sens, 0, 0);
             } break;
