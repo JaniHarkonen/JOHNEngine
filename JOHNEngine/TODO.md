@@ -55,8 +55,6 @@ based input
 InputEvent by setting intensity to 0.0f
 - have a single final class where global declarations are made
 	-- perhaps split the class up into different classes
-- assetManager should not use absolute paths
-	-- determine working directory
 - consider changing RenderStrategies to RenderPasses
 - move IRenderBufferStrategy to core as it is no longer dependent on JWorld
 - reconsider the whole idea of having the RequestManager in 'core'-package
