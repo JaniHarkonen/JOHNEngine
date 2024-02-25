@@ -1,8 +1,8 @@
 package johnengine.basic.renderer.vaocache;
 
 import johnengine.basic.renderer.asset.MeshGL;
-import johnengine.basic.renderer.asset.MeshGL.VBOContainer;
 import johnengine.basic.renderer.vertex.VAO;
+import johnengine.basic.renderer.vertex.VBOType;
 import johnengine.core.cache.TimedCache;
 
 public class VAOCache extends TimedCache<MeshGL, VAO> {
@@ -20,13 +20,14 @@ public class VAOCache extends TimedCache<MeshGL, VAO> {
         return vao;
         
             // Generate a new VAO and cache it
-        VBOContainer vbos = meshGraphics.getData();
-        vao = (new VAO())
-        .addVBO(vbos.getVerticesVBO())
-        .addVBO(vbos.getNormalsVBO())
-        .addVBO(vbos.getTangentsVBO())
-        .addVBO(vbos.getBitangentsVBO())
-        .addVBO(vbos.getTextureCoordinatesVBO());
+        MeshGL.VBOContainer vbos = meshGraphics.getData();
+        vao = new VAO();
+        vao
+        .addVBO(vbos.getVBO(VBOType.VERTICES))
+        .addVBO(vbos.getVBO(VBOType.NORMALS))
+        .addVBO(vbos.getVBO(VBOType.TANGENTS))
+        .addVBO(vbos.getVBO(VBOType.BITANGENTS))
+        .addVBO(vbos.getVBO(VBOType.UVS));
         vao.setIndicesVBO(vbos.getIndicesVBO());
         vao.generate();
         
