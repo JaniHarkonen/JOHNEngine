@@ -3,47 +3,46 @@ package johnengine.basic.renderer.asset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL46;
+
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.IRendererAsset;
-import johnengine.basic.renderer.vertex.AVBO;
-import johnengine.basic.renderer.vertex.VBOBitangents;
-import johnengine.basic.renderer.vertex.VBOIndices;
-import johnengine.basic.renderer.vertex.VBONormals;
-import johnengine.basic.renderer.vertex.VBOTangents;
-import johnengine.basic.renderer.vertex.VBOTextureCoordinates;
-import johnengine.basic.renderer.vertex.VBOType;
-import johnengine.basic.renderer.vertex.VBOVertices;
+import johnengine.basic.renderer.vao.AVBO;
+import johnengine.basic.renderer.vao.VBOIndices;
+import johnengine.basic.renderer.vao.VBOType;
+import johnengine.basic.renderer.vao.VBOVector2f;
+import johnengine.basic.renderer.vao.VBOVector3f;
 
 public class MeshGL implements IMesh<MeshGL.VBOContainer> {
     
     /*********************** VBOContainer-class ***********************/
     
     public static class VBOContainer {
-        private Map<VBOType, AVBO<?>> vbos;
+        private Map<VBOType, AVBO<?, ?>> vbos;
         private VBOIndices indicesVBO;
         
         public VBOContainer() {
-            this.vbos = new HashMap<VBOType, AVBO<?>>();
+            this.vbos = new HashMap<VBOType, AVBO<?, ?>>();
             this.indicesVBO = null;
         }
         
         
         boolean disposeAll() {
-            for( Map.Entry<VBOType, AVBO<?>> en : this.vbos.entrySet() )
+            for( Map.Entry<VBOType, AVBO<?, ?>> en : this.vbos.entrySet() )
             en.getValue().dispose();
             
             return true;
         }
         
-        public void setVBO(VBOType key, AVBO<?> vbo) {
+        public void setVBO(VBOType key, AVBO<?, ?> vbo) {
             if( vbo instanceof VBOIndices )
             this.indicesVBO = (VBOIndices) vbo;
             else
             this.vbos.put(key, vbo);
         }
         
-        public AVBO<?> getVBO(VBOType key) {
+        public AVBO<?, ?> getVBO(VBOType key) {
             return this.vbos.get(key);
         }
         
@@ -88,28 +87,40 @@ public class MeshGL implements IMesh<MeshGL.VBOContainer> {
         Mesh.Data data = this.mesh.getDataDirect();
         
             // Generate vertices VBO
-        VBOVertices vboVertices = new VBOVertices();
+        //VBOVertices vboVertices = new VBOVertices();
+        //vboVertices.generate(data.getVertices());
+        VBOVector3f vboVertices = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboVertices.generate(data.getVertices());
         
             // Generate normals VBO
-        VBONormals vboNormals = new VBONormals();
+        //VBONormals vboNormals = new VBONormals();
+        //vboNormals.generate(data.getNormals());
+        VBOVector3f vboNormals = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboNormals.generate(data.getNormals());
         
             // Generate UVs VBO
-        VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
+        //VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
+        //vboUVs.generate(data.getUVs());
+        VBOVector2f vboUVs = new VBOVector2f(GL46.GL_ARRAY_BUFFER);
         vboUVs.generate(data.getUVs());
         
             // Generate indices VBO
+        //VBOIndices vboIndices = new VBOIndices();
+        //vboIndices.generate(data.getFaces());
         VBOIndices vboIndices = new VBOIndices();
         vboIndices.generate(data.getFaces());
         
             // Generate tangents VBO
-        VBOTangents vboTangents = new VBOTangents();
+        //VBOTangents vboTangents = new VBOTangents();
+        //vboTangents.generate(data.getTangents());
+        VBOVector3f vboTangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboTangents.generate(data.getTangents());
 
             // Generate tangents VBO
-        VBOBitangents vboBitangents = new VBOBitangents();
-        vboBitangents.generate(data.getTangents());
+        //VBOBitangents vboBitangents = new VBOBitangents();
+        //vboBitangents.generate(data.getTangents());
+        VBOVector3f vboBitangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
+        vboBitangents.generate(data.getBitangents());
         
         VBOContainer vbos = new VBOContainer();
         vbos.setVBO(VBOType.VERTICES, vboVertices);

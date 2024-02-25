@@ -1,8 +1,8 @@
 package johnengine.basic.renderer.vaocache;
 
 import johnengine.basic.renderer.asset.MeshGL;
-import johnengine.basic.renderer.vertex.VAO;
-import johnengine.basic.renderer.vertex.VBOType;
+import johnengine.basic.renderer.vao.VAO;
+import johnengine.basic.renderer.vao.VBOType;
 import johnengine.core.cache.TimedCache;
 
 public class VAOCache extends TimedCache<MeshGL, VAO> {

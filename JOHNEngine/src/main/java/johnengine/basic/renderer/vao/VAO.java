@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.vertex;
+package johnengine.basic.renderer.vao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import johnengine.testing.DebugUtils;
 public class VAO implements IGeneratable, IBindable {
     
     private int handle;
-    private List<AVBO<?>> vbos;
+    private List<AVBO<?, ?>> vbos;
     private VBOIndices indicesVBO;
     
     public VAO() {
@@ -30,7 +30,7 @@ public class VAO implements IGeneratable, IBindable {
             // Bind all VBOs, except the one holding the indices
         for( int i = 0; i < this.vbos.size(); i++ )
         {
-            AVBO<?> vbo = this.vbos.get(i);
+            AVBO<?, ?> vbo = this.vbos.get(i);
             
             if( vbo.getHandle() <= 0 )
             DebugUtils.log(this, "ERROR: trying to generate a VAO with one or more null VBOs!");
@@ -72,7 +72,7 @@ public class VAO implements IGeneratable, IBindable {
         return true;
     }
     
-    public VAO addVBO(AVBO<?> vbo) {
+    public VAO addVBO(AVBO<?, ?> vbo) {
         this.vbos.add(vbo);
         return this;
     }

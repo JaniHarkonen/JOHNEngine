@@ -1,4 +1,4 @@
-package johnengine.basic.renderer.vertex;
+package johnengine.basic.renderer.vao;
 
 public enum VBOType {
 
