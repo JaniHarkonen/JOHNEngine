@@ -30,8 +30,6 @@ of the game world
 - ARequest should be IRequest due to no internal state
 
 - add default material
-- refactor VBOVertices, VBONormals, VBOTangents and VBOBitangents into a single 
-VBOVector3f as they are all exactly alike
 - see if Material can be refactored into binding all its textures through a method
 - Input classes should probably convert mouse coordinates into floats instead of 
 deferring this to the controllers
