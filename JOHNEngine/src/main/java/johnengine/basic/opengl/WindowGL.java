@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
-import johnengine.basic.renderer.RendererGL;
+import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
 import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;

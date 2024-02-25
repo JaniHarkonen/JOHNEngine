@@ -7,8 +7,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import johnengine.basic.assets.IRendererAsset;
-import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.opengl.renderer.asset.Mesh;
+import johnengine.basic.opengl.renderer.asset.Texture;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
 public class Font {

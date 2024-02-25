@@ -4,8 +4,8 @@ import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.ISceneGraphChild;
 import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.opengl.renderer.asset.Mesh;
+import johnengine.basic.opengl.renderer.asset.Texture;
 import johnengine.core.renderer.IRenderStrategy;
 
 public class CModel implements ISceneGraphChild {

@@ -2,7 +2,7 @@ package johnengine.basic.assets.sceneobj;
 
 import org.joml.Vector4f;
 
-import johnengine.basic.renderer.asset.Texture;
+import johnengine.basic.opengl.renderer.asset.Texture;
 
 public class Material {
 
