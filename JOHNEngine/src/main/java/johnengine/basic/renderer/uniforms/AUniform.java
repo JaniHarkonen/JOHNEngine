@@ -1,6 +1,6 @@
 package johnengine.basic.renderer.uniforms;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.renderer.ShaderProgram;
 
@@ -22,7 +22,7 @@ public abstract class AUniform<T> implements IUniform<T> {
     
     @Override
     public void declare(ShaderProgram shaderProgram) {
-        this.location = GL30.glGetUniformLocation(shaderProgram.getHandle(), this.identifier);
+        this.location = GL46.glGetUniformLocation(shaderProgram.getHandle(), this.identifier);
     }
     
     public abstract void set();

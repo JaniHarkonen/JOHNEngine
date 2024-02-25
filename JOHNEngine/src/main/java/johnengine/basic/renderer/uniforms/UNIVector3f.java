@@ -1,7 +1,7 @@
 package johnengine.basic.renderer.uniforms;
 
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 public class UNIVector3f extends AUniform<Vector3f> {
 
@@ -16,7 +16,7 @@ public class UNIVector3f extends AUniform<Vector3f> {
     
     @Override
     public void set() {
-        GL30.glUniform3f(this.location, this.value.x, this.value.y, this.value.z);
+        GL46.glUniform3f(this.location, this.value.x, this.value.y, this.value.z);
     }
     
     @Override

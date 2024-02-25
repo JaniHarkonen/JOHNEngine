@@ -1,6 +1,6 @@
 package johnengine.basic.renderer.uniforms;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 public class UNIFloat extends AUniform<Float> {
 
@@ -15,7 +15,7 @@ public class UNIFloat extends AUniform<Float> {
     
     @Override
     public void set() {
-        GL30.glUniform1f(this.location, this.value);
+        GL46.glUniform1f(this.location, this.value);
     }
     
     @Override

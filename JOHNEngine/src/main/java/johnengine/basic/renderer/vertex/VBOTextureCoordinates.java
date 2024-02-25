@@ -3,14 +3,14 @@ package johnengine.basic.renderer.vertex;
 import java.nio.FloatBuffer;
 
 import org.joml.Vector2f;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
 
     public static final int SIZE = 2;
     
     public VBOTextureCoordinates() {  
-        super(GL30.GL_ARRAY_BUFFER, SIZE);
+        super(GL46.GL_ARRAY_BUFFER, SIZE);
     }
 
     
@@ -30,7 +30,7 @@ public final class VBOTextureCoordinates extends AVBO<Vector2f[]> {
         
         uvBuffer.flip();
         
-        GL30.glBufferData(this.target, uvBuffer, GL30.GL_STATIC_DRAW);
+        GL46.glBufferData(this.target, uvBuffer, GL46.GL_STATIC_DRAW);
         
         this.freeAllocation(uvBuffer);
         this.unbind();

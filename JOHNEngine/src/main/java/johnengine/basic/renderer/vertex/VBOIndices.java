@@ -2,7 +2,7 @@ package johnengine.basic.renderer.vertex;
 
 import java.nio.IntBuffer;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.renderer.asset.Mesh;
 
@@ -11,7 +11,7 @@ public final class VBOIndices extends AVBO<Mesh.Face[]> {
     public static final int SIZE = 3;
     
     public VBOIndices() {
-        super(GL30.GL_ELEMENT_ARRAY_BUFFER, SIZE);
+        super(GL46.GL_ELEMENT_ARRAY_BUFFER, SIZE);
     }
 
     
@@ -32,7 +32,7 @@ public final class VBOIndices extends AVBO<Mesh.Face[]> {
         
         indexBuffer.flip();
         
-        GL30.glBufferData(this.target, indexBuffer, GL30.GL_STATIC_DRAW);
+        GL46.glBufferData(this.target, indexBuffer, GL46.GL_STATIC_DRAW);
         
         this.freeAllocation(indexBuffer);
         this.unbind();

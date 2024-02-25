@@ -3,14 +3,14 @@ package johnengine.basic.renderer.vertex;
 import java.nio.FloatBuffer;
 
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 public final class VBOTangents extends AVBO<Vector3f[]> {
 
     public static final int SIZE = 3;
     
     public VBOTangents() {
-        super(GL30.GL_ARRAY_BUFFER, SIZE);
+        super(GL46.GL_ARRAY_BUFFER, SIZE);
     }
 
     
@@ -31,7 +31,7 @@ public final class VBOTangents extends AVBO<Vector3f[]> {
         
         tangentBuffer.flip();
         
-        GL30.glBufferData(this.target, tangentBuffer, GL30.GL_STATIC_DRAW);
+        GL46.glBufferData(this.target, tangentBuffer, GL46.GL_STATIC_DRAW);
         
         this.freeAllocation(tangentBuffer);
         this.unbind();

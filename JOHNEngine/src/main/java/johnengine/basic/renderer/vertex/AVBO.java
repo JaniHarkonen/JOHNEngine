@@ -4,7 +4,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.assets.IBindable;
@@ -30,19 +30,19 @@ public abstract class AVBO<S> implements IGeneratable, IBindable {
     
     @Override
     public boolean dispose() {
-        GL30.glDeleteBuffers(this.handle);
+        GL46.glDeleteBuffers(this.handle);
         return true;
     }
     
     @Override
     public boolean bind() {
-        GL30.glBindBuffer(this.target, this.handle);
+        GL46.glBindBuffer(this.target, this.handle);
         return true;
     }
     
     @Override
     public boolean unbind() {
-        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
         return true;
     }
     
@@ -78,6 +78,6 @@ public abstract class AVBO<S> implements IGeneratable, IBindable {
     }
     
     protected void genBuffers() {
-        this.handle = GL30.glGenBuffers();
+        this.handle = GL46.glGenBuffers();
     }
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
@@ -53,7 +53,6 @@ public class CachedVAORenderStrategy implements
     public static final int MAX_SPOT_LIGHT_COUNT = 5;
     
     private final IRenderer renderer;
-    //private final TimedCache<MeshGL, VAO> vaoCache;
     private final VAOCache vaoCache;
     private final ShaderProgram shaderProgram;
     private RenderBufferManager<RenderBuffer> renderBufferManager;
@@ -63,7 +62,6 @@ public class CachedVAORenderStrategy implements
     
     public CachedVAORenderStrategy(IRenderer renderer) {
         this.renderer = renderer;
-        //this.vaoCache = new TimedCache<>(DEFAULT_EXPIRATION_TIME * 1000);
         this.vaoCache = new VAOCache(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
@@ -83,10 +81,10 @@ public class CachedVAORenderStrategy implements
     public void prepare() {
         
             // Load shaders
-        Shader vertexShader = new Shader(GL30.GL_VERTEX_SHADER, "vertex-shader", true, null);
+        Shader vertexShader = new Shader(GL46.GL_VERTEX_SHADER, "vertex-shader", true, null);
         this.loadShader(vertexShader, "default.vert");
         
-        Shader fragmentShader = new Shader(GL30.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
+        Shader fragmentShader = new Shader(GL46.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
         this.loadShader(fragmentShader, "default.frag");
         
             // Add shaders
@@ -250,12 +248,12 @@ public class CachedVAORenderStrategy implements
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
             
-            GL30.glActiveTexture(GL30.GL_TEXTURE0);
+            GL46.glActiveTexture(GL46.GL_TEXTURE0);
             textureGraphics.bind();
             
             if( normalMap != null )
             {
-                GL30.glActiveTexture(GL30.GL_TEXTURE1);
+                GL46.glActiveTexture(GL46.GL_TEXTURE1);
                 ((TextureGL) normalMap.getGraphics()).bind();
             }
             
@@ -264,7 +262,7 @@ public class CachedVAORenderStrategy implements
             //VAO vao = this.fetchVAO(meshGraphics);
             VAO vao = this.vaoCache.fetchVAO(meshGraphics);
             vao.bind();
-            GL30.glDrawElements(GL30.GL_TRIANGLES, meshData.getVertexCount() * 3, GL30.GL_UNSIGNED_INT, 0);
+            GL46.glDrawElements(GL46.GL_TRIANGLES, meshData.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
         }
         
             // Post-render
@@ -272,7 +270,7 @@ public class CachedVAORenderStrategy implements
     }
     
     public void postRender() {
-        GL30.glBindVertexArray(0);
+        GL46.glBindVertexArray(0);
         this.shaderProgram.unbind();
         
             // Update cached VAOs and remove those that have been unused
@@ -281,29 +279,7 @@ public class CachedVAORenderStrategy implements
         //((UniformArray<SPointLight, UNIPointLight>) this.shaderProgram.getUniform("pointLight"))
         //.fill(() -> );
     }
-    /*
-    private VAO fetchVAO(MeshGL meshGraphics) {
-        VAO vao = this.vaoCache.get(meshGraphics);
-        
-            // VAO found from the cache and return it
-        if( vao != null )
-        return vao;
-        
-            // Generate a new VAO and cache it
-        VBOContainer vbos = meshGraphics.getData();
-        vao = (new VAO())
-        .addVBO(vbos.getVerticesVBO())
-        .addVBO(vbos.getNormalsVBO())
-        .addVBO(vbos.getTangentsVBO())
-        .addVBO(vbos.getBitangentsVBO())
-        .addVBO(vbos.getTextureCoordinatesVBO());
-        vao.setIndicesVBO(vbos.getIndicesVBO());
-        vao.generate();
-        
-        this.vaoCache.cacheItem(meshGraphics, vao);
-        return vao;
-    }
-    */
+    
     @Override
     public void dispose() {
         this.shaderProgram.dispose();

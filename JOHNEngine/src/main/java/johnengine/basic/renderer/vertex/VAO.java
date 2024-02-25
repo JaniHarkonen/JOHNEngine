@@ -3,7 +3,7 @@ package johnengine.basic.renderer.vertex;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGeneratable;
@@ -24,7 +24,7 @@ public class VAO implements IGeneratable, IBindable {
     
     @Override
     public boolean generate() {
-        this.handle = GL30.glGenVertexArrays();
+        this.handle = GL46.glGenVertexArrays();
         this.bind();
         
             // Bind all VBOs, except the one holding the indices
@@ -37,8 +37,8 @@ public class VAO implements IGeneratable, IBindable {
             
             vbo.bind();
             
-            GL30.glEnableVertexAttribArray(i);
-            GL30.glVertexAttribPointer(i, vbo.getSize(), GL30.GL_FLOAT, false, 0, 0);
+            GL46.glEnableVertexAttribArray(i);
+            GL46.glVertexAttribPointer(i, vbo.getSize(), GL46.GL_FLOAT, false, 0, 0);
             
             vbo.unbind();
         }
@@ -53,19 +53,19 @@ public class VAO implements IGeneratable, IBindable {
     
     @Override
     public boolean bind() {
-        GL30.glBindVertexArray(this.handle);
+        GL46.glBindVertexArray(this.handle);
         return true;
     }
     
     @Override
     public boolean unbind() {
-        GL30.glBindVertexArray(0);
+        GL46.glBindVertexArray(0);
         return true;
     }
     
     @Override
     public boolean dispose() {
-        GL30.glDeleteVertexArrays(this.handle);
+        GL46.glDeleteVertexArrays(this.handle);
         this.handle = 0;
         this.vbos = null;
         

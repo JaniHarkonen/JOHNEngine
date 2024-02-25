@@ -1,6 +1,5 @@
 package johnengine.basic.renderer.asset;
 
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IGeneratable;
@@ -42,20 +41,20 @@ public final class Shader extends TextAsset implements IGeneratable {
         if( this.asset == null )
         return false;
         
-        this.handle = GL30.glCreateShader(this.type);
+        this.handle = GL46.glCreateShader(this.type);
         GL46.glShaderSource(this.handle, this.asset);
         GL46.glCompileShader(this.handle);
         
             // Failed to compile
-        if( GL30.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL30.GL_TRUE )
+        if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE )
         {
-            DebugUtils.log(this, GL30.glGetShaderInfoLog(this.handle));
+            DebugUtils.log(this, GL46.glGetShaderInfoLog(this.handle));
             //throw new ShaderException("Failed to compile a shader '%shader'!", this.name);
             throw (new ShaderException(
                 "Failed to compile shader '%shader'!\n" +
                 "Reason: %reason",
                 this.name,
-                GL30.glGetShaderInfoLog(this.handle)
+                GL46.glGetShaderInfoLog(this.handle)
             ));
         }
         
@@ -75,17 +74,17 @@ public final class Shader extends TextAsset implements IGeneratable {
             return false;
         }
         
-        GL30.glAttachShader(shaderProgram.getHandle(), this.handle);
+        GL46.glAttachShader(shaderProgram.getHandle(), this.handle);
         return true;
     }
     
     public void detachFrom(ShaderProgram shaderProgram) {
-        GL30.glDetachShader(shaderProgram.getHandle(), this.handle);
+        GL46.glDetachShader(shaderProgram.getHandle(), this.handle);
     }
     
     @Override
     public boolean dispose() {
-        GL30.glDeleteShader(this.handle);
+        GL46.glDeleteShader(this.handle);
         this.handle = 0;
         
         return true;

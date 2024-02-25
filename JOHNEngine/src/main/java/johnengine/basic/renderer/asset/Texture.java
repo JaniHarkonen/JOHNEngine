@@ -3,7 +3,6 @@ package johnengine.basic.renderer.asset;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -98,7 +97,6 @@ public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
     
     /********************** Texture-class **********************/
     
-    public static final int TARGET = GL30.GL_TEXTURE_2D;
     public static Texture DEFAULT_INSTANCE;
     
     static {

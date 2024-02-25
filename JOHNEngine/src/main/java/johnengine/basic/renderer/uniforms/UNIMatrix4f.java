@@ -1,7 +1,7 @@
 package johnengine.basic.renderer.uniforms;
 
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
 public class UNIMatrix4f extends AUniform<Matrix4f> {
@@ -18,7 +18,7 @@ public class UNIMatrix4f extends AUniform<Matrix4f> {
     public void set() {
         try( MemoryStack stack = MemoryStack.stackPush() )
         {
-            GL30.glUniformMatrix4fv(this.location, false, this.value.get(stack.mallocFloat(16)));
+            GL46.glUniformMatrix4fv(this.location, false, this.value.get(stack.mallocFloat(16)));
         }
     }
     

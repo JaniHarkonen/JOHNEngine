@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGeneratable;
@@ -29,12 +29,12 @@ public class ShaderProgram implements IGeneratable, IBindable {
         if( this.handle > 0 )
         return false;
         
-        this.handle = GL30.glCreateProgram();
+        this.handle = GL46.glCreateProgram();
         
         for( Shader shader : this.shaders )
         shader.generateAndAttach(this);
         
-        GL30.glLinkProgram(this.handle);
+        GL46.glLinkProgram(this.handle);
         
         for( Shader shader : this.shaders )
         shader.detachFrom(this);
@@ -44,20 +44,20 @@ public class ShaderProgram implements IGeneratable, IBindable {
     
     @Override
     public boolean bind() {
-        GL30.glUseProgram(this.handle);
+        GL46.glUseProgram(this.handle);
         return true;
     }
     
     @Override
     public boolean unbind() {
-        GL30.glUseProgram(0);
+        GL46.glUseProgram(0);
         return true;
     }
     
     @Override
     public boolean dispose() {
         this.unbind();
-        GL30.glDeleteProgram(this.handle);
+        GL46.glDeleteProgram(this.handle);
         this.uniforms = null;
         this.shaders = null;
         this.handle = 0;

@@ -2,7 +2,7 @@ package johnengine.basic.renderer.strgui;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.textasset.TextAsset;
@@ -54,10 +54,10 @@ public class GUIRenderStrategy implements
 
     @Override
     public void prepare() {
-        Shader vertexShader = new Shader(GL30.GL_VERTEX_SHADER, "vertex-shader", true, null);
+        Shader vertexShader = new Shader(GL46.GL_VERTEX_SHADER, "vertex-shader", true, null);
         this.loadShader(vertexShader, "gui.vert");
         
-        Shader fragmentShader = new Shader(GL30.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
+        Shader fragmentShader = new Shader(GL46.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
         this.loadShader(fragmentShader, "gui.frag");
         
             // Add shaders and generate shader program
@@ -101,8 +101,8 @@ public class GUIRenderStrategy implements
 
     @Override
     public void render() {
-        GL30.glEnable(GL30.GL_BLEND);
-        GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+        GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
         
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
         
@@ -140,7 +140,7 @@ public class GUIRenderStrategy implements
                 .set(new Vector3f(i * 16, 0.0f, 0.0f));
                 
                     // Bind texture
-                GL30.glActiveTexture(GL30.GL_TEXTURE0);
+                GL46.glActiveTexture(GL46.GL_TEXTURE0);
                 TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
                 textureGL.bind();
                 
@@ -149,10 +149,10 @@ public class GUIRenderStrategy implements
                 VAO vao = this.vaoCache.fetchVAO(meshGL);
                 vao.bind();
                 
-                GL30.glDrawElements(
-                    GL30.GL_TRIANGLES, 
+                GL46.glDrawElements(
+                    GL46.GL_TRIANGLES, 
                     mesh.getData().getVertexCount() * 3, 
-                    GL30.GL_UNSIGNED_INT, 
+                    GL46.GL_UNSIGNED_INT, 
                     0
                 );
             }
