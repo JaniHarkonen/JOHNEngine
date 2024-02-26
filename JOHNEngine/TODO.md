@@ -66,3 +66,4 @@ on any specific library
 	-- at least RenderUnits shouldn't have private fields, rather, their fields 
 	should be package private
 - rename 'cells' to 'glyphs' in Font 
+- switch from Asset.Loader to Asset.LoadTask

@@ -12,13 +12,16 @@ public abstract class ALauncherFramework {
 
     public ALauncherFramework() {
         this.engineConfiguration = new ArrayList<>();
+    }
+
+    
+    public void launch() {
         this.configureEngine();
         Engine.run(
             this.game,
             this.engineConfiguration.toArray(new IEngineComponent[this.engineConfiguration.size()])
         );
     }
-
 
     protected void setupComponent(IEngineComponent component) {
         this.engineConfiguration.add(component);
