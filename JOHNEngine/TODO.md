@@ -25,6 +25,9 @@ to render (using OpenGL-commands) after window.stop() has been called
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
 of the game world
 - ARequest should be IRequest due to no internal state
+- cursor should not lock to center as this causes weird issues when calculating 
+mouse delta on low frame rates
+	-> use OpenGL's disable cursor
 
 - add default material
 - see if Material can be refactored into binding all its textures through a method

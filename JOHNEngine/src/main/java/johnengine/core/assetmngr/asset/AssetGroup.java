@@ -41,15 +41,15 @@ public class AssetGroup implements IAsset {
     }
     
     public AssetGroup removeAsset(String assetName) {
-        if( assetName != null )
+        if( assetName == null )
+        return this;
+        
+        for( int i = 0; i < this.assets.size(); i++ )
         {
-            for( int i = 0; i < this.assets.size(); i++ )
+            if( this.assets.get(i).equals(assetName) )
             {
-                if( this.assets.get(i) == assetName )
-                {
-                    this.assets.remove(i);
-                    break;
-                }
+                this.assets.remove(i);
+                break;
             }
         }
         

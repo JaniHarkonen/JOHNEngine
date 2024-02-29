@@ -333,6 +333,9 @@ public final class MouseKeyboardInputGL implements IInput {
         this.updatingState.takeSnapshot(this.snapshotState);
     }
     
+    
+    /***************************** LISTENERS ****************************/
+    
     private void keyListener(int key, int action) {
         if( action != GLFW.GLFW_REPEAT )
         this.setStateKey(this.updatingState, key, action + 1);

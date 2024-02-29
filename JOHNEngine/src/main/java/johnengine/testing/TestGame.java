@@ -58,14 +58,14 @@ public class TestGame extends AGame {
         RendererGL renderer = this.window.getRenderer();
         renderer.setResourceRootFolder((new File("src/main/resources/test")).getAbsolutePath());
         
-        //this.window
+        this.window
         //.hideCursor();
-        //.disableVSync();
+        .disableVSync();
         //.resize(1000, 1000);
         
         //this.window.enterFullscreen();
         //this.window.resize(1000, 1000);
-        //this.engine.setTickRate(24);
+        this.engine.setTickRate(24);
         this.window.lockCursorToCenter();
         
         AssetManager am = this.assetManager;
