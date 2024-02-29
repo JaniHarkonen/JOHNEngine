@@ -10,8 +10,8 @@ import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.threadable.IThreadable;
-import johnengine.core.winframe.IWindow;
-import johnengine.core.winframe.WindowRequestManager;
+import johnengine.core.window.IWindow;
+import johnengine.core.window.WindowRequestManager;
 
 public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 {

@@ -6,7 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.opengl.WindowGL;
 import johnengine.core.input.IInput;
-import johnengine.core.winframe.IWindow;
+import johnengine.core.window.IWindow;
 
 public final class MouseKeyboardInputGL implements IInput {
     

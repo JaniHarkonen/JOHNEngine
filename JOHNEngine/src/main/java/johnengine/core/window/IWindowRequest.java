@@ -1,4 +1,4 @@
-package johnengine.core.winframe;
+package johnengine.core.window;
 
 public interface IWindowRequest {
 

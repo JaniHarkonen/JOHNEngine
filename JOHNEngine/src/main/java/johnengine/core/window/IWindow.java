@@ -1,4 +1,4 @@
-package johnengine.core.winframe;
+package johnengine.core.window;
 
 import java.awt.Point;
 import java.util.HashMap;

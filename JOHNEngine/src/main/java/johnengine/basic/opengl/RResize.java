@@ -4,9 +4,9 @@ import java.awt.Point;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.core.winframe.IWindow;
-import johnengine.core.winframe.IWindowRequest;
-import johnengine.core.winframe.IWindow.Properties;
+import johnengine.core.window.IWindow;
+import johnengine.core.window.IWindowRequest;
+import johnengine.core.window.IWindow.Properties;
 
 public class RResize implements IWindowRequest {
 

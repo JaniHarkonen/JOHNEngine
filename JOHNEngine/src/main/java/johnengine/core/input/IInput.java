@@ -1,6 +1,6 @@
 package johnengine.core.input;
 
-import johnengine.core.winframe.IWindow;
+import johnengine.core.window.IWindow;
 
 public interface IInput {
 

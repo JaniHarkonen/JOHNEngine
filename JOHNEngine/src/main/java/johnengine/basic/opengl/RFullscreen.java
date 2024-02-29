@@ -1,8 +1,8 @@
 package johnengine.basic.opengl;
 
-import johnengine.core.winframe.IWindow;
-import johnengine.core.winframe.IWindowRequest;
-import johnengine.core.winframe.IWindow.Properties;
+import johnengine.core.window.IWindow;
+import johnengine.core.window.IWindowRequest;
+import johnengine.core.window.IWindow.Properties;
 
 public class RFullscreen implements IWindowRequest {
 

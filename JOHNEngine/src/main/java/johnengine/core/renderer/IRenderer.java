@@ -1,6 +1,6 @@
 package johnengine.core.renderer;
 
-import johnengine.core.winframe.IWindow;
+import johnengine.core.window.IWindow;
 
 public interface IRenderer {
 
