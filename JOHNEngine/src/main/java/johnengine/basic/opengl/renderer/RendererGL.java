@@ -16,7 +16,6 @@ import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderStrategy;
 import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
-import johnengine.core.winframe.AWindowFramework;
 
 public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
@@ -28,7 +27,7 @@ public class RendererGL implements IRenderer {
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     private String resourceRootFolder;
     
-    public RendererGL(AWindowFramework hostWindow, IRenderStrategy renderStrategy) {
+    public RendererGL(WindowGL hostWindow, IRenderStrategy renderStrategy) {
         this.hostWindow = (WindowGL) hostWindow;
         //this.activeWorld = null;
         //this.renderStrategy = renderStrategy;
@@ -39,7 +38,7 @@ public class RendererGL implements IRenderer {
         this.resourceRootFolder = "";
     }
     
-    public RendererGL(AWindowFramework hostWindow) {
+    public RendererGL(WindowGL hostWindow) {
         this(hostWindow, null);
         this.addRenderingPass("scene-renderer", new CachedVAORenderStrategy(this));
         this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
@@ -121,7 +120,7 @@ public class RendererGL implements IRenderer {
     }
 
     @Override
-    public AWindowFramework getWindow() {
+    public WindowGL getWindow() {
         return this.hostWindow;
     }
     

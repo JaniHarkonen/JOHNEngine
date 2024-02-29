@@ -1,10 +1,8 @@
 ## TODO
 - handle scrolling in Input
 ???? get information about the monitor from window
-??? should ABasicWindowRequests be implemented using lambdas instead???
 - remove cringe
 ???? new exception class??
-- consider what renderer functionalities can be defined in ARenderer
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
 	having opt-in components
@@ -20,7 +18,6 @@
 	iteratively and render them
 	-- ARenderAssets should have bind()- and generate()-methods instead of a
 	render()-method (they should not implement IDrawable)
-- consider if RCursorLockToCenter is needed
 - OpenGL crashes when the window is closed because the renderer still continues
 to render (using OpenGL-commands) after window.stop() has been called
 	-> GLFWterminate() is called upon window.stop()
@@ -34,7 +31,7 @@ of the game world
 - Input classes should probably convert mouse coordinates into floats instead of 
 deferring this to the controllers
 - reconsider the way that Input is being handled
-	1. is AInput needed, what about IInput (probably the ladder)
+	x. is AInput needed, what about IInput (probably the ladder)
 	2. how would gamepad controllers be implemented?
 	3. what changes as opposed to GLFW mouse and keyboard input?
 	4. can this be generalized to the way that the input is being handled currently?

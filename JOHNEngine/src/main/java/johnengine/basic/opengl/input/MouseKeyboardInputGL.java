@@ -6,7 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.opengl.WindowGL;
 import johnengine.core.input.IInput;
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.winframe.IWindow;
 
 public final class MouseKeyboardInputGL implements IInput {
     
@@ -231,7 +231,7 @@ public final class MouseKeyboardInputGL implements IInput {
                 this.buttonMap[i] = INPUT_NO_ACTION;
             }
             
-            AWindowFramework window = this.input.getWindow();
+            IWindow window = this.input.getWindow();
             
             if( window.isWindowOpen() )
             {
@@ -372,7 +372,7 @@ public final class MouseKeyboardInputGL implements IInput {
 
 
     @Override
-    public AWindowFramework getWindow() {
+    public WindowGL getWindow() {
         return this.hostWindow;
     }
 }

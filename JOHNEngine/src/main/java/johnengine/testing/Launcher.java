@@ -30,6 +30,7 @@ public final class Launcher extends ALauncherFramework {
         this.window.start();
     }
 
+    
     public static void main(String[] args) {
         Launcher launcher = new Launcher();
         launcher.launch();

@@ -5,7 +5,7 @@ import org.joml.Matrix4f;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.components.geometry.CProjection;
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.winframe.IWindow;
 
 public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
 
@@ -16,7 +16,7 @@ public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
     
     @Override
     public void execute(JCamera instance) {
-        AWindowFramework window = strategy.getRenderer().getWindow();
+        IWindow window = strategy.getRenderer().getWindow();
         CProjection cameraProjection = instance.getProjection();
         cameraProjection.setViewDimensions(window.getWidth(), window.getHeight());
         cameraProjection.calculate();

@@ -1,6 +1,6 @@
 package johnengine.core.input;
 
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.winframe.IWindow;
 
 public interface IInput {
 
@@ -22,5 +22,5 @@ public interface IInput {
     
     public IInput.State getState();
     
-    public AWindowFramework getWindow();
+    public IWindow getWindow();
 }
