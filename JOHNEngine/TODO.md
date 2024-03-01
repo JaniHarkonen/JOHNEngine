@@ -28,6 +28,7 @@ of the game world
 - cursor should not lock to center as this causes weird issues when calculating 
 mouse delta on low frame rates
 	-> use OpenGL's disable cursor
+- RFullscreen doesn't work yet
 
 - add default material
 - see if Material can be refactored into binding all its textures through a method

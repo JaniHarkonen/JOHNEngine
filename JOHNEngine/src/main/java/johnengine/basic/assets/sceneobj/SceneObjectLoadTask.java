@@ -9,11 +9,11 @@ import org.lwjgl.assimp.Assimp;
 
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.opengl.renderer.asset.Mesh;
-import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.core.assetmngr.asset.IAsset;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
-public class SceneObjectLoader extends AAssetLoader {
+public class SceneObjectLoadTask extends ALoadTask {
     
     public static final int DEFAULT_IMPORT_FLAGS = 
         Assimp.aiProcess_JoinIdenticalVertices |
@@ -28,7 +28,7 @@ public class SceneObjectLoader extends AAssetLoader {
     private int importFlags;
     private ILoaderMonitor<IRendererAsset> monitor;
 
-    public SceneObjectLoader(String path) {
+    public SceneObjectLoadTask(String path) {
         super(path);
         this.expectedMeshes = new ArrayList<>();
         //this.expectedAnimations = new ArrayList<>();
@@ -36,7 +36,7 @@ public class SceneObjectLoader extends AAssetLoader {
         this.monitor = null;
     }
     
-    public SceneObjectLoader() {
+    public SceneObjectLoadTask() {
         this(null);
     }
     

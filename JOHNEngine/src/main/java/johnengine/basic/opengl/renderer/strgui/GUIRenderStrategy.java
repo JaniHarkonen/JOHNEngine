@@ -77,10 +77,10 @@ public class GUIRenderStrategy implements
     }
     
     private void loadShader(Shader targetShader, String filename) {
-        TextAsset.Loader loader = new TextAsset.Loader();
-        loader.setTarget(targetShader);
-        loader.setPath(this.renderer.getResourceRootFolder() + "shaders/" + filename);
-        loader.load();
+        TextAsset.LoadTask loadTask = new TextAsset.LoadTask();
+        loadTask.setTarget(targetShader);
+        loadTask.setPath(this.renderer.getResourceRootFolder() + "shaders/" + filename);
+        loadTask.load();
     }
 
     @Override

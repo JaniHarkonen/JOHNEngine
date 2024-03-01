@@ -142,12 +142,12 @@ public class CachedVAORenderStrategy implements
     }
     
     private void loadShader(Shader targetShader, String filename) {
-        TextAsset.Loader loader = new TextAsset.Loader();
-        loader.setTarget(targetShader);
-        loader.setPath(
+        TextAsset.LoadTask loadTask = new TextAsset.LoadTask();
+        loadTask.setTarget(targetShader);
+        loadTask.setPath(
             "C:\\Users\\User\\git\\JOHNEngine\\JOHNEngine\\src\\main\\resources\\test\\shaders\\" + filename
         );
-        loader.load();
+        loadTask.load();
     }
     
     @Override

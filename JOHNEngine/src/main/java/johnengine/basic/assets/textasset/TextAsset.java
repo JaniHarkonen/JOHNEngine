@@ -4,22 +4,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import johnengine.core.assetmngr.asset.AAsset;
-import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.testing.DebugUtils;
 
 public class TextAsset extends AAsset<String> {
 
-    public static class Loader extends AAssetLoader {
+    public static class LoadTask extends ALoadTask {
         protected String text;
         protected TextAsset targetAsset;
         
-        public Loader(String path, TextAsset targetAsset) {
+        public LoadTask(String path, TextAsset targetAsset) {
             super(path);
             this.text = "";
             this.targetAsset = targetAsset;
         }
         
-        public Loader() {
+        public LoadTask() {
             this(null, null);
         }
         

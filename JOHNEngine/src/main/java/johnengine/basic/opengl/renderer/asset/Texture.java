@@ -9,18 +9,18 @@ import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.assets.ITexture;
-import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
 public class Texture extends ARendererAsset<ITexture<?>, Texture.Data> {
 
-    /********************** Loader-class **********************/
+    /********************** LoadTask-class **********************/
     
-    public static class Loader extends AAssetLoader {
+    public static class LoadTask extends ALoadTask {
         private Texture targetAsset;
         private ILoaderMonitor<IRendererAsset> monitor;
         
-        public Loader(Texture targetAsset) {
+        public LoadTask(Texture targetAsset) {
             this.targetAsset = targetAsset;
             this.monitor = null;
         }

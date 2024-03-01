@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.sceneobj.Material;
-import johnengine.basic.assets.sceneobj.SceneObjectLoader;
+import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JGUI;
 import johnengine.basic.game.JWorld;
@@ -191,18 +191,18 @@ public class TestGame extends AGame {
     
     private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
         am.declareAsset(mesh);
-        SceneObjectLoader objLoader = new SceneObjectLoader();
-        objLoader.expectMesh(mesh);
-        objLoader.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
-        am.loadFrom(relativePath, objLoader);
+        SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
+        objLoadTask.expectMesh(mesh);
+        objLoadTask.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        Texture.Loader textureLoader = new Texture.Loader(texture);
-        textureLoader.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
-        am.loadFrom(relativePath, textureLoader);
+        Texture.LoadTask textureLoadTask = new Texture.LoadTask(texture);
+        textureLoadTask.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        am.scheduleFrom(relativePath, textureLoadTask);
     }
 
     @Override

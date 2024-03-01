@@ -1,6 +1,6 @@
 package johnengine.core.assetmngr.asset;
 
-public abstract class AAssetLoader {
+public abstract class ALoadTask {
     public static final int STATE_INACTIVE = 1;
     public static final int STATE_QUEUED = 2;
     public static final int STATE_LOADING = 3;
@@ -9,12 +9,12 @@ public abstract class AAssetLoader {
     protected int status;
     protected String path;
     
-    protected AAssetLoader(String path) {
+    protected ALoadTask(String path) {
         this.path = path;
         this.reset();
     }
     
-    protected AAssetLoader() {
+    protected ALoadTask() {
         this(null);
     }
     
