@@ -17,8 +17,8 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 {
     
     private MouseKeyboardInputGL input;
-    private IWindow.Properties properties;
     private WindowRequestManager requestManager;
+    private IWindow.Properties properties;
     private RendererGL renderer;
     private long primaryMonitorID;
     private long windowID;
@@ -35,11 +35,10 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     }*/
     
     public WindowGL() {
-        this.properties = new IWindow.Properties();
-        this.requestManager = new WindowRequestManager();
-        
         this.reset();
         this.input = new MouseKeyboardInputGL(this);
+        this.requestManager = new WindowRequestManager();
+        this.properties = new IWindow.Properties();
         this.primaryMonitorID = 0;
         this.windowID = 0;
     }

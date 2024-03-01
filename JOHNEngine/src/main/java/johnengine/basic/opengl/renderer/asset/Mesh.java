@@ -14,6 +14,9 @@ import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.sceneobj.Material;
 
 public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
+    
+    /********************** Face-class **********************/
+    
     public static class Face {
         public static final int INDICES_PER_FACE = 3;
         
@@ -28,6 +31,9 @@ public class Mesh extends ARendererAsset<IMesh<?>, Mesh.Data> {
             return this.indices[position];
         }
     }
+    
+    
+    /********************** Data-class **********************/
     
     public static class Data {
         private Vector3f[] vertices;
