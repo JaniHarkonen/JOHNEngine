@@ -5,14 +5,16 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
-import johnengine.basic.opengl.renderer.RendererGL;
+import johnengine.basic.assets.IGraphicsAsset;
+import johnengine.basic.assets.IMesh;
+import johnengine.basic.assets.IRendererAsset;
 import johnengine.basic.opengl.renderer.vao.AVBO;
 import johnengine.basic.opengl.renderer.vao.VBOIndices;
 import johnengine.basic.opengl.renderer.vao.VBOType;
 import johnengine.basic.opengl.renderer.vao.VBOVector2f;
 import johnengine.basic.opengl.renderer.vao.VBOVector3f;
 
-public class MeshGL implements IGraphicsStrategyGL {
+public class MeshGL2 implements IMesh<MeshGL2.VBOContainer> {
     
     /*********************** VBOContainer-class ***********************/
     
@@ -52,59 +54,71 @@ public class MeshGL implements IGraphicsStrategyGL {
     
     /*********************** MeshGL-class ***********************/
     
-    public static void generateDefault(RendererGL renderer) {
-        MeshGL meshGraphics = new MeshGL(renderer, Mesh.DEFAULT_INSTANCE);
+    public static void generateDefault() {
+        MeshGL2 meshGraphics = new MeshGL2(Mesh.DEFAULT_INSTANCE);
         meshGraphics.generate();
     }
     
     
     /*********************** Class body ***********************/
     
-    private final RendererGL renderer;
-    private Mesh mesh;
+    private final Mesh mesh;
     private VBOContainer vbos;
     
-    public MeshGL(RendererGL renderer, Mesh mesh) {
-        this.mesh = mesh;
-        this.renderer = renderer;
+    public MeshGL2(IRendererAsset mesh) {
+        this.mesh = (Mesh) mesh;
+        this.mesh.graphics = this;
         this.vbos = null;
     }
     
-    public MeshGL(RendererGL renderer) {
-        this(renderer, null);
+    public MeshGL2() {
+        this.mesh = null;
+        this.vbos = null;
     }
     
     
     @Override
-    public void loaded() {
-        this.renderer.getGraphicsAssetProcessor().generateGraphics(this);
+    public IGraphicsAsset<MeshGL2.VBOContainer> createInstance(IRendererAsset mesh) {
+        return new MeshGL2(mesh);
     }
     
     @Override
     public boolean generate() {
-        Mesh.Data data = this.mesh.getUnsafe();
+        Mesh.Data data = this.mesh.getDataDirect();
         
             // Generate vertices VBO
+        //VBOVertices vboVertices = new VBOVertices();
+        //vboVertices.generate(data.getVertices());
         VBOVector3f vboVertices = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboVertices.generate(data.getVertices());
         
             // Generate normals VBO
+        //VBONormals vboNormals = new VBONormals();
+        //vboNormals.generate(data.getNormals());
         VBOVector3f vboNormals = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboNormals.generate(data.getNormals());
         
             // Generate UVs VBO
+        //VBOTextureCoordinates vboUVs = new VBOTextureCoordinates();
+        //vboUVs.generate(data.getUVs());
         VBOVector2f vboUVs = new VBOVector2f(GL46.GL_ARRAY_BUFFER);
         vboUVs.generate(data.getUVs());
         
             // Generate indices VBO
+        //VBOIndices vboIndices = new VBOIndices();
+        //vboIndices.generate(data.getFaces());
         VBOIndices vboIndices = new VBOIndices();
         vboIndices.generate(data.getFaces());
         
             // Generate tangents VBO
+        //VBOTangents vboTangents = new VBOTangents();
+        //vboTangents.generate(data.getTangents());
         VBOVector3f vboTangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboTangents.generate(data.getTangents());
 
             // Generate tangents VBO
+        //VBOBitangents vboBitangents = new VBOBitangents();
+        //vboBitangents.generate(data.getTangents());
         VBOVector3f vboBitangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboBitangents.generate(data.getBitangents());
         
@@ -117,14 +131,7 @@ public class MeshGL implements IGraphicsStrategyGL {
         vbos.setVBO(VBOType.BITANGENTS, vboBitangents);
         
         this.vbos = vbos;
-        this.mesh.setGraphics(this);
-        
         return true;
-    }
-
-    @Override
-    public void deload() {
-        this.renderer.getGraphicsAssetProcessor().disposeGraphics(this);
     }
     
     @Override
@@ -133,12 +140,12 @@ public class MeshGL implements IGraphicsStrategyGL {
     }
     
     
-    /*********************** GETTERS ***********************/
-    
-    public VBOContainer getVBOs() {
+    @Override
+    public VBOContainer getData() {
         return this.vbos;
     }
     
+    @Override
     public Mesh getMesh() {
         return this.mesh;
     }

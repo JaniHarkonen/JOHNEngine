@@ -232,7 +232,7 @@ public class CachedVAORenderStrategy implements
             
                 // Get VAO and mesh data
             Mesh mesh = unit.getMesh();
-            Mesh.Data meshData = unit.getMesh().getData();
+            Mesh.Data meshData = unit.getMesh().get();
             
                 // Create the material struct
             Material material = mesh.getMaterial();
@@ -259,7 +259,6 @@ public class CachedVAORenderStrategy implements
             
                 // Bind mesh and issue draw call
             MeshGL meshGraphics = (MeshGL) mesh.getGraphics();
-            //VAO vao = this.fetchVAO(meshGraphics);
             VAO vao = this.vaoCache.fetchVAO(meshGraphics);
             vao.bind();
             GL46.glDrawElements(GL46.GL_TRIANGLES, meshData.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);

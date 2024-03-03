@@ -10,11 +10,10 @@ import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
-import johnengine.basic.assets.IGraphicsStrategy;
+import johnengine.basic.assets.IMesh;
 import johnengine.basic.assets.sceneobj.Material;
-import johnengine.core.assetmngr.asset.AAsset;
 
-public class Mesh extends AAsset<Mesh.Data> {
+public class Mesh2 extends ARendererAsset<IMesh<?>, Mesh2.Data> {
     
     /********************** Face-class **********************/
     
@@ -109,10 +108,11 @@ public class Mesh extends AAsset<Mesh.Data> {
     
     /********************** Mesh-class **********************/
     
-    public static Mesh DEFAULT_INSTANCE;
+    public static Mesh2 DEFAULT_INSTANCE;
     
     static {
-        Mesh.Data asset = new Mesh.Data(
+        DEFAULT_INSTANCE = new Mesh2("default-mesh", true);
+        DEFAULT_INSTANCE.data = new Mesh2.Data(
                 // Vertices
             new Vector3f[] {
                 new Vector3f(-0.5f, 0.5f, -1.0f),        // top left
@@ -129,18 +129,16 @@ public class Mesh extends AAsset<Mesh.Data> {
                 new Vector2f(1.0f, 1.0f),
             }, 
                 // Faces
-            new Mesh.Face[] {
-                new Mesh.Face(new int[] {0, 1, 3}),
-                new Mesh.Face(new int[] {3, 1, 2})
+            new Mesh2.Face[] {
+                new Mesh2.Face(new int[] {0, 1, 3}),
+                new Mesh2.Face(new int[] {3, 1, 2})
             },
             new Vector3f[0],        // FIX THIS
             new Vector3f[0]         // FIX THIS
         );
-        
-        DEFAULT_INSTANCE = new Mesh("default-mesh", true, asset);
     }
     
-    public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
+    public static void populateMeshWithAIMesh(Mesh2 dest, AIMesh src) {
         if( dest == null || src == null )
         return;
         
@@ -172,7 +170,7 @@ public class Mesh extends AAsset<Mesh.Data> {
         }
         
             // Populate
-        dest.asset = new Data(
+        dest.data = new Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
             uvs,                                             // UVs
@@ -182,8 +180,10 @@ public class Mesh extends AAsset<Mesh.Data> {
         );
     }
     
-    public static Mesh createMesh(String name, Mesh.Data meshData) {
-        return new Mesh(name, false, meshData);
+    public static Mesh2 createMesh(String name, Mesh2.Data meshData) {
+        Mesh2 mesh = new Mesh2(name);
+        mesh.data = meshData;
+        return mesh;
     }
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {
@@ -205,53 +205,30 @@ public class Mesh extends AAsset<Mesh.Data> {
     /********************** Class body **********************/
     
     private Material material;
-    private IGraphicsStrategy graphics;
     
-    public Mesh(String name, boolean isPersistent, Mesh.Data preloadedData) {
-        super(name, isPersistent, preloadedData);
+    public Mesh2(String name, boolean isPersistent) {
+        super(name, isPersistent);
         this.material = null;
-        this.graphics = null;
     }
     
-    public Mesh(String name) {
-        this(name, false, DEFAULT_INSTANCE.asset);
-    }
-
-    
-    @Override
-    protected void deloadImpl() {
-        this.graphics.deload();
+    public Mesh2(String name) {
+        this(name, false);
     }
 
-    
-    /********************** SETTERS **********************/
-    
+
     public void setMaterial(Material material) {
         this.material = material;
     }
     
-    public void setGraphics(IGraphicsStrategy graphics) {
-        this.graphics = graphics;
-    }
-    
-    
-    /********************** GETTERS **********************/
     
     @Override
-    public Mesh.Data getDefault() {
-        return DEFAULT_INSTANCE.asset;
+    public Mesh2.Data getDefault() {
+        return DEFAULT_INSTANCE.data;
     }
     
-    public IGraphicsStrategy getDefaultGraphics() {
+    @Override
+    public IMesh<?> getDefaultGraphics() {
         return DEFAULT_INSTANCE.graphics;
-    }
-    
-    public Mesh.Data getUnsafe() {
-        return this.asset;
-    }
-    
-    public IGraphicsStrategy getGraphics() {
-        return this.graphics;
     }
     
     public Material getMaterial() {

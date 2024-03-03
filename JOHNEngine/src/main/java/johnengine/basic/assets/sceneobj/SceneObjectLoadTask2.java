@@ -10,18 +10,9 @@ import org.lwjgl.assimp.Assimp;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.opengl.renderer.asset.Mesh;
 import johnengine.core.assetmngr.asset.ALoadTask;
+import johnengine.core.assetmngr.asset.IAsset;
 
-public class SceneObjectLoadTask extends ALoadTask {
-    
-    private class ExpectedMesh {
-        public final Mesh mesh;
-        public final IGraphicsStrategy graphicsStrategy;
-        
-        private ExpectedMesh(Mesh mesh, IGraphicsStrategy graphicsStrategy) {
-            this.mesh = mesh;
-            this.graphicsStrategy = graphicsStrategy;
-        }
-    }
+public class SceneObjectLoadTask2 extends ALoadTask {
     
     public static final int DEFAULT_IMPORT_FLAGS = 
         Assimp.aiProcess_JoinIdenticalVertices |
@@ -30,20 +21,24 @@ public class SceneObjectLoadTask extends ALoadTask {
         Assimp.aiProcess_LimitBoneWeights |
         Assimp.aiProcess_CalcTangentSpace;
     
-    private final List<ExpectedMesh> expectedMeshes;
+    private final IGraphicsStrategy graphics;
+    private final List<Mesh> expectedMeshes;
     //private final List<Animation> expectedAnimations;
     
     private int importFlags;
+    //private ILoaderMonitor<IRendererAsset> monitor;
 
-    public SceneObjectLoadTask(String path) {
+    public SceneObjectLoadTask2(IGraphicsStrategy graphics, String path) {
         super(path);
+        this.graphics = graphics;
         this.expectedMeshes = new ArrayList<>();
         //this.expectedAnimations = new ArrayList<>();
         this.importFlags = DEFAULT_IMPORT_FLAGS;
+        //this.monitor = null;
     }
     
-    public SceneObjectLoadTask() {
-        this(null);
+    public SceneObjectLoadTask2(IGraphicsStrategy graphics) {
+        this(graphics, null);
     }
     
     
@@ -56,10 +51,12 @@ public class SceneObjectLoadTask extends ALoadTask {
         s = Math.min(this.expectedMeshes.size(), scene.mNumMeshes());
         for( int i = 0; i < s; i++ )
         {
-            ExpectedMesh expectedMesh = this.expectedMeshes.get(i);
+            Mesh expectedMesh = this.expectedMeshes.get(i);
             AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(i));
-            Mesh.populateMeshWithAIMesh(expectedMesh.mesh, aiMesh);
-            expectedMesh.graphicsStrategy.loaded();
+            Mesh.populateMeshWithAIMesh(expectedMesh, aiMesh);
+            this.graphics.loaded();
+            //if( this.monitor != null )
+            //this.monitor.assetLoaded(expectedMesh);
         }
         
             // Extract animations
@@ -70,11 +67,25 @@ public class SceneObjectLoadTask extends ALoadTask {
         Assimp.aiReleaseImport(scene);
     }
     
-    public void expectMesh(Mesh mesh, IGraphicsStrategy graphicsStrategy) {
-        this.expectedMeshes.add(new ExpectedMesh(mesh, graphicsStrategy));
+    
+    private <T extends IAsset> void expect(T asset, List<T> list) {
+        list.add(asset);
     }
+    
+    public void expectMesh(Mesh mesh) {
+        this.expect(mesh, this.expectedMeshes);
+    }
+    
+    /*public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
+        this.monitor = monitor;
+    }*/
     
     public void setImportFlags(int importFlags) {
         this.importFlags = importFlags;
     }
+    
+    /*
+    public void expectAnimation(Animation mesh) {
+        this.expect(mesh, this.expectedAnimations);
+    }*/
 }

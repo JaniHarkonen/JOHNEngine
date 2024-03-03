@@ -3,43 +3,41 @@ package johnengine.basic.opengl.renderer.asset;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
-import johnengine.basic.assets.IGraphicsAsset;
-import johnengine.basic.assets.IRendererAsset;
-import johnengine.basic.assets.ITexture;
+import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.asset.Mesh.Data;
 
-public class TextureGL implements ITexture<Integer>, IBindable {
+public class TextureGL implements IGraphicsStrategyGL, IBindable {
     public static final int TARGET = GL46.GL_TEXTURE_2D;
     public static Data DEFAULT_DATA = null;
     
-    public static void generateDefault() {
-        TextureGL textureGraphics = new TextureGL(Texture.DEFAULT_INSTANCE);
+    public static void generateDefault(RendererGL renderer) {
+        TextureGL textureGraphics = new TextureGL(renderer, Texture.DEFAULT_INSTANCE);
         textureGraphics.generate();
     }
 
-    private final Texture texture;
+    private final RendererGL renderer;
+    private Texture texture;
     private int handle;
     
-    public TextureGL(IRendererAsset texture) {
-        this.texture = (Texture) texture;
-        this.texture.graphics = this;
+    public TextureGL(RendererGL renderer, Texture texture) {
+        this.texture = texture;
+        this.renderer = renderer;
         this.handle = 0;
     }
     
-    public TextureGL() {
-        this.texture = null;
-        this.handle = 0;
+    public TextureGL(RendererGL renderer) {
+        this(renderer, null);
     }
     
     
     @Override
-    public IGraphicsAsset<Integer> createInstance(IRendererAsset asset) {
-        return new TextureGL(asset);
+    public void loaded() {
+        this.renderer.getGraphicsAssetProcessor().generateGraphics(this);
     }
     
     @Override
     public boolean generate() {
-        Texture.Data data = this.texture.getDataDirect();
+        Texture.Data asset = this.texture.getUnsafe();
         
         this.handle = GL46.glGenTextures();
         GL46.glBindTexture(TARGET, this.handle);
@@ -50,15 +48,16 @@ public class TextureGL implements ITexture<Integer>, IBindable {
             TARGET, 
             0, 
             GL46.GL_RGBA, 
-            data.getWidth(), 
-            data.getHeight(), 
+            asset.getWidth(), 
+            asset.getHeight(), 
             0, 
             GL46.GL_RGBA, 
             GL46.GL_UNSIGNED_BYTE, 
-            data.getPixels()
+            asset.getPixels()
         );
         GL46.glGenerateMipmap(TARGET);
         this.unbind();
+        this.texture.setGraphics(this);
         
         return true;
     }
@@ -76,17 +75,20 @@ public class TextureGL implements ITexture<Integer>, IBindable {
     }
 
     @Override
+    public void deload() {
+        this.renderer.getGraphicsAssetProcessor().disposeGraphics(this);
+    }
+    
+    @Override
     public boolean dispose() {
         GL46.glDeleteTextures(this.handle);
         return true;
     }
 
-    @Override
-    public Integer getData() {
+    public int getHandle() {
         return this.handle;
     }
-
-    @Override
+    
     public Texture getTexture() {
         return this.texture;
     }

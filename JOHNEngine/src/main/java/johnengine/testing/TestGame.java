@@ -5,15 +5,12 @@ import java.io.File;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
 import johnengine.basic.game.JCamera;
-import johnengine.basic.game.JGUI;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
-import johnengine.basic.game.gui.CText;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.actions.ACTMoveBackward;
 import johnengine.basic.game.input.actions.ACTMoveForward;
@@ -29,7 +26,9 @@ import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.asset.Mesh;
+import johnengine.basic.opengl.renderer.asset.MeshGL;
 import johnengine.basic.opengl.renderer.asset.Texture;
+import johnengine.basic.opengl.renderer.asset.TextureGL;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
@@ -42,7 +41,7 @@ public class TestGame extends AGame {
 
     private MilliCounter timer;
     private JWorld worldMain;
-    private JGUI gui;
+    //private JGUI gui;
     private long tickCounter;
     private Physics physics;
     private Physics.World physicsWorld;
@@ -89,7 +88,7 @@ public class TestGame extends AGame {
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
-        this.gui = new JGUI(this);
+        //this.gui = new JGUI(this);
         
         CModel model = new CModel();
         model.setMesh(mesh);
@@ -147,7 +146,7 @@ public class TestGame extends AGame {
         //camera.attach(pointLight);
         
             // Populate GUI
-        Font textFont = new Font(
+        /*Font textFont = new Font(
             "gui-font", 
             testFont, 
             " !\"#$%&'()*+´-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 
@@ -155,16 +154,16 @@ public class TestGame extends AGame {
             8
         );
         textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        textFont.generate();
+        textFont.generate();*/
         
         try {
         Thread.sleep(1000);
         }
         catch(Exception e) {}
         
-        CText guiText = new CText("hello world :)", this.window.getInput());
+        /*CText guiText = new CText("hello world :)", this.window.getInput());
         guiText.setFont(textFont);
-        this.gui.addElement(guiText);
+        this.gui.addElement(guiText);*/
         
             // Update the active world and the GUI of the renderer
         //RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
@@ -173,8 +172,8 @@ public class TestGame extends AGame {
         .setRenderContext(this.worldMain);
         
         renderer
-        .getStrategyOfRenderingPass("gui-renderer")
-        .setRenderContext(this.gui);
+        .getStrategyOfRenderingPass("gui-renderer");
+        //.setRenderContext(this.gui);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {
@@ -192,16 +191,14 @@ public class TestGame extends AGame {
     private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
         am.declareAsset(mesh);
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
-        objLoadTask.expectMesh(mesh);
-        objLoadTask.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        objLoadTask.expectMesh(mesh, new MeshGL(this.window.getRenderer(), mesh));
         am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        Texture.LoadTask textureLoadTask = new Texture.LoadTask(texture);
-        textureLoadTask.setMonitor(this.window.getRenderer().getGraphicsAssetProcessor());
+        Texture.LoadTask textureLoadTask = new Texture.LoadTask(new TextureGL(this.window.getRenderer(), texture), texture);
         am.scheduleFrom(relativePath, textureLoadTask);
     }
 

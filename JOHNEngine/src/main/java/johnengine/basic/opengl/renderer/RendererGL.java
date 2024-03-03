@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.renderer.asset.MeshGL;
 import johnengine.basic.opengl.renderer.asset.TextureGL;
-import johnengine.basic.opengl.renderer.strgui.GUIRenderStrategy;
 import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderStrategy;
 import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderStrategy;
@@ -41,7 +40,7 @@ public class RendererGL implements IRenderer {
     public RendererGL(WindowGL hostWindow) {
         this(hostWindow, null);
         this.addRenderingPass("scene-renderer", new CachedVAORenderStrategy(this));
-        this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
+        //this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
     }
     
     
@@ -49,8 +48,8 @@ public class RendererGL implements IRenderer {
     public void generateDefaults() {
         
             // Generate default assets that use OpenGL
-        MeshGL.generateDefault();
-        TextureGL.generateDefault();
+        MeshGL.generateDefault(this);
+        TextureGL.generateDefault(this);
     }
 
     @Override
@@ -74,8 +73,9 @@ public class RendererGL implements IRenderer {
     
     @Override
     public void render() {
-        this.graphicsAssetProcessor.processLoadedAssets();
-        this.graphicsAssetProcessor.processAssetDeloads();
+        //this.graphicsAssetProcessor.processLoadedAssets();
+        //this.graphicsAssetProcessor.processAssetDeloads();
+        this.graphicsAssetProcessor.processGraphicsRequests();
         
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

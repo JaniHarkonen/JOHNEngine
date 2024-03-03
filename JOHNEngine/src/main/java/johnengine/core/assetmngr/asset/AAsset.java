@@ -6,13 +6,13 @@ public abstract class AAsset<T> implements IAsset {
     protected final boolean isPersistent;
     protected T asset;
     
-    protected AAsset(String name, boolean isPersistent, T preloadedAsset) {
+    public AAsset(String name, boolean isPersistent, T preloadedAsset) {
         this.name = name;
         this.isPersistent = isPersistent;
         this.asset = preloadedAsset;
     }
     
-    protected AAsset(String name) {
+    public AAsset(String name) {
         this(name, false, null);
     }
     
