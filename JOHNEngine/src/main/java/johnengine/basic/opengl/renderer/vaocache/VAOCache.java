@@ -1,18 +1,18 @@
 package johnengine.basic.opengl.renderer.vaocache;
 
-import johnengine.basic.opengl.renderer.asset.MeshGL;
+import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vao.VBOType;
 import johnengine.core.cache.TimedCache;
 
-public class VAOCache extends TimedCache<MeshGL, VAO> {
+public class VAOCache extends TimedCache<MeshGraphicsGL, VAO> {
 
     public VAOCache(long expirationTime) {
         super(expirationTime);
     }
 
     
-    public VAO fetchVAO(MeshGL meshGraphics) {
+    public VAO fetchVAO(MeshGraphicsGL meshGraphics) {
         VAO vao = this.get(meshGraphics);
         
             // VAO found from the cache and return it
@@ -20,7 +20,7 @@ public class VAOCache extends TimedCache<MeshGL, VAO> {
         return vao;
         
             // Generate a new VAO and cache it
-        MeshGL.VBOContainer vbos = meshGraphics.getVBOs();
+        MeshGraphicsGL.VBOContainer vbos = meshGraphics.getVBOs();
         vao = new VAO();
         vao
         .addVBO(vbos.getVBO(VBOType.VERTICES))

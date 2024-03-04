@@ -5,27 +5,33 @@ public abstract class AAsset<T> implements IAsset {
     protected final String name;
     protected final boolean isPersistent;
     protected T asset;
+    protected T actualAsset;
     
     public AAsset(String name, boolean isPersistent, T preloadedAsset) {
         this.name = name;
         this.isPersistent = isPersistent;
         this.asset = preloadedAsset;
+        this.actualAsset = this.asset;
     }
     
     public AAsset(String name) {
         this(name, false, null);
+        this.actualAsset = null;
     }
     
     
-    public T getDefault() {
-        return null;
-    }
+    public abstract T getDefault();
     
     public T get() {
-        if( this.asset == null )
+        /*if( this.asset == null )
         return this.getDefault();
         
+        return this.asset;*/
         return this.asset;
+    }
+    
+    public T getUnsafe() {
+        return this.actualAsset;
     }
     
     public void deload() {
@@ -33,20 +39,25 @@ public abstract class AAsset<T> implements IAsset {
         return;
         
         this.deloadImpl();
-        this.asset = null;
+        this.deloaded();
     }
     
     protected abstract void deloadImpl();
     
     
     public void setAsset(T asset) {
-        if( this.asset == null )
-        this.asset = asset;
+        this.actualAsset = asset;
+        this.asset = this.actualAsset;
     }
     
-    public T getAssetUnchecked() {
-        return this.asset;
+    public void deloaded() {
+        this.actualAsset = null;
+        this.asset = this.getDefault();
     }
+    
+    /*public T getAssetUnchecked() {
+        return this.asset;
+    }*/
     
     @Override
     public String getName() {
@@ -55,5 +66,9 @@ public abstract class AAsset<T> implements IAsset {
     
     public boolean isPersistent() {
         return this.isPersistent;
+    }
+    
+    public boolean hasLoaded() {
+        return (this.actualAsset != null);
     }
 }

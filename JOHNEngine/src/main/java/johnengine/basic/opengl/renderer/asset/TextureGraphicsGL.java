@@ -7,12 +7,12 @@ import johnengine.basic.assets.mesh.Mesh.Data;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.renderer.RendererGL;
 
-public class TextureGL implements IGraphicsStrategyGL, IBindable {
+public class TextureGraphicsGL implements IGraphicsStrategyGL, IBindable {
     public static final int TARGET = GL46.GL_TEXTURE_2D;
     public static Data DEFAULT_DATA = null;
     
     public static void generateDefault(RendererGL renderer) {
-        TextureGL textureGraphics = new TextureGL(renderer, Texture.DEFAULT_INSTANCE);
+        TextureGraphicsGL textureGraphics = new TextureGraphicsGL(renderer, Texture.DEFAULT_INSTANCE);
         textureGraphics.generate();
     }
 
@@ -20,13 +20,13 @@ public class TextureGL implements IGraphicsStrategyGL, IBindable {
     private Texture texture;
     private int handle;
     
-    public TextureGL(RendererGL renderer, Texture texture) {
+    public TextureGraphicsGL(RendererGL renderer, Texture texture) {
         this.texture = texture;
         this.renderer = renderer;
         this.handle = 0;
     }
     
-    public TextureGL(RendererGL renderer) {
+    public TextureGraphicsGL(RendererGL renderer) {
         this(renderer, null);
     }
     

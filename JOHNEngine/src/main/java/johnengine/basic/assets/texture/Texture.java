@@ -41,11 +41,11 @@ public class Texture extends AAsset<Texture.Data> {
                     4
                 );
                 
-                this.targetAsset.asset = new Data(
+                this.targetAsset.setAsset(new Data(
                     imageBuffer, 
                     widthBuffer.get(), 
                     heightBuffer.get()
-                );
+                ));
                 
                 this.graphics.loaded();
             }
@@ -162,15 +162,22 @@ public class Texture extends AAsset<Texture.Data> {
     
     public Texture(String name, boolean isPersistent, Texture.Data preloadedData) {
         super(name, isPersistent, preloadedData);
+        this.graphics = DEFAULT_INSTANCE.getGraphics();
     }
     
     public Texture(String name) {
-        this(name, false, DEFAULT_INSTANCE.asset);
+        super(name);
+        this.graphics = DEFAULT_INSTANCE.getGraphics();
     }
+    
+    /*public Texture(String name) {
+        this(name, false, DEFAULT_INSTANCE.get());
+    }*/
     
     @Override
     protected void deloadImpl() {
         this.graphics.deload();
+        this.graphics = DEFAULT_INSTANCE.getGraphics();
     }
     
     
@@ -185,18 +192,18 @@ public class Texture extends AAsset<Texture.Data> {
     
     @Override
     public Texture.Data getDefault() {
-        return DEFAULT_INSTANCE.asset;
+        return DEFAULT_INSTANCE.get();
     }
     
     public IGraphicsStrategy getDefaultGraphics() {
-        return DEFAULT_INSTANCE.graphics;
+        return DEFAULT_INSTANCE.getGraphics();
     }
     
     public IGraphicsStrategy getGraphics() {
         return this.graphics;
     }
     
-    public Texture.Data getUnsafe() {
+    /*public Texture.Data getUnsafe() {
         return this.asset;
-    }
+    }*/
 }

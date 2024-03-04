@@ -13,7 +13,7 @@ import johnengine.basic.opengl.renderer.vao.VBOType;
 import johnengine.basic.opengl.renderer.vao.VBOVector2f;
 import johnengine.basic.opengl.renderer.vao.VBOVector3f;
 
-public class MeshGL implements IGraphicsStrategyGL {
+public class MeshGraphicsGL implements IGraphicsStrategyGL {
     
     /*********************** VBOContainer-class ***********************/
     
@@ -54,7 +54,7 @@ public class MeshGL implements IGraphicsStrategyGL {
     /*********************** MeshGL-class ***********************/
     
     public static void generateDefault(RendererGL renderer) {
-        MeshGL meshGraphics = new MeshGL(renderer, Mesh.DEFAULT_INSTANCE);
+        MeshGraphicsGL meshGraphics = new MeshGraphicsGL(renderer, Mesh.DEFAULT_INSTANCE);
         meshGraphics.generate();
     }
     
@@ -65,13 +65,13 @@ public class MeshGL implements IGraphicsStrategyGL {
     private Mesh mesh;
     private VBOContainer vbos;
     
-    public MeshGL(RendererGL renderer, Mesh mesh) {
+    public MeshGraphicsGL(RendererGL renderer, Mesh mesh) {
         this.mesh = mesh;
         this.renderer = renderer;
         this.vbos = null;
     }
     
-    public MeshGL(RendererGL renderer) {
+    public MeshGraphicsGL(RendererGL renderer) {
         this(renderer, null);
     }
     

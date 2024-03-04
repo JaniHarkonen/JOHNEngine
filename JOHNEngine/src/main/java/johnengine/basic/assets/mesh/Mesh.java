@@ -172,19 +172,19 @@ public class Mesh extends AAsset<Mesh.Data> {
         }
         
             // Populate
-        dest.asset = new Data(
+        dest.setAsset(new Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
             uvs,                                             // UVs
             faces.toArray(new Face[faces.size()]),           // indices
             aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
-        );
+        ));
     }
     
-    public static Mesh createMesh(String name, Mesh.Data meshData) {
+    /*public static Mesh createMesh(String name, Mesh.Data meshData) {
         return new Mesh(name, false, meshData);
-    }
+    }*/
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {
         Vector3f[] result = new Vector3f[src.remaining()];
@@ -214,7 +214,10 @@ public class Mesh extends AAsset<Mesh.Data> {
     }
     
     public Mesh(String name) {
-        this(name, false, DEFAULT_INSTANCE.asset);
+        super(name);
+        this.material = null;
+        this.graphics = null;
+        //this(name, false, DEFAULT_INSTANCE.get());
     }
 
     
@@ -239,16 +242,16 @@ public class Mesh extends AAsset<Mesh.Data> {
     
     @Override
     public Mesh.Data getDefault() {
-        return DEFAULT_INSTANCE.asset;
+        return DEFAULT_INSTANCE.get();
     }
     
     public IGraphicsStrategy getDefaultGraphics() {
-        return DEFAULT_INSTANCE.graphics;
+        return DEFAULT_INSTANCE.getGraphics();
     }
     
-    public Mesh.Data getUnsafe() {
+    /*public Mesh.Data getUnsafe() {
         return this.asset;
-    }
+    }*/
     
     public IGraphicsStrategy getGraphics() {
         return this.graphics;

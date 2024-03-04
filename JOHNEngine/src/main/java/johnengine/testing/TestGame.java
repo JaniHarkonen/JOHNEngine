@@ -27,8 +27,8 @@ import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.opengl.renderer.RendererGL;
-import johnengine.basic.opengl.renderer.asset.MeshGL;
-import johnengine.basic.opengl.renderer.asset.TextureGL;
+import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
+import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
@@ -192,19 +192,19 @@ public class TestGame extends AGame {
         am.declareAsset(mesh);
         
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
-        objLoadTask.expectMesh(mesh, new MeshGL(this.window.getRenderer(), mesh));
+        objLoadTask.expectMesh(mesh, new MeshGraphicsGL(this.window.getRenderer(), mesh));
         am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        Texture.LoadTask textureLoadTask = new Texture.LoadTask(
-            new TextureGL(this.window.getRenderer(), texture),
+        /*Texture.LoadTask textureLoadTask = new Texture.LoadTask(
+            new TextureGraphicsGL(this.window.getRenderer(), texture),
             texture
         );
         
-        am.scheduleFrom(relativePath, textureLoadTask);
+        am.scheduleFrom(relativePath, textureLoadTask);*/
     }
 
     @Override

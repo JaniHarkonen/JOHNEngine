@@ -11,9 +11,9 @@ import johnengine.basic.game.JGUI;
 import johnengine.basic.game.gui.CText;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.basic.opengl.renderer.asset.MeshGL;
+import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.Shader;
-import johnengine.basic.opengl.renderer.asset.TextureGL;
+import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.opengl.renderer.uniforms.UNIVector3f;
@@ -141,11 +141,11 @@ public class GUIRenderStrategy implements
                 
                     // Bind texture
                 GL46.glActiveTexture(GL46.GL_TEXTURE0);
-                TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
+                TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphics();
                 textureGL.bind();
                 
                     // Bind VAO
-                MeshGL meshGL = (MeshGL) mesh.getGraphics();
+                MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphics();
                 VAO vao = this.vaoCache.fetchVAO(meshGL);
                 vao.bind();
                 
