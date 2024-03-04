@@ -5,8 +5,10 @@ import java.io.File;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
+import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
@@ -25,9 +27,7 @@ import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.opengl.renderer.RendererGL;
-import johnengine.basic.opengl.renderer.asset.Mesh;
 import johnengine.basic.opengl.renderer.asset.MeshGL;
-import johnengine.basic.opengl.renderer.asset.Texture;
 import johnengine.basic.opengl.renderer.asset.TextureGL;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
@@ -190,6 +190,7 @@ public class TestGame extends AGame {
     
     private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
         am.declareAsset(mesh);
+        
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
         objLoadTask.expectMesh(mesh, new MeshGL(this.window.getRenderer(), mesh));
         am.scheduleFrom(relativePath, objLoadTask);
@@ -198,7 +199,11 @@ public class TestGame extends AGame {
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        Texture.LoadTask textureLoadTask = new Texture.LoadTask(new TextureGL(this.window.getRenderer(), texture), texture);
+        Texture.LoadTask textureLoadTask = new Texture.LoadTask(
+            new TextureGL(this.window.getRenderer(), texture),
+            texture
+        );
+        
         am.scheduleFrom(relativePath, textureLoadTask);
     }
 

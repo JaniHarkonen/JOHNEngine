@@ -2,7 +2,7 @@ package johnengine.basic.opengl.renderer.vao;
 
 import org.lwjgl.opengl.GL46;
 
-import johnengine.basic.opengl.renderer.asset.Mesh;
+import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.opengl.renderer.buffers.IntBufferGL;
 
 public class VBOIndices extends AVBO<Mesh.Face, Integer> {

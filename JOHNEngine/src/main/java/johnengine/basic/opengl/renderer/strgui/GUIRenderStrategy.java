@@ -5,12 +5,12 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.font.Font;
+import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.game.JGUI;
 import johnengine.basic.game.gui.CText;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.basic.opengl.renderer.asset.Mesh;
 import johnengine.basic.opengl.renderer.asset.MeshGL;
 import johnengine.basic.opengl.renderer.asset.Shader;
 import johnengine.basic.opengl.renderer.asset.TextureGL;

@@ -3,8 +3,9 @@ package johnengine.basic.opengl.renderer.asset;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
+import johnengine.basic.assets.mesh.Mesh.Data;
+import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.renderer.RendererGL;
-import johnengine.basic.opengl.renderer.asset.Mesh.Data;
 
 public class TextureGL implements IGraphicsStrategyGL, IBindable {
     public static final int TARGET = GL46.GL_TEXTURE_2D;

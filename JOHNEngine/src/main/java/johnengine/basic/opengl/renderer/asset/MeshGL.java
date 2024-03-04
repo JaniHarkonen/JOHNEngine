@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
+import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.vao.AVBO;
 import johnengine.basic.opengl.renderer.vao.VBOIndices;

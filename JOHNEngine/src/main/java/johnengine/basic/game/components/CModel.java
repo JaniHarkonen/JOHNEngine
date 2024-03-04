@@ -1,11 +1,11 @@
 package johnengine.basic.game.components;
 
+import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.ISceneGraphChild;
 import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.opengl.renderer.asset.Mesh;
-import johnengine.basic.opengl.renderer.asset.Texture;
 import johnengine.core.renderer.IRenderStrategy;
 
 public class CModel implements ISceneGraphChild {

@@ -8,7 +8,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
 import johnengine.basic.assets.IGraphicsStrategy;
-import johnengine.basic.opengl.renderer.asset.Mesh;
+import johnengine.basic.assets.mesh.Mesh;
 import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.core.assetmngr.asset.IAsset;
 

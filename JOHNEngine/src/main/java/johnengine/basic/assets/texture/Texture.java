@@ -1,4 +1,4 @@
-package johnengine.basic.opengl.renderer.asset;
+package johnengine.basic.assets.texture;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -7,22 +7,21 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-import johnengine.basic.assets.IRendererAsset;
-import johnengine.basic.assets.ITexture;
+import johnengine.basic.assets.IGraphicsStrategy;
+import johnengine.core.assetmngr.asset.AAsset;
 import johnengine.core.assetmngr.asset.ALoadTask;
-import johnengine.core.assetmngr.asset.ILoaderMonitor;
 
-public class Texture2 extends ARendererAsset<ITexture<?>, Texture2.Data> {
+public class Texture extends AAsset<Texture.Data> {
 
     /********************** LoadTask-class **********************/
     
     public static class LoadTask extends ALoadTask {
-        private Texture2 targetAsset;
-        private ILoaderMonitor<IRendererAsset> monitor;
+        private final IGraphicsStrategy graphics;
+        private Texture targetAsset;
         
-        public LoadTask(Texture2 targetAsset) {
+        public LoadTask(IGraphicsStrategy graphics, Texture targetAsset) {
+            this.graphics = graphics;
             this.targetAsset = targetAsset;
-            this.monitor = null;
         }
         
 
@@ -42,20 +41,14 @@ public class Texture2 extends ARendererAsset<ITexture<?>, Texture2.Data> {
                     4
                 );
                 
-                this.targetAsset.data = new Data(
+                this.targetAsset.asset = new Data(
                     imageBuffer, 
                     widthBuffer.get(), 
                     heightBuffer.get()
                 );
                 
-                if( this.monitor != null )
-                this.monitor.assetLoaded(this.targetAsset);
+                this.graphics.loaded();
             }
-        }
-        
-        
-        public void setMonitor(ILoaderMonitor<IRendererAsset> monitor) {
-            this.monitor = monitor;
         }
     }
     
@@ -97,7 +90,7 @@ public class Texture2 extends ARendererAsset<ITexture<?>, Texture2.Data> {
     
     /********************** Texture-class **********************/
     
-    public static Texture2 DEFAULT_INSTANCE;
+    public static Texture DEFAULT_INSTANCE;
     
     static {
             // T_T
@@ -158,27 +151,52 @@ public class Texture2 extends ARendererAsset<ITexture<?>, Texture2.Data> {
         
         pixels.flip();
         
-        DEFAULT_INSTANCE = new Texture2("default-texture", true);
-        DEFAULT_INSTANCE.data = new Data(pixels, width, height);
+        Texture.Data asset = new Texture.Data(pixels, width, height);
+        DEFAULT_INSTANCE = new Texture("default-texture", true, asset);
     }
     
 
-    public Texture2(String name, boolean isPersistent) {
-        super(name, isPersistent);
+    /********************** Class body **********************/
+    
+    private IGraphicsStrategy graphics;
+    
+    public Texture(String name, boolean isPersistent, Texture.Data preloadedData) {
+        super(name, isPersistent, preloadedData);
     }
     
-    public Texture2(String name) {
-        this(name, false);
-    }
-    
-    
-    @Override
-    public Data getDefault() {
-        return DEFAULT_INSTANCE.data;
+    public Texture(String name) {
+        this(name, false, DEFAULT_INSTANCE.asset);
     }
     
     @Override
-    public ITexture<?> getDefaultGraphics() {
+    protected void deloadImpl() {
+        this.graphics.deload();
+    }
+    
+    
+    /********************** SETTERS **********************/
+    
+    public void setGraphics(IGraphicsStrategy graphics) {
+        this.graphics = graphics;
+    }
+    
+    
+    /********************** GETTERS **********************/
+    
+    @Override
+    public Texture.Data getDefault() {
+        return DEFAULT_INSTANCE.asset;
+    }
+    
+    public IGraphicsStrategy getDefaultGraphics() {
         return DEFAULT_INSTANCE.graphics;
+    }
+    
+    public IGraphicsStrategy getGraphics() {
+        return this.graphics;
+    }
+    
+    public Texture.Data getUnsafe() {
+        return this.asset;
     }
 }

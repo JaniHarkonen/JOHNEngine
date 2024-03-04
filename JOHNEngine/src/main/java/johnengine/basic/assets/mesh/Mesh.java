@@ -1,4 +1,4 @@
-package johnengine.basic.opengl.renderer.asset;
+package johnengine.basic.assets.mesh;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;

@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.joml.Vector3f;
 
-import johnengine.basic.opengl.renderer.asset.Mesh;
-import johnengine.basic.opengl.renderer.asset.Texture;
+import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.texture.Texture;
 
 public class InstancedRenderBuffer {
     
