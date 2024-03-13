@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import johnengine.basic.assets.mesh.Mesh;
@@ -58,7 +57,6 @@ public class RendererGL implements IRenderer {
 
     @Override
     public void initialize() {
-        GL.createCapabilities();
         this.generateDefaults();
         
         for( String passKey : this.renderingPassOrder )

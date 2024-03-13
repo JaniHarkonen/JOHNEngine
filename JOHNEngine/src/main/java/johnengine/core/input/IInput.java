@@ -18,6 +18,8 @@ public interface IInput {
     
     public void setup();
     
+    public void dispose();
+    
     public void snapshot();
     
     public IInput.State getState();

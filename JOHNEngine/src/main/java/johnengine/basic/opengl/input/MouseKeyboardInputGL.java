@@ -329,6 +329,11 @@ public final class MouseKeyboardInputGL implements IInput {
     }
     
     @Override
+    public void dispose() {
+        
+    }
+    
+    @Override
     public void snapshot() {
         this.updatingState.takeSnapshot(this.snapshotState);
     }

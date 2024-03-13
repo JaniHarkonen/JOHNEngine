@@ -3,6 +3,8 @@ package johnengine.basic.opengl;
 import java.awt.Point;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
@@ -12,6 +14,7 @@ import johnengine.core.renderer.IRenderer;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.window.IWindow;
 import johnengine.core.window.WindowRequestManager;
+import johnengine.testing.DebugUtils;
 
 public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 {
@@ -54,6 +57,7 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         this.input.setup();
         
         GLFW.glfwMakeContextCurrent(this.windowID);
+        GL.createCapabilities();
         this.renderer.initialize();
         this.properties.windowState.set(IWindow.STATE_OPEN);
         
@@ -185,6 +189,8 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         Point wpos = this.properties.position.currentValue;
         GLFW.glfwSetWindowPos(winID, wpos.x, wpos.y);
         
+        GLFW.glfwSwapInterval(this.properties.useVSync.currentValue ? 1 : 0);
+        
         return winID;
     }
     
@@ -197,9 +203,11 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     
     void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
+        
         this.properties.windowState.set(IWindow.STATE_INITIALIZING);
         this.windowID = this.createWindow();
         this.properties.windowState.set(IWindow.STATE_OPEN);
+        
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
     
@@ -297,13 +305,13 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 
     @Override
     public IWindow enterFullscreen() {
-        this.requestManager.addRequest(new RFullscreen(true));
+        this.requestManager.addRequest(new RFullscreen(true, this));
         return this;
     }
 
     @Override
     public IWindow exitFullscreen() {
-        this.requestManager.addRequest(new RFullscreen(false));
+        this.requestManager.addRequest(new RFullscreen(false, this));
         return this;
     }
 

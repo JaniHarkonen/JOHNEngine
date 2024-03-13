@@ -6,7 +6,6 @@
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
 	having opt-in components
-- maybe AssetManager should also hold a map of AAssetLoaders
 - add disposing/destruction methods to all relevant classes
 - in order to do indirect rendering do this:
 	-- each rendered instance must produce an entry in a map before being 
@@ -18,9 +17,6 @@
 	iteratively and render them
 	-- ARenderAssets should have bind()- and generate()-methods instead of a
 	render()-method (they should not implement IDrawable)
-- OpenGL crashes when the window is closed because the renderer still continues
-to render (using OpenGL-commands) after window.stop() has been called
-	-> GLFWterminate() is called upon window.stop()
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
 of the game world
@@ -29,6 +25,14 @@ of the game world
 mouse delta on low frame rates
 	-> use OpenGL's disable cursor
 - RFullscreen doesn't work yet
+	-> doesn't work because windowed fullscreen requires rebuilding the window
+	-> rebuilding the window requires first destroying the initial window
+	-> when a window is destroyed, the context of that window is also destroyed
+	-> in order for OpenGL to work in the new window, its context must be made
+	current
+	-> this will transfer most of the OpenGL objects to the new context, with the
+	exception of state objects (VAOs and FBOs)
+	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
 
 - add default material
 - see if Material can be refactored into binding all its textures through a method

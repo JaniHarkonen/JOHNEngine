@@ -65,6 +65,7 @@ public class TestGame extends AGame {
         //this.window.resize(1000, 1000);
         //this.engine.setTickRate(24);
         this.window.lockCursorToCenter();
+        //.enterFullscreen();
         
         AssetManager am = this.assetManager;
         am.setRootDirectory((new File("src/main/resources/test")).getAbsolutePath());
@@ -195,7 +196,7 @@ public class TestGame extends AGame {
         
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
         objLoadTask.expectMesh(mesh, graphicsStrategy);
-        //am.scheduleFrom(relativePath, objLoadTask);
+        am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {

@@ -13,7 +13,6 @@ import org.lwjgl.assimp.AIVector3D;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.sceneobj.Material;
-import johnengine.testing.DebugUtils;
 
 public class Mesh implements IGraphicsAsset {
     
@@ -67,9 +66,6 @@ public class Mesh implements IGraphicsAsset {
             
             faces.add(new Face(indices));
         }
-        
-        for( Vector3f v : aiVectorBufferToVector3fArray(src.mTangents()) )
-            DebugUtils.log("LOL", v.x, v.y, v.z);
         
             // Populate
         dest.info.setAsset(new MeshInfo.Data(
