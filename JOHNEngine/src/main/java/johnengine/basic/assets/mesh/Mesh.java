@@ -10,11 +10,12 @@ import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
+import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.sceneobj.Material;
-import johnengine.core.assetmngr.asset.AAsset;
+import johnengine.testing.DebugUtils;
 
-public class Mesh extends AAsset<Mesh.Data> {
+public class Mesh implements IGraphicsAsset {
     
     /********************** Face-class **********************/
     
@@ -34,111 +35,7 @@ public class Mesh extends AAsset<Mesh.Data> {
     }
     
     
-    /********************** Data-class **********************/
-    
-    public static class Data {
-        private Vector3f[] vertices;
-        private Vector3f[] normals;
-        private Vector3f[] tangents;
-        private Vector3f[] bitangents;
-        private Vector2f[] uvs;
-        private Face[] faces;
-        
-        public Data(
-            Vector3f[] vertices, 
-            Vector3f[] normals, 
-            Vector2f[] uvs, 
-            Face[] faces,
-            Vector3f[] tangents,
-            Vector3f[] bitangents
-        ) {
-            this.vertices = vertices;
-            this.normals = normals;
-            this.tangents = tangents;
-            this.bitangents = bitangents;
-            this.uvs = uvs;
-            this.faces = faces;
-        }
-        
-        public Data() {
-            this(null, null, null, null, null, null);
-        }
-        
-        
-        public Vector3f[] getVertices() {
-            return this.vertices;
-        }
-        
-        public Vector3f[] getNormals() {
-            return this.normals;
-        }
-        
-        public Vector3f[] getTangents() {
-            return this.tangents;
-        }
-        
-        public Vector3f[] getBitangents() {
-            return this.bitangents;
-        }
-        
-        public Vector2f[] getUVs() {
-            return this.uvs;
-        }
-        
-        public Face[] getFaces() {
-            return this.faces;
-        }
-
-        public int getVertexCount() {
-            return this.vertices.length;
-        }
-        
-        public int getNormalCount() {
-            return this.normals.length;
-        }
-        
-        public int getUVCount() {
-            return this.uvs.length;
-        }
-        
-        public int getFaceCount() {
-            return this.faces.length;
-        }
-    }
-    
-    
     /********************** Mesh-class **********************/
-    
-    public static Mesh DEFAULT_INSTANCE;
-    
-    static {
-        Mesh.Data asset = new Mesh.Data(
-                // Vertices
-            new Vector3f[] {
-                new Vector3f(-0.5f, 0.5f, -1.0f),        // top left
-                new Vector3f(-0.5f, -0.5f, -1.0f),       // bottom left
-                new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
-                new Vector3f(0.5f, 0.5f, -1.0f)          // top right
-            }, 
-            new Vector3f[0],        // FIX THIS
-                // UVs
-            new Vector2f[] {
-                new Vector2f(0.0f, 1.0f), 
-                new Vector2f(0.0f, 0.0f), 
-                new Vector2f(1.0f, 0.0f), 
-                new Vector2f(1.0f, 1.0f),
-            }, 
-                // Faces
-            new Mesh.Face[] {
-                new Mesh.Face(new int[] {0, 1, 3}),
-                new Mesh.Face(new int[] {3, 1, 2})
-            },
-            new Vector3f[0],        // FIX THIS
-            new Vector3f[0]         // FIX THIS
-        );
-        
-        DEFAULT_INSTANCE = new Mesh("default-mesh", true, asset);
-    }
     
     public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
         if( dest == null || src == null )
@@ -171,8 +68,11 @@ public class Mesh extends AAsset<Mesh.Data> {
             faces.add(new Face(indices));
         }
         
+        for( Vector3f v : aiVectorBufferToVector3fArray(src.mTangents()) )
+            DebugUtils.log("LOL", v.x, v.y, v.z);
+        
             // Populate
-        dest.setAsset(new Data(
+        dest.info.setAsset(new MeshInfo.Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
             uvs,                                             // UVs
@@ -181,10 +81,6 @@ public class Mesh extends AAsset<Mesh.Data> {
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         ));
     }
-    
-    /*public static Mesh createMesh(String name, Mesh.Data meshData) {
-        return new Mesh(name, false, meshData);
-    }*/
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {
         Vector3f[] result = new Vector3f[src.remaining()];
@@ -205,25 +101,29 @@ public class Mesh extends AAsset<Mesh.Data> {
     /********************** Class body **********************/
     
     private Material material;
-    private IGraphicsStrategy graphics;
+    private IGraphicsStrategy graphicsStrategy;
+    private MeshInfo info;
+    private String name;
     
-    public Mesh(String name, boolean isPersistent, Mesh.Data preloadedData) {
-        super(name, isPersistent, preloadedData);
+    public Mesh(String name, MeshInfo preloadedInfo, IGraphicsStrategy graphicsStrategy) {
+        this.name = name;
         this.material = null;
-        this.graphics = null;
+        this.graphicsStrategy = graphicsStrategy;
+        this.info = preloadedInfo;
     }
     
     public Mesh(String name) {
-        super(name);
+        this.name = name;
         this.material = null;
-        this.graphics = null;
-        //this(name, false, DEFAULT_INSTANCE.get());
+        this.graphicsStrategy = null;
+        this.info = MeshInfo.DEFAULT_MESH_INFO;
     }
 
     
     @Override
-    protected void deloadImpl() {
-        this.graphics.deload();
+    public void deload() {
+        this.info.deload();
+        this.graphicsStrategy.deload();
     }
 
     
@@ -233,31 +133,29 @@ public class Mesh extends AAsset<Mesh.Data> {
         this.material = material;
     }
     
-    public void setGraphics(IGraphicsStrategy graphics) {
-        this.graphics = graphics;
+    @Override
+    public void setGraphicsStrategy(IGraphicsStrategy graphicsStrategy) {
+        this.graphicsStrategy = graphicsStrategy;
     }
     
     
     /********************** GETTERS **********************/
     
     @Override
-    public Mesh.Data getDefault() {
-        return DEFAULT_INSTANCE.get();
-    }
-    
-    public IGraphicsStrategy getDefaultGraphics() {
-        return DEFAULT_INSTANCE.getGraphics();
-    }
-    
-    /*public Mesh.Data getUnsafe() {
-        return this.asset;
-    }*/
-    
-    public IGraphicsStrategy getGraphics() {
-        return this.graphics;
+    public IGraphicsStrategy getGraphicsStrategy() {
+        return this.graphicsStrategy;
     }
     
     public Material getMaterial() {
         return this.material;
+    }
+    
+    @Override
+    public String getName() {
+        return this.name;
+    }
+    
+    public MeshInfo getInfo() {
+        return this.info;
     }
 }

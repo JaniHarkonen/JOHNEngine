@@ -3,31 +3,99 @@ package johnengine.basic.opengl.renderer.asset;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
-import johnengine.basic.assets.mesh.Mesh.Data;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.renderer.RendererGL;
 
-public class TextureGraphicsGL implements IGraphicsStrategyGL, IBindable {
+public class TextureGraphicsGL extends AGraphicsStrategyGL<TextureGraphicsGL.TextureHandle> implements IBindable {
+    
+    
+    /********************* TextureHandle-class *********************/
+    
+    public static class TextureHandle {
+        private class Handle {
+            private int value;
+            
+            private Handle(int handleValue) {
+                this.value = handleValue;
+            }
+            
+            private Handle() {
+                this(0);
+            }
+        }
+        
+        private Handle handle;
+        
+        public TextureHandle() {
+            this.handle = new Handle();
+        }
+        
+        public TextureHandle(int handleValue) {
+            this.handle = new Handle(handleValue);
+        }
+        
+        
+        public int get() {
+            return this.handle.value;
+        }
+    }
+    
+    
+    /********************* TextureGraphicsGL-class *********************/
+    
     public static final int TARGET = GL46.GL_TEXTURE_2D;
-    public static Data DEFAULT_DATA = null;
+    public static final TextureHandle DEFAULT_TEXTURE_HANDLE = new TextureHandle();
     
     public static void generateDefault(RendererGL renderer) {
-        TextureGraphicsGL textureGraphics = new TextureGraphicsGL(renderer, Texture.DEFAULT_INSTANCE);
-        textureGraphics.generate();
+        DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Texture.DEFAULT_TEXTURE_INFO);
+    }
+    
+    private static int generateTexture(Texture.Info textureInfo) {
+        int handle = GL46.glGenTextures();
+        
+        bindTexture(handle);
+        GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
+        GL46.glTexParameteri(TARGET, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
+        GL46.glTexParameteri(TARGET, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
+        GL46.glTexImage2D(
+            TARGET, 
+            0, 
+            GL46.GL_RGBA, 
+            textureInfo.getWidth(), 
+            textureInfo.getHeight(), 
+            0, 
+            GL46.GL_RGBA, 
+            GL46.GL_UNSIGNED_BYTE, 
+            textureInfo.getPixels()
+        );
+        GL46.glGenerateMipmap(TARGET);
+        unbindTexture();
+        
+        return handle;
+    }
+    
+    private static void bindTexture(int handle) {
+        GL46.glBindTexture(TARGET, handle);
+    }
+    
+    private static void unbindTexture() {
+        GL46.glBindTexture(TARGET, 0);
     }
 
-    private final RendererGL renderer;
-    private Texture texture;
-    private int handle;
     
-    public TextureGraphicsGL(RendererGL renderer, Texture texture) {
+    /********************* Class body *********************/
+    
+    private Texture texture;
+    private TextureGraphicsGL.TextureHandle handle;
+    
+    public TextureGraphicsGL(RendererGL renderer, Texture texture, boolean isPersistent) {
+        super(renderer, isPersistent);
         this.texture = texture;
-        this.renderer = renderer;
-        this.handle = 0;
+        this.handle = TextureGraphicsGL.DEFAULT_TEXTURE_HANDLE;
     }
     
     public TextureGraphicsGL(RendererGL renderer) {
-        this(renderer, null);
+        this(renderer, null, false);
     }
     
     
@@ -38,40 +106,21 @@ public class TextureGraphicsGL implements IGraphicsStrategyGL, IBindable {
     
     @Override
     public boolean generate() {
-        Texture.Data asset = this.texture.getUnsafe();
-        
-        this.handle = GL46.glGenTextures();
-        GL46.glBindTexture(TARGET, this.handle);
-        GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
-        GL46.glTexParameteri(TARGET, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
-        GL46.glTexParameteri(TARGET, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
-        GL46.glTexImage2D(
-            TARGET, 
-            0, 
-            GL46.GL_RGBA, 
-            asset.getWidth(), 
-            asset.getHeight(), 
-            0, 
-            GL46.GL_RGBA, 
-            GL46.GL_UNSIGNED_BYTE, 
-            asset.getPixels()
-        );
-        GL46.glGenerateMipmap(TARGET);
-        this.unbind();
-        this.texture.setGraphics(this);
+        this.handle = new TextureGraphicsGL.TextureHandle(generateTexture(this.texture.getInfo()));
+        this.texture.setGraphicsStrategy(this);
         
         return true;
     }
 
     @Override
     public boolean bind() {
-        GL46.glBindTexture(TARGET, this.handle);
+        bindTexture(this.handle.get());
         return true;
     }
 
     @Override
     public boolean unbind() {
-        GL46.glBindTexture(TARGET, 0);
+        unbindTexture();
         return true;
     }
 
@@ -82,15 +131,26 @@ public class TextureGraphicsGL implements IGraphicsStrategyGL, IBindable {
     
     @Override
     public boolean dispose() {
-        GL46.glDeleteTextures(this.handle);
+        GL46.glDeleteTextures(this.handle.get());
         return true;
     }
 
     public int getHandle() {
-        return this.handle;
+        return this.handle.get();
     }
     
     public Texture getTexture() {
         return this.texture;
+    }
+
+    @Override
+    protected void deloadImpl() {
+        if( this.handle != TextureGraphicsGL.DEFAULT_TEXTURE_HANDLE )
+        this.dispose();
+    }
+
+    @Override
+    public TextureGraphicsGL.TextureHandle getDefaultGraphics() {
+        return TextureGraphicsGL.DEFAULT_TEXTURE_HANDLE;
     }
 }

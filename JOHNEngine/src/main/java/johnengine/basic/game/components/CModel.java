@@ -16,8 +16,8 @@ public class CModel implements ISceneGraphChild {
     
     public CModel() {
         this.transform = new CTransform();
-        this.mesh = new Mesh("default");
-        this.texture = new Texture("default");
+        this.mesh = null;
+        this.texture = null;
     }
     
     

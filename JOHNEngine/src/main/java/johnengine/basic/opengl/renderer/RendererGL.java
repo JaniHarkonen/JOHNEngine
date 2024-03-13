@@ -8,6 +8,8 @@ import java.util.Map;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
@@ -65,7 +67,6 @@ public class RendererGL implements IRenderer {
     
     @Override
     public void generateRenderBuffer() {
-        //this.renderBufferStrategy.execute(this.activeWorld, this.renderStrategy);
         for( String passKey : this.renderingPassOrder )
         {
             IRenderStrategy renderStrategy = this.renderingPasses.get(passKey);
@@ -126,5 +127,14 @@ public class RendererGL implements IRenderer {
     
     public String getResourceRootFolder() {
         return this.resourceRootFolder;
+    }
+    
+    public MeshGraphicsGL getGraphicsStrategy(Mesh mesh) {
+        MeshGraphicsGL gl = new MeshGraphicsGL(this, mesh, false);
+        return gl;
+    }
+    
+    public TextureGraphicsGL getGraphicsStrategy(Texture texture) {
+        return new TextureGraphicsGL(this, texture, false);
     }
 }

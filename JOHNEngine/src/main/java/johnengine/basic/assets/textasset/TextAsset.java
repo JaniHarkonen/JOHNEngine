@@ -48,7 +48,8 @@ public class TextAsset extends AAsset<String> {
             if( !this.isLoaded() )
             return false;
             
-            targetAsset.asset = this.text;
+            //targetAsset.asset = this.text;
+            targetAsset.setAsset(this.text);
             return true;            
         }
         
@@ -74,8 +75,13 @@ public class TextAsset extends AAsset<String> {
     }
     
     
-    @Override
+    /*@Override
     public String getDefault() {
+        return "";
+    }*/
+    
+    @Override
+    public String getDefaultAsset() {
         return "";
     }
 }

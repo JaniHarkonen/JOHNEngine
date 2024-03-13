@@ -5,6 +5,7 @@ import java.io.File;
 
 import org.lwjgl.glfw.GLFW;
 
+import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
@@ -27,8 +28,6 @@ import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.basic.opengl.renderer.RendererGL;
-import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
-import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
@@ -64,7 +63,7 @@ public class TestGame extends AGame {
         
         //this.window.enterFullscreen();
         //this.window.resize(1000, 1000);
-        this.engine.setTickRate(24);
+        //this.engine.setTickRate(24);
         this.window.lockCursorToCenter();
         
         AssetManager am = this.assetManager;
@@ -156,10 +155,10 @@ public class TestGame extends AGame {
         textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
         textFont.generate();*/
         
-        try {
+        /*try {
         Thread.sleep(1000);
         }
-        catch(Exception e) {}
+        catch(Exception e) {}*/
         
         /*CText guiText = new CText("hello world :)", this.window.getInput());
         guiText.setFont(textFont);
@@ -191,20 +190,22 @@ public class TestGame extends AGame {
     private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
         am.declareAsset(mesh);
         
+        IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(mesh);
+        mesh.setGraphicsStrategy(graphicsStrategy);
+        
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
-        objLoadTask.expectMesh(mesh, new MeshGraphicsGL(this.window.getRenderer(), mesh));
-        am.scheduleFrom(relativePath, objLoadTask);
+        objLoadTask.expectMesh(mesh, graphicsStrategy);
+        //am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        /*Texture.LoadTask textureLoadTask = new Texture.LoadTask(
-            new TextureGraphicsGL(this.window.getRenderer(), texture),
-            texture
-        );
+        IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(texture);
+        texture.setGraphicsStrategy(graphicsStrategy);
         
-        am.scheduleFrom(relativePath, textureLoadTask);*/
+        Texture.LoadTask textureLoadTask = new Texture.LoadTask(graphicsStrategy, texture);
+        am.scheduleFrom(relativePath, textureLoadTask);
     }
 
     @Override

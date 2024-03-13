@@ -7,11 +7,11 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
+import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
-import johnengine.core.assetmngr.asset.AAsset;
 import johnengine.core.assetmngr.asset.ALoadTask;
 
-public class Texture extends AAsset<Texture.Data> {
+public class Texture implements IGraphicsAsset {
 
     /********************** LoadTask-class **********************/
     
@@ -41,11 +41,11 @@ public class Texture extends AAsset<Texture.Data> {
                     4
                 );
                 
-                this.targetAsset.setAsset(new Data(
+                this.targetAsset.info = new Texture.Info(
                     imageBuffer, 
                     widthBuffer.get(), 
                     heightBuffer.get()
-                ));
+                );
                 
                 this.graphics.loaded();
             }
@@ -55,35 +55,45 @@ public class Texture extends AAsset<Texture.Data> {
     
     /********************** Data-class **********************/
     
-    public static class Data {
-        private ByteBuffer pixels;
-        private int width;
-        private int height;
+    public static class Info {
         
-        public Data(ByteBuffer pixels, int width, int height) {
-            this.pixels = pixels;
-            this.width = width;
-            this.height = height;
+        private static class Data {
+            private ByteBuffer pixels;
+            private int width;
+            private int height;
+            
+            private Data(ByteBuffer pixels, int width, int height) {
+                this.pixels = pixels;
+                this.width = width;
+                this.height = height;
+            }
+        }
+        
+        
+        private Data data;
+        
+        public Info(ByteBuffer pixels, int width, int height) {
+            this.data = new Data(pixels, width, height);
         }
         
         
         public ByteBuffer getPixels() {
-            return this.pixels;
+            return this.data.pixels;
         }
         
         public byte getPixelAt(int x, int y) {
-            if( x >= 0 && x < this.width && y >= 0 && y < this.height )
-            return this.pixels.get(y * this.width + x);
+            if( x >= 0 && x < this.data.width && y >= 0 && y < this.data.height )
+            return this.data.pixels.get(y * this.data.width + x);
             
             return 0;
         }
         
         public int getWidth() {
-            return this.width;
+            return this.data.width;
         }
         
         public int getHeight() {
-            return this.height;
+            return this.data.height;
         }
     }
     
@@ -91,6 +101,7 @@ public class Texture extends AAsset<Texture.Data> {
     /********************** Texture-class **********************/
     
     public static Texture DEFAULT_INSTANCE;
+    public static Texture.Info DEFAULT_TEXTURE_INFO = new Texture.Info(null, 0, 0);
     
     static {
             // T_T
@@ -151,59 +162,55 @@ public class Texture extends AAsset<Texture.Data> {
         
         pixels.flip();
         
-        Texture.Data asset = new Texture.Data(pixels, width, height);
-        DEFAULT_INSTANCE = new Texture("default-texture", true, asset);
+        DEFAULT_TEXTURE_INFO.data = new Texture.Info.Data(pixels, width, height);
     }
     
 
     /********************** Class body **********************/
     
-    private IGraphicsStrategy graphics;
+    private IGraphicsStrategy graphicsStrategy;
+    private Texture.Info info;
+    private String name;
     
-    public Texture(String name, boolean isPersistent, Texture.Data preloadedData) {
-        super(name, isPersistent, preloadedData);
-        this.graphics = DEFAULT_INSTANCE.getGraphics();
+    public Texture(String name, Texture.Info preloadedInfo, IGraphicsStrategy graphicsStrategy) {
+        this.name = name;
+        this.info = preloadedInfo;
+        this.graphicsStrategy = graphicsStrategy;
     }
     
     public Texture(String name) {
-        super(name);
-        this.graphics = DEFAULT_INSTANCE.getGraphics();
+        this.name = name;
+        this.graphicsStrategy = null;
+        this.info = Texture.DEFAULT_TEXTURE_INFO;
     }
     
-    /*public Texture(String name) {
-        this(name, false, DEFAULT_INSTANCE.get());
-    }*/
-    
     @Override
-    protected void deloadImpl() {
-        this.graphics.deload();
-        this.graphics = DEFAULT_INSTANCE.getGraphics();
+    public void deload() {
+        this.graphicsStrategy.deload();
     }
     
     
     /********************** SETTERS **********************/
     
-    public void setGraphics(IGraphicsStrategy graphics) {
-        this.graphics = graphics;
+    @Override
+    public void setGraphicsStrategy(IGraphicsStrategy graphicsStrategy) {
+        this.graphicsStrategy = graphicsStrategy;
     }
     
     
     /********************** GETTERS **********************/
-    
+
     @Override
-    public Texture.Data getDefault() {
-        return DEFAULT_INSTANCE.get();
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public IGraphicsStrategy getGraphicsStrategy() {
+        return this.graphicsStrategy;
     }
     
-    public IGraphicsStrategy getDefaultGraphics() {
-        return DEFAULT_INSTANCE.getGraphics();
+    public Texture.Info getInfo() {
+        return this.info;
     }
-    
-    public IGraphicsStrategy getGraphics() {
-        return this.graphics;
-    }
-    
-    /*public Texture.Data getUnsafe() {
-        return this.asset;
-    }*/
 }

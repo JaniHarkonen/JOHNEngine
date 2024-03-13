@@ -20,7 +20,7 @@ public class VAOCache extends TimedCache<MeshGraphicsGL, VAO> {
         return vao;
         
             // Generate a new VAO and cache it
-        MeshGraphicsGL.VBOContainer vbos = meshGraphics.getVBOs();
+        MeshGraphicsGL.VBOContainer vbos = meshGraphics.getGraphics();
         vao = new VAO();
         vao
         .addVBO(vbos.getVBO(VBOType.VERTICES))

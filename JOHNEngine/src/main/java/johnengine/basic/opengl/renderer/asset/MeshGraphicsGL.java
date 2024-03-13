@@ -6,6 +6,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.mesh.MeshInfo;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.vao.AVBO;
 import johnengine.basic.opengl.renderer.vao.VBOIndices;
@@ -13,22 +14,41 @@ import johnengine.basic.opengl.renderer.vao.VBOType;
 import johnengine.basic.opengl.renderer.vao.VBOVector2f;
 import johnengine.basic.opengl.renderer.vao.VBOVector3f;
 
-public class MeshGraphicsGL implements IGraphicsStrategyGL {
+public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContainer> {
     
     /*********************** VBOContainer-class ***********************/
     
     public static class VBOContainer {
-        private Map<VBOType, AVBO<?, ?>> vbos;
-        private VBOIndices indicesVBO;
+        
+        private static class State {
+            private Map<VBOType, AVBO<?, ?>> vbos;
+            private VBOIndices indicesVBO;
+            
+            private State() {
+                this.vbos = new HashMap<VBOType, AVBO<?, ?>>();
+                this.indicesVBO = null;
+            }
+        }
+        
+        
+        private State state;
+        private boolean isPersistent;
+        
+        public VBOContainer(boolean isPersistent) {
+            this.state = new State();
+            this.isPersistent = false;
+        }
         
         public VBOContainer() {
-            this.vbos = new HashMap<VBOType, AVBO<?, ?>>();
-            this.indicesVBO = null;
+            this(false);
         }
         
         
         boolean disposeAll() {
-            for( Map.Entry<VBOType, AVBO<?, ?>> en : this.vbos.entrySet() )
+            if( this.isPersistent )
+            return false;
+            
+            for( Map.Entry<VBOType, AVBO<?, ?>> en : this.state.vbos.entrySet() )
             en.getValue().dispose();
             
             return true;
@@ -36,54 +56,35 @@ public class MeshGraphicsGL implements IGraphicsStrategyGL {
         
         public void setVBO(VBOType key, AVBO<?, ?> vbo) {
             if( vbo instanceof VBOIndices )
-            this.indicesVBO = (VBOIndices) vbo;
+            this.state.indicesVBO = (VBOIndices) vbo;
             else
-            this.vbos.put(key, vbo);
+            this.state.vbos.put(key, vbo);
+        }
+        
+        public void setPersistent(boolean isPersistent) {
+            this.isPersistent = isPersistent;
         }
         
         public AVBO<?, ?> getVBO(VBOType key) {
-            return this.vbos.get(key);
+            return this.state.vbos.get(key);
         }
         
         public VBOIndices getIndicesVBO() {
-            return this.indicesVBO;
+            return this.state.indicesVBO;
         }
     }
     
     
-    /*********************** MeshGL-class ***********************/
+    /*********************** MeshGraphicsGL-class ***********************/
+    
+    public static VBOContainer DEFAULT_VBOS = new VBOContainer(true);
     
     public static void generateDefault(RendererGL renderer) {
-        MeshGraphicsGL meshGraphics = new MeshGraphicsGL(renderer, Mesh.DEFAULT_INSTANCE);
-        meshGraphics.generate();
+        VBOContainer defaultVBOContainer = generateVBOs(MeshInfo.DEFAULT_MESH_DATA);
+        MeshGraphicsGL.DEFAULT_VBOS.state = defaultVBOContainer.state;
     }
     
-    
-    /*********************** Class body ***********************/
-    
-    private final RendererGL renderer;
-    private Mesh mesh;
-    private VBOContainer vbos;
-    
-    public MeshGraphicsGL(RendererGL renderer, Mesh mesh) {
-        this.mesh = mesh;
-        this.renderer = renderer;
-        this.vbos = null;
-    }
-    
-    public MeshGraphicsGL(RendererGL renderer) {
-        this(renderer, null);
-    }
-    
-    
-    @Override
-    public void loaded() {
-        this.renderer.getGraphicsAssetProcessor().generateGraphics(this);
-    }
-    
-    @Override
-    public boolean generate() {
-        Mesh.Data data = this.mesh.getUnsafe();
+    private static VBOContainer generateVBOs(MeshInfo.Data data) {
         
             // Generate vertices VBO
         VBOVector3f vboVertices = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
@@ -104,7 +105,7 @@ public class MeshGraphicsGL implements IGraphicsStrategyGL {
             // Generate tangents VBO
         VBOVector3f vboTangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboTangents.generate(data.getTangents());
-
+    
             // Generate tangents VBO
         VBOVector3f vboBitangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboBitangents.generate(data.getBitangents());
@@ -117,30 +118,65 @@ public class MeshGraphicsGL implements IGraphicsStrategyGL {
         vbos.setVBO(VBOType.TANGENTS, vboTangents);
         vbos.setVBO(VBOType.BITANGENTS, vboBitangents);
         
-        this.vbos = vbos;
-        this.mesh.setGraphics(this);
+        return vbos;
+    }
+    
+    
+    /*********************** MeshGraphicsGL-class ***********************/
+    
+    private Mesh mesh;
+    
+    
+    public MeshGraphicsGL(RendererGL renderer, Mesh mesh, boolean isPersistent) {
+        super(renderer, isPersistent);
+        this.mesh = mesh;
+    }
+    
+    public MeshGraphicsGL(RendererGL renderer) {
+        this(renderer, null, false);
+    }
+    
+    
+    @Override
+    public void loaded() {
+        this.renderer.getGraphicsAssetProcessor().generateGraphics(this);
+    }
+    
+    @Override
+    public boolean generate() {
+        MeshInfo.Data data = this.mesh.getInfo().getAsset().get();
+        this.graphics.set(generateVBOs(data));
+        this.mesh.setGraphicsStrategy(this);
         
         return true;
     }
-
+    
     @Override
-    public void deload() {
+    protected void deloadImpl() {
         this.renderer.getGraphicsAssetProcessor().disposeGraphics(this);
     }
     
     @Override
     public boolean dispose() {
-        return this.vbos.disposeAll();
+        return this.graphics.get().disposeAll();
+    }
+    
+    
+    /*********************** SETTERS ***********************/
+    
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
     }
     
     
     /*********************** GETTERS ***********************/
     
-    public VBOContainer getVBOs() {
-        return this.vbos;
-    }
-    
     public Mesh getMesh() {
         return this.mesh;
+    }
+
+    @Override
+    public VBOContainer getDefaultGraphics() {
+        return MeshGraphicsGL.DEFAULT_VBOS;
     }
 }

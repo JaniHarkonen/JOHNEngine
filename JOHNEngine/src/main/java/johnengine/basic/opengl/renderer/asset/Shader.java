@@ -38,11 +38,12 @@ public final class Shader extends TextAsset implements IGeneratable {
     
     @Override
     public boolean generate() {
-        if( this.asset == null )
+        //if( this.asset == null )
+        if( this.asset.isNull() )
         return false;
         
         this.handle = GL46.glCreateShader(this.type);
-        GL46.glShaderSource(this.handle, this.asset);
+        GL46.glShaderSource(this.handle, this.asset.get());
         GL46.glCompileShader(this.handle);
         
             // Failed to compile

@@ -2,11 +2,11 @@ package johnengine.basic.opengl.renderer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import johnengine.basic.opengl.renderer.asset.IGraphicsStrategyGL;
+import johnengine.basic.opengl.renderer.asset.AGraphicsStrategyGL;
 
 public class GraphicsAssetProcessorGL {
-    private final ConcurrentLinkedQueue<IGraphicsStrategyGL> graphicsGenerationQueue;
-    private final ConcurrentLinkedQueue<IGraphicsStrategyGL> graphicsDisposalQueue;
+    private final ConcurrentLinkedQueue<AGraphicsStrategyGL<?>> graphicsGenerationQueue;
+    private final ConcurrentLinkedQueue<AGraphicsStrategyGL<?>> graphicsDisposalQueue;
     
     public GraphicsAssetProcessorGL() {
         this.graphicsGenerationQueue = new ConcurrentLinkedQueue<>();
@@ -14,16 +14,16 @@ public class GraphicsAssetProcessorGL {
     }
     
     
-    public void disposeGraphics(IGraphicsStrategyGL graphicsStrategy) {
+    public void disposeGraphics(AGraphicsStrategyGL<?> graphicsStrategy) {
         this.graphicsDisposalQueue.add(graphicsStrategy);
     }
     
-    public void generateGraphics(IGraphicsStrategyGL graphicsStrategy) {
+    public void generateGraphics(AGraphicsStrategyGL<?> graphicsStrategy) {
         this.graphicsGenerationQueue.add(graphicsStrategy);
     }
     
     public void processGraphicsRequests() {
-        IGraphicsStrategyGL graphicsStrategy;
+        AGraphicsStrategyGL<?> graphicsStrategy;
         while( (graphicsStrategy = this.graphicsGenerationQueue.poll()) != null )
         graphicsStrategy.generate();
         

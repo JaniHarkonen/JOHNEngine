@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.mesh.MeshInfo;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.assets.texture.Texture;
@@ -232,7 +233,7 @@ public class CachedVAORenderStrategy implements
             
                 // Get VAO and mesh data
             Mesh mesh = unit.getMesh();
-            Mesh.Data meshData = unit.getMesh().get();
+            MeshInfo meshData = unit.getMesh().getInfo();
             
                 // Create the material struct
             Material material = mesh.getMaterial();
@@ -244,7 +245,7 @@ public class CachedVAORenderStrategy implements
                 // Get and bind texture
             Texture texture = material.getTexture();
             Texture normalMap = material.getNormalMap();
-            TextureGraphicsGL textureGraphics = (TextureGraphicsGL) texture.getGraphics();
+            TextureGraphicsGL textureGraphics = (TextureGraphicsGL) texture.getGraphicsStrategy();
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
             
@@ -254,14 +255,14 @@ public class CachedVAORenderStrategy implements
             if( normalMap != null )
             {
                 GL46.glActiveTexture(GL46.GL_TEXTURE1);
-                ((TextureGraphicsGL) normalMap.getGraphics()).bind();
+                ((TextureGraphicsGL) normalMap.getGraphicsStrategy()).bind();
             }
             
                 // Bind mesh and issue draw call
-            MeshGraphicsGL meshGraphics = (MeshGraphicsGL) mesh.getGraphics();
+            MeshGraphicsGL meshGraphics = (MeshGraphicsGL) mesh.getGraphicsStrategy();
             VAO vao = this.vaoCache.fetchVAO(meshGraphics);
             vao.bind();
-            GL46.glDrawElements(GL46.GL_TRIANGLES, meshData.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
+            GL46.glDrawElements(GL46.GL_TRIANGLES, meshData.getAsset().get().getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
         }
         
             // Post-render
