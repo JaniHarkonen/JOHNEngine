@@ -10,44 +10,9 @@ import johnengine.core.window.IWindow;
 
 public final class MouseKeyboardInputGL implements IInput {
     
-    /************************ BooleanEvent-class ************************/
-    
-    private static class BooleanEvent {
-        protected boolean didOccur;
-        
-        public BooleanEvent() {
-            this.didOccur = false;
-        }
-    }
-    
-    
-    /************************ MouseEvent-class ************************/
-    
-    private static class MouseEvent extends BooleanEvent {
-        protected int mouseButton;
-        
-        public MouseEvent(int mouseButton) {
-            super();
-            this.mouseButton = mouseButton;
-        }
-    }
-    
-    
-    /************************ KeyboardEvent-class ************************/
-    
-    private static class KeyboardEvent extends BooleanEvent {
-        protected int key;
-        
-        public KeyboardEvent(int key) {
-            super();
-            this.key = key;
-        }
-    }
-    
-    
     /************************ KeyDown-class ************************/
     
-    public static class KeyDown extends KeyboardEvent implements IInput.Event<Boolean> {
+    public static class KeyDown extends AKeyboardButtonEvent {
         
         public KeyDown(int key) {
             super(key);
@@ -68,7 +33,7 @@ public final class MouseKeyboardInputGL implements IInput {
     
     /************************ KeyReleased-class ************************/
     
-    public static class KeyReleased extends KeyboardEvent implements IInput.Event<Boolean> {
+    public static class KeyReleased extends AKeyboardButtonEvent {
         
         public KeyReleased(int key) {
             super(key);
@@ -105,7 +70,7 @@ public final class MouseKeyboardInputGL implements IInput {
     
     /************************ MouseDown-class ************************/
     
-    public static class MouseDown extends MouseEvent implements IInput.Event<Boolean> {
+    public static class MouseDown extends AMouseButtonEvent {
         
         public MouseDown(int mouseButton) {
             super(mouseButton);
@@ -126,7 +91,7 @@ public final class MouseKeyboardInputGL implements IInput {
     
     /************************ MouseReleased-class ************************/
     
-    public static class MouseReleased extends MouseEvent implements IInput.Event<Boolean> {
+    public static class MouseReleased extends AMouseButtonEvent {
         
         public MouseReleased(int mouseButton) {
             super(mouseButton);

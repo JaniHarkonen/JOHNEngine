@@ -34,8 +34,8 @@ mouse delta on low frame rates
 	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
 
 - add default material
-- Input classes should probably convert mouse coordinates into floats instead of 
-deferring this to the controllers
+	-> it's easier to do this after implementing a Globals-class that contains
+	default configurations
 - reconsider the way that Input is being handled
 	x. is AInput needed, what about IInput (probably the ladder)
 	2. how would gamepad controllers be implemented?
@@ -45,10 +45,6 @@ deferring this to the controllers
 - THERE ARE READ-ONLY VECTORS (Vector3fc, Quaternionfc)
 	-- see if these can be implemented throughout the codebase
 	-- don't forget Quaternions
-- instead of having MouseKeyboardInputGL, have InputGL which handles all OpenGL-
-based input
-- KeyDown should be Key instead so that key release can be handled with the same
-InputEvent by setting intensity to 0.0f
 - have a single final class where global declarations are made
 	-- perhaps split the class up into different classes
 - consider changing RenderStrategies to RenderPasses
