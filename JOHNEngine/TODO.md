@@ -19,7 +19,6 @@
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
 of the game world
-- ARequest should be IRequest due to no internal state
 - cursor should not lock to center as this causes weird issues when calculating 
 mouse delta on low frame rates
 	-> use OpenGL's disable cursor
@@ -42,17 +41,9 @@ mouse delta on low frame rates
 	3. what changes as opposed to GLFW mouse and keyboard input?
 	4. can this be generalized to the way that the input is being handled currently?
 - could compute shaders be used to calculate collisions?
-- THERE ARE READ-ONLY VECTORS (Vector3fc, Quaternionfc)
-	-- see if these can be implemented throughout the codebase
-	-- don't forget Quaternions
 - have a single final class where global declarations are made
 	-- perhaps split the class up into different classes
 - consider changing RenderStrategies to RenderPasses
-- move IRenderBufferStrategy to core as it is no longer dependent on JWorld
-- reconsider the whole idea of having the RequestManager in 'core'-package
-	-- inheritance should be removed as there's no reason for polymorphism
-	-- different types of RequestManagers should not share functionality via
-	inheritance
 - reconsider the idea of RenderUnits
 	-- at least RenderUnits shouldn't have private fields, rather, their fields 
 	should be package private
