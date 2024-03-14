@@ -10,8 +10,21 @@ import org.lwjgl.system.MemoryUtil;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.core.assetmngr.asset.ALoadTask;
+import johnengine.core.exception.JOHNException;
 
 public class Texture implements IGraphicsAsset {
+    
+    /********************** MissingTextureInfoException-class **********************/
+    
+    @SuppressWarnings("serial")
+    public static class MissingTextureInfoException extends JOHNException {
+        public MissingTextureInfoException(
+            String message, 
+            Texture texture) 
+        {
+            super(message, "%textureName", texture.getName(), "%textureInstance", texture);
+        }
+    }
 
     /********************** LoadTask-class **********************/
     
@@ -176,6 +189,15 @@ public class Texture implements IGraphicsAsset {
         this.name = name;
         this.info = preloadedInfo;
         this.graphicsStrategy = graphicsStrategy;
+        
+        if( this.info == null )
+        {
+            throw new MissingTextureInfoException(
+                "Trying to create texture '%textureName' with null info!" +
+                "\n Texture instance: %textureInstance",
+                this
+            );
+        }
     }
     
     public Texture(String name) {

@@ -5,21 +5,15 @@ import org.lwjgl.opengl.GL46;
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.testing.DebugUtils;
+import johnengine.core.exception.JOHNException;
 
 public final class Shader extends TextAsset implements IGeneratable {
     
-    public static class ShaderException extends RuntimeException {
-        public ShaderException(String message) {
-            super(message);
-        }
-        
+    @SuppressWarnings("serial")
+    public static class ShaderException extends JOHNException {
+
         public ShaderException(String message, String shaderName, String reason) {
-            this(
-                message
-                .replaceAll("%shader", shaderName)
-                .replaceAll("%reason", reason)
-            );
+            super(message, "%shader", shaderName, "%reason", "\n" + reason);
         }
     }
     
@@ -38,7 +32,6 @@ public final class Shader extends TextAsset implements IGeneratable {
     
     @Override
     public boolean generate() {
-        //if( this.asset == null )
         if( this.asset.isNull() )
         return false;
         
@@ -49,14 +42,12 @@ public final class Shader extends TextAsset implements IGeneratable {
             // Failed to compile
         if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE )
         {
-            DebugUtils.log(this, GL46.glGetShaderInfoLog(this.handle));
-            //throw new ShaderException("Failed to compile a shader '%shader'!", this.name);
-            throw (new ShaderException(
+            throw new ShaderException(
                 "Failed to compile shader '%shader'!\n" +
                 "Reason: %reason",
                 this.name,
                 GL46.glGetShaderInfoLog(this.handle)
-            ));
+            );
         }
         
         return true;

@@ -13,6 +13,7 @@ import org.lwjgl.assimp.AIVector3D;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.sceneobj.Material;
+import johnengine.core.exception.JOHNException;
 
 public class Mesh implements IGraphicsAsset {
     
@@ -30,6 +31,18 @@ public class Mesh implements IGraphicsAsset {
         
         public int getIndex(int position) {
             return this.indices[position];
+        }
+    }
+    
+    /********************** MissingMeshInfoException-class **********************/
+    
+    @SuppressWarnings("serial")
+    public static class MissingMeshInfoException extends JOHNException {
+        public MissingMeshInfoException(
+            String message,
+            Mesh mesh) 
+        {
+            super(message, "%meshName", mesh.getName(), "%meshInstance", mesh);
         }
     }
     
@@ -106,6 +119,15 @@ public class Mesh implements IGraphicsAsset {
         this.material = Material.DEFAULT_MATERIAL;
         this.graphicsStrategy = graphicsStrategy;
         this.info = preloadedInfo;
+        
+        if( this.info == null )
+        {
+            throw new MissingMeshInfoException(
+                "Trying to create mesh '%meshName' with null info!" +
+                "\n Mesh instance: %meshInstance",
+                this
+            );
+        }
     }
     
     public Mesh(String name) {

@@ -12,10 +12,33 @@ import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.assetmngr.asset.IAsset;
+import johnengine.core.exception.JOHNException;
 import johnengine.core.threadable.AThreadable;
-import johnengine.testing.DebugUtils;
 
 public final class AssetManager implements IEngineComponent {
+    
+    /************************* NullTaskException-class *************************/
+    
+    @SuppressWarnings("serial")
+    public static class NullTaskException extends JOHNException {
+        public NullTaskException() {
+            super("Trying to schedule a NULL loading task!");
+        }
+    }
+    
+    /************************* NullTaskException-class *************************/
+    
+    @SuppressWarnings("serial")
+    public static class NonExistingRootDirectoryException extends JOHNException {
+        public NonExistingRootDirectoryException(String directory) {
+            super(
+                "Trying to set a non-existing root directory!\nDirectory:\n%directory", 
+                "%directory", 
+                directory
+            );
+        }
+    }
+    
     
     /************************* LoaderProcess-class *************************/
     
@@ -132,7 +155,7 @@ public final class AssetManager implements IEngineComponent {
     
     public AssetManager scheduleFrom(String path, ALoadTask loadTask) {
         if( loadTask == null )
-        DebugUtils.log(this, "FAIL: null load task");
+        throw new NullTaskException();
         else
         loadTask.setPath(this.rootDirectory + FileUtils.normalizePathSlashes(path));
         
@@ -184,7 +207,7 @@ public final class AssetManager implements IEngineComponent {
         if( Files.exists(Paths.get(normalizedRootDirectory)) )
         this.rootDirectory = normalizedRootDirectory + "/";
         else
-        DebugUtils.log(this, "ERROR: Trying to set a non-existing root directory!");
+        throw new NonExistingRootDirectoryException(normalizedRootDirectory);
     }
     
     public IAsset getAsset(String assetName) {

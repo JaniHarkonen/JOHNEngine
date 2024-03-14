@@ -5,7 +5,6 @@ import java.io.File;
 
 import org.lwjgl.glfw.GLFW;
 
-import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
@@ -95,7 +94,7 @@ public class TestGame extends AGame {
         JTestBox box = new JTestBox(this.worldMain, model);
         box.attach(model);
         model.getTransform().getScale().inherit();
-
+        
         this.worldMain.createInstance(box);
         
         ControlSchema cs = new ControlSchema();
@@ -191,21 +190,21 @@ public class TestGame extends AGame {
     private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
         am.declareAsset(mesh);
         
-        IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(mesh);
-        mesh.setGraphicsStrategy(graphicsStrategy);
-        
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
-        objLoadTask.expectMesh(mesh, graphicsStrategy);
+        objLoadTask.expectMesh(
+            mesh, 
+            this.window.getRenderer().getGraphicsStrategy(mesh)
+        );
         am.scheduleFrom(relativePath, objLoadTask);
     }
     
     private void loadTexture(String relativePath, Texture texture, AssetManager am) {
         am.declareAsset(texture);
         
-        IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(texture);
-        texture.setGraphicsStrategy(graphicsStrategy);
-        
-        Texture.LoadTask textureLoadTask = new Texture.LoadTask(graphicsStrategy, texture);
+        Texture.LoadTask textureLoadTask = new Texture.LoadTask(
+            this.window.getRenderer().getGraphicsStrategy(texture), 
+            texture
+        );
         am.scheduleFrom(relativePath, textureLoadTask);
     }
 

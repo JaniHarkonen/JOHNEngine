@@ -59,6 +59,7 @@ public class SceneObjectLoadTask extends ALoadTask {
             ExpectedMesh expectedMesh = this.expectedMeshes.get(i);
             AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(i));
             Mesh.populateMeshWithAIMesh(expectedMesh.mesh, aiMesh);
+            expectedMesh.mesh.setGraphicsStrategy(expectedMesh.graphicsStrategy);
             expectedMesh.graphicsStrategy.loaded();
         }
         

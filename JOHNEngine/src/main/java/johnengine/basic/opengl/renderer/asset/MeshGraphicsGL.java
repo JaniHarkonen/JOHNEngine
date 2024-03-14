@@ -59,6 +59,8 @@ public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContai
             this.state.indicesVBO = (VBOIndices) vbo;
             else
             this.state.vbos.put(key, vbo);
+            
+            vbo.setType(key);
         }
         
         public void setPersistent(boolean isPersistent) {
@@ -125,7 +127,6 @@ public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContai
     /*********************** MeshGraphicsGL-class ***********************/
     
     private Mesh mesh;
-    
     
     public MeshGraphicsGL(RendererGL renderer, Mesh mesh, boolean isPersistent) {
         super(renderer, isPersistent);

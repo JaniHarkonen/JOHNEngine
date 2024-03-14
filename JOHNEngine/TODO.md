@@ -1,7 +1,6 @@
 ## TODO
 - handle scrolling in Input
 ???? get information about the monitor from window
-???? new exception class??
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
 	having opt-in components

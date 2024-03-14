@@ -5,11 +5,19 @@ import java.io.FileReader;
 
 import johnengine.core.assetmngr.asset.AAsset;
 import johnengine.core.assetmngr.asset.ALoadTask;
-import johnengine.testing.DebugUtils;
+import johnengine.core.exception.JOHNException;
 
 public class TextAsset extends AAsset<String> {
-
+    
     public static class LoadTask extends ALoadTask {
+        
+        @SuppressWarnings("serial")
+        public static class TextFileException extends JOHNException {
+            public TextFileException(String message, TextAsset targetAsset, String path) {
+                super(message, "%name", targetAsset.getName(), "%path", path);
+            }
+        }
+        
         protected String text;
         protected TextAsset targetAsset;
         
@@ -40,7 +48,12 @@ public class TextAsset extends AAsset<String> {
             }
             catch( Exception e )
             {
-                DebugUtils.log(this, "Error loading text file!");
+                e.printStackTrace();
+                throw new TextFileException(
+                    "Failed to load text asset '%name' from path:\n%path",
+                    this.targetAsset,
+                    this.path
+                );
             }
         }
         

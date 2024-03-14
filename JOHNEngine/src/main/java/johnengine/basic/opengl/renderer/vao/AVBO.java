@@ -12,6 +12,7 @@ public abstract class AVBO<D, T> implements IGeneratable, IBindable {
     protected int size;
     protected int handle;
     protected D[] data;
+    protected VBOType type;
     
     public AVBO(int target, int size, IBufferGL<T> buffer) {
         this.target = target;
@@ -19,6 +20,7 @@ public abstract class AVBO<D, T> implements IGeneratable, IBindable {
         this.buffer = buffer;
         this.handle = -1;
         this.data = null;
+        this.type = null;
     }
 
     
@@ -66,6 +68,10 @@ public abstract class AVBO<D, T> implements IGeneratable, IBindable {
         this.data = data;
     }
     
+    public void setType(VBOType type) {
+        this.type = type;
+    }
+    
     
     public int getHandle() {
         return this.handle;
@@ -77,5 +83,9 @@ public abstract class AVBO<D, T> implements IGeneratable, IBindable {
     
     public int getSize() {
         return this.size;
+    }
+    
+    public VBOType getType() {
+        return this.type;
     }
 }
