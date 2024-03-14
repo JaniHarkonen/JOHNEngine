@@ -1,6 +1,7 @@
 package johnengine.basic.opengl.renderer;
 
 import johnengine.core.IRenderable;
+import johnengine.core.renderer.IRenderBufferStrategy;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderStrategy;
 

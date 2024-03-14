@@ -1,7 +1,6 @@
 ## TODO
 - handle scrolling in Input
 ???? get information about the monitor from window
-- remove cringe
 ???? new exception class??
 - AGame may not need getters for its components
 	-- these should be removed if possible as it ruins the modularity of 
@@ -43,7 +42,6 @@ deferring this to the controllers
 	2. how would gamepad controllers be implemented?
 	3. what changes as opposed to GLFW mouse and keyboard input?
 	4. can this be generalized to the way that the input is being handled currently?
-- there are two IRenderBufferStrategy classes?
 - could compute shaders be used to calculate collisions?
 - THERE ARE READ-ONLY VECTORS (Vector3fc, Quaternionfc)
 	-- see if these can be implemented throughout the codebase

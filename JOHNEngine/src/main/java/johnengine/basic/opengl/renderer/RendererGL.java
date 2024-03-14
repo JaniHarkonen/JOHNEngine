@@ -14,6 +14,7 @@ import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderStrategy;
 import johnengine.core.FileUtils;
+import johnengine.core.renderer.IRenderBufferStrategy;
 import johnengine.core.renderer.IRenderStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.testing.DebugUtils;

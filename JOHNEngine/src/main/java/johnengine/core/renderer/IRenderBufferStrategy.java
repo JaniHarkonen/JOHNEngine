@@ -1,7 +1,4 @@
-package johnengine.basic.opengl.renderer;
-
-import johnengine.core.renderer.IRenderContext;
-import johnengine.core.renderer.IRenderStrategy;
+package johnengine.core.renderer;
 
 public interface IRenderBufferStrategy {
 
