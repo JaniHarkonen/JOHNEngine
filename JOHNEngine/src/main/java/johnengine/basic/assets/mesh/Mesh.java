@@ -103,14 +103,14 @@ public class Mesh implements IGraphicsAsset {
     
     public Mesh(String name, MeshInfo preloadedInfo, IGraphicsStrategy graphicsStrategy) {
         this.name = name;
-        this.material = null;
+        this.material = Material.DEFAULT_MATERIAL;
         this.graphicsStrategy = graphicsStrategy;
         this.info = preloadedInfo;
     }
     
     public Mesh(String name) {
         this.name = name;
-        this.material = null;
+        this.material = Material.DEFAULT_MATERIAL;
         this.graphicsStrategy = null;
         this.info = MeshInfo.DEFAULT_MESH_INFO;
     }

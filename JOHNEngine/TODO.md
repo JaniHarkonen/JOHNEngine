@@ -34,7 +34,6 @@ mouse delta on low frame rates
 	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
 
 - add default material
-- see if Material can be refactored into binding all its textures through a method
 - Input classes should probably convert mouse coordinates into floats instead of 
 deferring this to the controllers
 - reconsider the way that Input is being handled

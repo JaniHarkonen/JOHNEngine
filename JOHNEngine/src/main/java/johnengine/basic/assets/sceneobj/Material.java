@@ -6,9 +6,21 @@ import johnengine.basic.assets.texture.Texture;
 
 public class Material {
 
-    public static final Vector4f DEFAULT_DIFFUSE_COLOR = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
-    public static final Vector4f DEFAULT_SPECULAR_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    public static final Vector4f DEFAULT_DIFFUSE_COLOR = 
+        new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
+    
+    public static final Vector4f DEFAULT_SPECULAR_COLOR = 
+        new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    
     public static final float DEFAULT_REFLECTANCE = 0.4f;
+    
+    public static final Material DEFAULT_MATERIAL = 
+        new Material(
+            Texture.DEFAULT_INSTANCE,
+            Material.DEFAULT_DIFFUSE_COLOR,
+            Material.DEFAULT_SPECULAR_COLOR,
+            Material.DEFAULT_REFLECTANCE
+        );
     
     private Texture texture;
     private Texture normal;
@@ -16,7 +28,12 @@ public class Material {
     private Vector4f specularColor;
     private float reflectance;
     
-    public Material(Texture texture, Vector4f diffuseColor, Vector4f specularColor, float reflectance) {
+    public Material(
+        Texture texture, 
+        Vector4f diffuseColor, 
+        Vector4f specularColor, 
+        float reflectance
+    ) {
         this.diffuseColor = diffuseColor;
         this.specularColor = specularColor;
         this.texture = texture;
