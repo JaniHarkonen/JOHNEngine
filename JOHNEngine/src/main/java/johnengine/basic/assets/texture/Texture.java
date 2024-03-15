@@ -5,8 +5,8 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.core.assetmngr.asset.ALoadTask;
@@ -18,10 +18,7 @@ public class Texture implements IGraphicsAsset {
     
     @SuppressWarnings("serial")
     public static class MissingTextureInfoException extends JOHNException {
-        public MissingTextureInfoException(
-            String message, 
-            Texture texture) 
-        {
+        public MissingTextureInfoException(String message, Texture texture) {
             super(message, "%textureName", texture.getName(), "%textureInstance", texture);
         }
     }
@@ -59,7 +56,6 @@ public class Texture implements IGraphicsAsset {
                     widthBuffer.get(), 
                     heightBuffer.get()
                 );
-                
                 this.graphics.loaded();
             }
         }
@@ -113,74 +109,6 @@ public class Texture implements IGraphicsAsset {
     
     /********************** Texture-class **********************/
     
-    public static Texture DEFAULT_INSTANCE;
-    public static Texture.Info DEFAULT_TEXTURE_INFO = new Texture.Info(null, 0, 0);
-    
-    static {
-            // T_T
-        String bytes = 
-            "0000000000000000" + 
-            "0000000000000000" + 
-            "0000000000000000" + 
-            "0111110000111110" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0001000000001000" + 
-            "0000011111100000" + 
-            "0000000000000000" + 
-            "0000000000000000" + 
-            "0000000000000000";
-        
-            // WTF
-        /*
-        String bytes = 
-            "0001000000001000" + 
-            "0001000110001000" + 
-            "0000101001010000" + 
-            "0000010000100000" + 
-            "0000000000000000" + 
-            "0000011111110000" + 
-            "0000000010000000" + 
-            "0000000010000000" + 
-            "0000000010000000" + 
-            "0000000010000000" + 
-            "0000000000000000" + 
-            "0000011111100000" + 
-            "0000000000100000" + 
-            "0000000111100000" + 
-            "0000000000100000" + 
-            "0000000000100000";
-          */  
-        
-        int width = 16;
-        int height = 16;
-        int channelCount = 4;
-        ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
-        
-            // Populate pixels upside-down due to OpenGL
-        for( int i = bytes.length() - 1; i >= 0; i-- )
-        {
-            byte value = (bytes.charAt(i) == '1') ? (byte) 255 : 0;
-            
-            pixels.put((byte) value);
-            pixels.put((byte) value);
-            pixels.put((byte) value);
-            pixels.put((byte) 255);
-        }
-        
-        pixels.flip();
-        
-        DEFAULT_TEXTURE_INFO.data = new Texture.Info.Data(pixels, width, height);
-    }
-    
-
-    /********************** Class body **********************/
-    
     private IGraphicsStrategy graphicsStrategy;
     private Texture.Info info;
     private String name;
@@ -203,7 +131,7 @@ public class Texture implements IGraphicsAsset {
     public Texture(String name) {
         this.name = name;
         this.graphicsStrategy = null;
-        this.info = Texture.DEFAULT_TEXTURE_INFO;
+        this.info = Defaults.DEFAULT_TEXTURE_INFO;
     }
     
     @Override

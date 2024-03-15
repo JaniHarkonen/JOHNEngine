@@ -5,16 +5,6 @@
 	-- these should be removed if possible as it ruins the modularity of 
 	having opt-in components
 - add disposing/destruction methods to all relevant classes
-- in order to do indirect rendering do this:
-	-- each rendered instance must produce an entry in a map before being 
-	rendered
-		o the map will pair meshes with maps of textures
-		o maps of textures will pair textures with lists of "orientations"
-		that combine rotation and position vectors
-	-- the renderer will go through the mesh-texture-orientation data structures
-	iteratively and render them
-	-- ARenderAssets should have bind()- and generate()-methods instead of a
-	render()-method (they should not implement IDrawable)
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
 of the game world
@@ -31,17 +21,12 @@ mouse delta on low frame rates
 	exception of state objects (VAOs and FBOs)
 	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
 
-- add default material
-	-> it's easier to do this after implementing a Globals-class that contains
-	default configurations
 - reconsider the way that Input is being handled
 	x. is AInput needed, what about IInput (probably the ladder)
 	2. how would gamepad controllers be implemented?
 	3. what changes as opposed to GLFW mouse and keyboard input?
 	4. can this be generalized to the way that the input is being handled currently?
 - could compute shaders be used to calculate collisions?
-- have a single final class where global declarations are made
-	-- perhaps split the class up into different classes
 - consider changing RenderStrategies to RenderPasses
 - reconsider the idea of RenderUnits
 	-- at least RenderUnits shouldn't have private fields, rather, their fields 

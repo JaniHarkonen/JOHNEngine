@@ -3,6 +3,7 @@ package johnengine.basic.assets.mesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import johnengine.Defaults;
 import johnengine.core.assetmngr.asset.AAsset;
 
 public class MeshInfo extends AAsset<MeshInfo.Data> {
@@ -109,10 +110,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
     
     /********************** MeshInfo-class **********************/
     
-    public static MeshInfo.Data DEFAULT_MESH_DATA = new MeshInfo.Data();
-    public static MeshInfo DEFAULT_MESH_INFO = new MeshInfo("default-mesh-info", true, DEFAULT_MESH_DATA);
-    
-    static {
+    public static void generateDefaults() {
         MeshInfo.Data.State dataState = new MeshInfo.Data.State(
                 // Vertices
             new Vector3f[] {
@@ -121,6 +119,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
                 new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
                 new Vector3f(0.5f, 0.5f, -1.0f)          // top right
             }, 
+                // Normals
             new Vector3f[] {
                     // first polygon
                 new Vector3f(0.0f, 0.0f, -1.0f),
@@ -144,6 +143,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
                 new Mesh.Face(new int[] {0, 1, 3}),
                 new Mesh.Face(new int[] {3, 1, 2})
             },
+                // Tangents
             new Vector3f[] {
                     // first polygon
                 new Vector3f(1.0f, 0.0f, 0.0f),
@@ -155,6 +155,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
                 new Vector3f(1.0f, 0.0f, 0.0f),
                 new Vector3f(1.0f, 0.0f, 0.0f)
             },
+                // Bitangents
             new Vector3f[] {
                     // first polygon
                 new Vector3f(0.0f, 1.0f, 0.0f),
@@ -168,7 +169,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
             }
         );
         
-        DEFAULT_MESH_DATA.state = dataState;
+        Defaults.DEFAULT_MESHINFO_DATA.state = dataState;
     }
     
 
@@ -183,7 +184,7 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
     
     @Override
     public MeshInfo.Data getDefaultAsset() {
-        return DEFAULT_MESH_DATA;
+        return Defaults.DEFAULT_MESHINFO_DATA;
     }
     
     @Override

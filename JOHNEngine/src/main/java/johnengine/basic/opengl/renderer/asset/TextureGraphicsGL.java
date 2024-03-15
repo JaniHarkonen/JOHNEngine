@@ -2,6 +2,7 @@ package johnengine.basic.opengl.renderer.asset;
 
 import org.lwjgl.opengl.GL46;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.renderer.RendererGL;
@@ -47,7 +48,9 @@ public class TextureGraphicsGL extends AGraphicsStrategyGL<TextureGraphicsGL.Tex
     public static final TextureHandle DEFAULT_TEXTURE_HANDLE = new TextureHandle();
     
     public static void generateDefault(RendererGL renderer) {
-        DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Texture.DEFAULT_TEXTURE_INFO);
+        //DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Texture.DEFAULT_TEXTURE_INFO);
+        DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Defaults.DEFAULT_TEXTURE_INFO);
+        Defaults.DEFAULT_TEXTURE.setGraphicsStrategy(new TextureGraphicsGL(renderer, Defaults.DEFAULT_TEXTURE, true));
     }
     
     private static int generateTexture(Texture.Info textureInfo) {

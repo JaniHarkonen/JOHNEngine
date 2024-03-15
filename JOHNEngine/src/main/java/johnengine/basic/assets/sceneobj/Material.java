@@ -2,26 +2,10 @@ package johnengine.basic.assets.sceneobj;
 
 import org.joml.Vector4f;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.texture.Texture;
 
 public class Material {
-
-    public static final Vector4f DEFAULT_DIFFUSE_COLOR = 
-        new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
-    
-    public static final Vector4f DEFAULT_SPECULAR_COLOR = 
-        new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    public static final float DEFAULT_REFLECTANCE = 0.4f;
-    
-    public static final Material DEFAULT_MATERIAL = 
-        new Material(
-            Texture.DEFAULT_INSTANCE,
-            Material.DEFAULT_DIFFUSE_COLOR,
-            Material.DEFAULT_SPECULAR_COLOR,
-            Material.DEFAULT_REFLECTANCE
-        );
-    
     private Texture texture;
     private Texture normal;
     private Vector4f diffuseColor;
@@ -44,9 +28,9 @@ public class Material {
     public Material() {
         this(
             null, 
-            DEFAULT_DIFFUSE_COLOR,
-            DEFAULT_SPECULAR_COLOR,
-            DEFAULT_REFLECTANCE
+            Defaults.DEFAULT_DIFFUSE_COLOR,
+            Defaults.DEFAULT_SPECULAR_COLOR,
+            Defaults.DEFAULT_REFLECTANCE
         );
     }
     

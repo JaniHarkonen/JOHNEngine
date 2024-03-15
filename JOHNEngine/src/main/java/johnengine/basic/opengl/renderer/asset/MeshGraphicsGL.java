@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.mesh.MeshInfo;
 import johnengine.basic.opengl.renderer.RendererGL;
@@ -82,7 +83,7 @@ public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContai
     public static VBOContainer DEFAULT_VBOS = new VBOContainer(true);
     
     public static void generateDefault(RendererGL renderer) {
-        VBOContainer defaultVBOContainer = generateVBOs(MeshInfo.DEFAULT_MESH_DATA);
+        VBOContainer defaultVBOContainer = generateVBOs(Defaults.DEFAULT_MESHINFO_DATA);
         MeshGraphicsGL.DEFAULT_VBOS.state = defaultVBOContainer.state;
     }
     

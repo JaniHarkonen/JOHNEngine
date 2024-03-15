@@ -4,7 +4,6 @@ import java.awt.Point;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
@@ -14,7 +13,6 @@ import johnengine.core.renderer.IRenderer;
 import johnengine.core.threadable.IThreadable;
 import johnengine.core.window.IWindow;
 import johnengine.core.window.WindowRequestManager;
-import johnengine.testing.DebugUtils;
 
 public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 {

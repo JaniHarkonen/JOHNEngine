@@ -10,6 +10,7 @@ import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.sceneobj.Material;
@@ -38,10 +39,7 @@ public class Mesh implements IGraphicsAsset {
     
     @SuppressWarnings("serial")
     public static class MissingMeshInfoException extends JOHNException {
-        public MissingMeshInfoException(
-            String message,
-            Mesh mesh) 
-        {
+        public MissingMeshInfoException(String message, Mesh mesh) {
             super(message, "%meshName", mesh.getName(), "%meshInstance", mesh);
         }
     }
@@ -116,7 +114,7 @@ public class Mesh implements IGraphicsAsset {
     
     public Mesh(String name, MeshInfo preloadedInfo, IGraphicsStrategy graphicsStrategy) {
         this.name = name;
-        this.material = Material.DEFAULT_MATERIAL;
+        this.material = Defaults.DEFAULT_MATERIAL;
         this.graphicsStrategy = graphicsStrategy;
         this.info = preloadedInfo;
         
@@ -132,9 +130,9 @@ public class Mesh implements IGraphicsAsset {
     
     public Mesh(String name) {
         this.name = name;
-        this.material = Material.DEFAULT_MATERIAL;
+        this.material = Defaults.DEFAULT_MATERIAL;
         this.graphicsStrategy = null;
-        this.info = MeshInfo.DEFAULT_MESH_INFO;
+        this.info = Defaults.DEFAULT_MESH_INFO;//MeshInfo.DEFAULT_MESH_INFO;
     }
 
     
