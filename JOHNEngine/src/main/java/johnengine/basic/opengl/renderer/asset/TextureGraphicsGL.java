@@ -4,11 +4,14 @@ import org.lwjgl.opengl.GL46;
 
 import johnengine.Defaults;
 import johnengine.basic.assets.IBindable;
+import johnengine.basic.assets.texture.ITextureGraphics;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.renderer.RendererGL;
 
-public class TextureGraphicsGL extends AGraphicsStrategyGL<TextureGraphicsGL.TextureHandle> implements IBindable {
-    
+public class TextureGraphicsGL 
+    extends AGraphicsStrategyGL<TextureGraphicsGL.TextureHandle>
+    implements IBindable, ITextureGraphics
+{    
     
     /********************* TextureHandle-class *********************/
     
@@ -137,11 +140,28 @@ public class TextureGraphicsGL extends AGraphicsStrategyGL<TextureGraphicsGL.Tex
         GL46.glDeleteTextures(this.handle.get());
         return true;
     }
+    
+    @Override
+    public TextureGraphicsGL duplicateStrategy() {
+        return new TextureGraphicsGL(this.renderer, this.texture, false);
+    }
+    
+    
+    /************************ GETTERS ************************/
+    
+    @Override
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+    
+    
+    /************************ GETTERS ************************/
 
     public int getHandle() {
         return this.handle.get();
     }
     
+    @Override
     public Texture getTexture() {
         return this.texture;
     }

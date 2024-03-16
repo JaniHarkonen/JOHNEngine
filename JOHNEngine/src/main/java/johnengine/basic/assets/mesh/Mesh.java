@@ -47,7 +47,7 @@ public class Mesh implements IGraphicsAsset {
     
     /********************** Mesh-class **********************/
     
-    public static void populateMeshWithAIMesh(Mesh dest, AIMesh src) {
+    public static void createMesh(Mesh dest, AIMesh src) {
         if( dest == null || src == null )
         return;
         
@@ -104,15 +104,30 @@ public class Mesh implements IGraphicsAsset {
         return result;
     }
     
+    public static Mesh createMesh(
+            String name,
+            boolean isPersistent,
+            Vector3f[] vectors, 
+            Vector3f[] normals, 
+            Vector2f[] uvs, 
+            Mesh.Face[] faces, 
+            Vector3f[] tangents, 
+            Vector3f[] bitangents
+        ) {
+            MeshInfo.Data meshData = new MeshInfo.Data(vectors, normals, uvs, faces, tangents, bitangents);
+            MeshInfo meshInfo = new MeshInfo(name + "-info", isPersistent, meshData);
+            return new Mesh(name, meshInfo, null);
+        }
+    
     
     /********************** Class body **********************/
     
     private Material material;
-    private IGraphicsStrategy graphicsStrategy;
+    private IMeshGraphics graphicsStrategy;
     private MeshInfo info;
     private String name;
     
-    public Mesh(String name, MeshInfo preloadedInfo, IGraphicsStrategy graphicsStrategy) {
+    public Mesh(String name, MeshInfo preloadedInfo, IMeshGraphics graphicsStrategy) {
         this.name = name;
         this.material = Defaults.DEFAULT_MATERIAL;
         this.graphicsStrategy = graphicsStrategy;
@@ -132,7 +147,7 @@ public class Mesh implements IGraphicsAsset {
         this.name = name;
         this.material = Defaults.DEFAULT_MATERIAL;
         this.graphicsStrategy = null;
-        this.info = Defaults.DEFAULT_MESH_INFO;//MeshInfo.DEFAULT_MESH_INFO;
+        this.info = Defaults.DEFAULT_MESH_INFO;
     }
 
     
@@ -151,14 +166,14 @@ public class Mesh implements IGraphicsAsset {
     
     @Override
     public void setGraphicsStrategy(IGraphicsStrategy graphicsStrategy) {
-        this.graphicsStrategy = graphicsStrategy;
+        this.graphicsStrategy = (IMeshGraphics) graphicsStrategy;
     }
     
     
     /********************** GETTERS **********************/
     
     @Override
-    public IGraphicsStrategy getGraphicsStrategy() {
+    public IMeshGraphics getGraphicsStrategy() {
         return this.graphicsStrategy;
     }
     

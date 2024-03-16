@@ -109,11 +109,11 @@ public class Texture implements IGraphicsAsset {
     
     /********************** Texture-class **********************/
     
-    private IGraphicsStrategy graphicsStrategy;
+    private ITextureGraphics graphicsStrategy;
     private Texture.Info info;
     private String name;
     
-    public Texture(String name, Texture.Info preloadedInfo, IGraphicsStrategy graphicsStrategy) {
+    public Texture(String name, Texture.Info preloadedInfo, ITextureGraphics graphicsStrategy) {
         this.name = name;
         this.info = preloadedInfo;
         this.graphicsStrategy = graphicsStrategy;
@@ -144,7 +144,7 @@ public class Texture implements IGraphicsAsset {
     
     @Override
     public void setGraphicsStrategy(IGraphicsStrategy graphicsStrategy) {
-        this.graphicsStrategy = graphicsStrategy;
+        this.graphicsStrategy = (ITextureGraphics) graphicsStrategy;
     }
     
     
@@ -156,7 +156,7 @@ public class Texture implements IGraphicsAsset {
     }
 
     @Override
-    public IGraphicsStrategy getGraphicsStrategy() {
+    public ITextureGraphics getGraphicsStrategy() {
         return this.graphicsStrategy;
     }
     

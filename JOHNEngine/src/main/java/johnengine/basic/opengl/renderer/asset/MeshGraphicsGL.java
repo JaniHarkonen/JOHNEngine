@@ -6,6 +6,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.Defaults;
+import johnengine.basic.assets.mesh.IMeshGraphics;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.mesh.MeshInfo;
 import johnengine.basic.opengl.renderer.RendererGL;
@@ -15,7 +16,10 @@ import johnengine.basic.opengl.renderer.vao.VBOType;
 import johnengine.basic.opengl.renderer.vao.VBOVector2f;
 import johnengine.basic.opengl.renderer.vao.VBOVector3f;
 
-public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContainer> {
+public class MeshGraphicsGL
+    extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContainer>
+    implements IMeshGraphics
+{
     
     /*********************** VBOContainer-class ***********************/
     
@@ -163,9 +167,15 @@ public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContai
         return this.graphics.get().disposeAll();
     }
     
+    @Override
+    public MeshGraphicsGL duplicateStrategy() {
+        return new MeshGraphicsGL(this.renderer, this.mesh, false);
+    }
+    
     
     /*********************** SETTERS ***********************/
     
+    @Override
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
     }
@@ -173,6 +183,7 @@ public class MeshGraphicsGL extends AGraphicsStrategyGL<MeshGraphicsGL.VBOContai
     
     /*********************** GETTERS ***********************/
     
+    @Override
     public Mesh getMesh() {
         return this.mesh;
     }
