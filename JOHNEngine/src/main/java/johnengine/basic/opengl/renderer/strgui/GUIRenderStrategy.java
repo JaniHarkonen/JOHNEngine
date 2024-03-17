@@ -141,17 +141,17 @@ public class GUIRenderStrategy implements
                 
                     // Bind texture
                 GL46.glActiveTexture(GL46.GL_TEXTURE0);
-                TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphics();
+                TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
                 textureGL.bind();
                 
                     // Bind VAO
-                MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphics();
+                MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphicsStrategy();
                 VAO vao = this.vaoCache.fetchVAO(meshGL);
                 vao.bind();
                 
                 GL46.glDrawElements(
                     GL46.GL_TRIANGLES, 
-                    mesh.getData().getVertexCount() * 3, 
+                    mesh.getInfo().getAsset().get().getVertexCount() * 3, 
                     GL46.GL_UNSIGNED_INT, 
                     0
                 );

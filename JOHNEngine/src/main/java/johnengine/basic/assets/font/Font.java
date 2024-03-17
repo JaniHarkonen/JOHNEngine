@@ -92,10 +92,10 @@ public class Font implements IGeneratable {
             new Mesh.Face(new int[] {2, 3, 0})
         };
         
-        IMeshGraphics graphicsStrategy = this.meshGraphicsStrategy.duplicateStrategy();
-        Mesh glyphMesh = Mesh.createMesh(
+        Mesh glyphMesh = Mesh.createAndLoadMesh(
             this.name + "-glyph-mesh", 
             false, 
+            this.meshGraphicsStrategy.duplicateStrategy(),
             vertices,
             new Vector3f[0], 
             uvs, 
@@ -103,8 +103,6 @@ public class Font implements IGeneratable {
             new Vector3f[0], 
             new Vector3f[0]
         );
-        graphicsStrategy.setMesh(glyphMesh);
-        glyphMesh.setGraphicsStrategy(graphicsStrategy);
         
         return glyphMesh;
     }

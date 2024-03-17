@@ -105,19 +105,48 @@ public class Mesh implements IGraphicsAsset {
     }
     
     public static Mesh createMesh(
-            String name,
-            boolean isPersistent,
-            Vector3f[] vectors, 
-            Vector3f[] normals, 
-            Vector2f[] uvs, 
-            Mesh.Face[] faces, 
-            Vector3f[] tangents, 
-            Vector3f[] bitangents
-        ) {
-            MeshInfo.Data meshData = new MeshInfo.Data(vectors, normals, uvs, faces, tangents, bitangents);
-            MeshInfo meshInfo = new MeshInfo(name + "-info", isPersistent, meshData);
-            return new Mesh(name, meshInfo, null);
-        }
+        String name,
+        boolean isPersistent,
+        Vector3f[] vectors, 
+        Vector3f[] normals, 
+        Vector2f[] uvs, 
+        Mesh.Face[] faces, 
+        Vector3f[] tangents, 
+        Vector3f[] bitangents
+    ) {
+        MeshInfo.Data meshData = new MeshInfo.Data(vectors, normals, uvs, faces, tangents, bitangents);
+        MeshInfo meshInfo = new MeshInfo(name + "-info", isPersistent, meshData);
+        return new Mesh(name, meshInfo, null);
+    }
+    
+    public static Mesh createAndLoadMesh(
+        String name,
+        boolean isPersistent,
+        IMeshGraphics graphicsStrategy,
+        Vector3f[] vectors, 
+        Vector3f[] normals, 
+        Vector2f[] uvs, 
+        Mesh.Face[] faces, 
+        Vector3f[] tangents, 
+        Vector3f[] bitangents
+    ) {
+        Mesh mesh = createMesh(
+            name, 
+            isPersistent,
+            vectors,
+            normals, 
+            uvs, 
+            faces, 
+            tangents, 
+            bitangents
+        );
+        
+        mesh.setGraphicsStrategy(graphicsStrategy);
+        graphicsStrategy.setMesh(mesh);
+        graphicsStrategy.loaded();
+        
+        return mesh;
+    }
     
     
     /********************** Class body **********************/

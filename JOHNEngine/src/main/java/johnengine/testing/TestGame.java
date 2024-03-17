@@ -6,14 +6,17 @@ import java.io.File;
 import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.assets.IGraphicsStrategy;
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.JCamera;
+import johnengine.basic.game.JGUI;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
+import johnengine.basic.game.gui.CText;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.actions.ACTMoveBackward;
 import johnengine.basic.game.input.actions.ACTMoveForward;
@@ -40,7 +43,7 @@ public class TestGame extends AGame {
 
     private MilliCounter timer;
     private JWorld worldMain;
-    //private JGUI gui;
+    private JGUI gui;
     private long tickCounter;
     private Physics physics;
     private Physics.World physicsWorld;
@@ -88,7 +91,7 @@ public class TestGame extends AGame {
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
-        //this.gui = new JGUI(this);
+        this.gui = new JGUI(this);
         
         CModel model = new CModel();
         model.setMesh(mesh);
@@ -129,7 +132,6 @@ public class TestGame extends AGame {
         player.attach(camera);
         player.setController(controller);
         
-        //this.worldMain.createInstance(camera);
         this.worldMain.createInstance(player);
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
@@ -146,24 +148,25 @@ public class TestGame extends AGame {
         //camera.attach(pointLight);
         
             // Populate GUI
-        /*Font textFont = new Font(
+        Font textFont = new Font(
             "gui-font", 
             testFont, 
             " !\"#$%&'()*+´-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 
             17, 
             8
         );
-        textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        textFont.generate();*/
+        //textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
+        textFont.setMeshGraphicsStrategy(this.window.getRenderer().getGraphicsStrategy(new Mesh("temp")));
+        textFont.generate();
         
         /*try {
         Thread.sleep(1000);
         }
         catch(Exception e) {}*/
         
-        /*CText guiText = new CText("hello world :)", this.window.getInput());
+        CText guiText = new CText("hello world :)", this.window.getInput());
         guiText.setFont(textFont);
-        this.gui.addElement(guiText);*/
+        this.gui.addElement(guiText);
         
             // Update the active world and the GUI of the renderer
         //RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
@@ -172,8 +175,8 @@ public class TestGame extends AGame {
         .setRenderContext(this.worldMain);
         
         renderer
-        .getStrategyOfRenderingPass("gui-renderer");
-        //.setRenderContext(this.gui);
+        .getStrategyOfRenderingPass("gui-renderer")
+        .setRenderContext(this.gui);
         /*this.timer = new MilliCounter(1000) {
             @Override
             protected void performAction() {

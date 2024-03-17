@@ -12,6 +12,7 @@ import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
+import johnengine.basic.opengl.renderer.strgui.GUIRenderStrategy;
 import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderStrategy;
 import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderBufferStrategy;
@@ -43,7 +44,7 @@ public class RendererGL implements IRenderer {
     public RendererGL(WindowGL hostWindow) {
         this(hostWindow, null);
         this.addRenderingPass("scene-renderer", new CachedVAORenderStrategy(this));
-        //this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
+        this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
     }
     
     
