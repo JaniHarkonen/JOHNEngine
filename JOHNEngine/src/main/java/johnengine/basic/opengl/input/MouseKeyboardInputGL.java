@@ -3,6 +3,9 @@ package johnengine.basic.opengl.input;
 import java.awt.geom.Point2D;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import johnengine.basic.opengl.WindowGL;
 import johnengine.core.input.IInput;
@@ -139,8 +142,10 @@ public final class MouseKeyboardInputGL implements IInput {
         // The state has been promoted to its own class because a snapshot has 
         // to be maintained for each tick
     public class State implements IInput.State {
-        private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
-        private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
+        private static final int KEY_MAP_SIZE = 
+            GLFW.GLFW_KEY_LAST + 1;
+        private static final int MOUSE_BUTTON_MAP_SIZE = 
+            GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
         
         private static final int INPUT_NO_ACTION = 0;
         private static final int INPUT_RELEASED = 1;
@@ -287,15 +292,35 @@ public final class MouseKeyboardInputGL implements IInput {
     @Override
     public void setup() {
         long windowID = this.hostWindow.getWindowID();
-        GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
-        GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
-        GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
+        
+            // Set keyboard callback
+        GLFWKeyCallbackI keyCallback = (window, key, scancode, action, mods) -> {
+            keyListener(key, action);
+        };
+        GLFW.glfwSetKeyCallback(windowID, keyCallback);
+        
+            // Set mouse move callback
+        GLFWCursorPosCallbackI cursorPosCallback = (handle, xpos, ypos) -> {
+            mousePositionListener(xpos, ypos);
+        };
+        GLFW.glfwSetCursorPosCallback(windowID, cursorPosCallback);
+        
+            // Set mouse button callback
+        GLFWMouseButtonCallbackI mouseButtonCallback = (handle, button, action, mode) -> {
+            mouseListener(button, action);
+        };
+        GLFW.glfwSetMouseButtonCallback(windowID, mouseButtonCallback);
+        
         //GLFW.glfwSetScrollCallback(window, cbfun)
     }
     
     @Override
     public void dispose() {
-        
+        long windowID = this.hostWindow.getWindowID();
+        GLFW.glfwSetKeyCallback(windowID, null);
+        GLFW.glfwSetCursorPosCallback(windowID, null);
+        GLFW.glfwSetMouseButtonCallback(windowID, null);
+        GLFW.glfwSetScrollCallback(windowID, null);
     }
     
     @Override

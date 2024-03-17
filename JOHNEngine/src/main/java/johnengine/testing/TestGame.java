@@ -67,7 +67,7 @@ public class TestGame extends AGame {
         //this.window.enterFullscreen();
         //this.window.resize(1000, 1000);
         //this.engine.setTickRate(24);
-        this.window.lockCursorToCenter();
+        //this.window.lockCursorToCenter();
         //.enterFullscreen();
         
         AssetManager am = this.assetManager;
@@ -155,8 +155,8 @@ public class TestGame extends AGame {
             17, 
             8
         );
-        //textFont.setGlyphMeshLoaderMonitor(RendererGL.class.cast(this.window.getRenderer()).getGraphicsAssetProcessor());
-        textFont.setMeshGraphicsStrategy(this.window.getRenderer().getGraphicsStrategy(new Mesh("temp")));
+        
+        textFont.setMeshGraphicsStrategy(renderer.getGraphicsStrategy(new Mesh("temp")));
         textFont.generate();
         
         /*try {

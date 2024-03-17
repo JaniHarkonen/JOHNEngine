@@ -31,4 +31,9 @@ mouse delta on low frame rates
 - reconsider the idea of RenderUnits
 	-- at least RenderUnits shouldn't have private fields, rather, their fields 
 	should be package private
-- rename 'cells' to 'glyphs' in Font
+- specify different glyph layouts in Font so that the glyphs can either be placed
+in symmetric cells or in cells of differing sizes
+	-- GridLayout, where the font texture is divided using a grid where each cell
+	is of equal size
+	-- TileLayout, where each glyph occupies its own tile whose coordinates and
+	dimensions are recorded in a separate table

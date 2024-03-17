@@ -67,7 +67,7 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     public void loop() {
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
-        long previousInputTimestamp = 0;
+        //long previousInputTimestamp = 0;
         
         while( !this.isWindowClosing() )
         {
@@ -77,12 +77,12 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
             this.renderer.render();
             
                 // Lock cursor to the center of the screen if enabled
-            long inputTimestamp = this.input.getState().getTimestamp();
-            if( this.isCursorLockedToCenter() && previousInputTimestamp != inputTimestamp )
+            //long inputTimestamp = this.input.getState().getTimestamp();
+            /*if( this.isCursorLockedToCenter() && previousInputTimestamp != inputTimestamp )
             {
                 Point size = this.properties.size.currentValue;
                 GLFW.glfwSetCursorPos(this.windowID, size.x / 2, size.y / 2);
-            }
+            }*/
             
                 // FPS-counter
             long currentTime = System.currentTimeMillis();
@@ -188,6 +188,8 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         GLFW.glfwSetWindowPos(winID, wpos.x, wpos.y);
         
         GLFW.glfwSwapInterval(this.properties.useVSync.currentValue ? 1 : 0);
+        
+        GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         
         return winID;
     }
