@@ -2,7 +2,7 @@ package johnengine.basic.game.input.actions;
 
 import johnengine.basic.game.input.Action;
 import johnengine.basic.game.input.IControllable;
-import johnengine.core.input.IInput;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInputConverter;
 
 public class ACTMoveLeft extends AMove {
@@ -18,7 +18,7 @@ public class ACTMoveLeft extends AMove {
     }
 
     @Override
-    public ACTMoveLeft createInstance(IInput.Event<?> event, IInputConverter<?> converter) {
+    public ACTMoveLeft createInstance(AInputEvent<?> event, IInputConverter<?> converter) {
         ACTMoveLeft action = new ACTMoveLeft();
         action.setIntensityFromInputEvent(event, converter);
         return action;

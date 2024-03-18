@@ -67,12 +67,11 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     public void loop() {
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
-        //long previousInputTimestamp = 0;
         
         while( !this.isWindowClosing() )
         {
             this.requestManager.processRequests(this.properties);
-            GLFW.glfwPollEvents();
+            this.input.update();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
@@ -114,7 +113,8 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 
     @Override
     public void beforeTick(float deltaTime) {
-        this.input.snapshot();
+        //this.input.snapshot();
+        this.input.pollEvents();
         this.properties.snapshot();
     }
 

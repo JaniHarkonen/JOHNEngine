@@ -44,7 +44,7 @@ public class CText implements IRenderable, ISceneGraphChild {
     /*********************** GETTERS ***********************/
     
     public String getText() {
-        this.text = this.DEBUGInput.getState().getKeyboardString() + "<";
+        //this.text = this.DEBUGInput.getState().getKeyboardString() + "<";
         return this.text;
     }
     

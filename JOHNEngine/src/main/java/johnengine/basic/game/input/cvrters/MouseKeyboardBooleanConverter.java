@@ -1,11 +1,11 @@
 package johnengine.basic.game.input.cvrters;
 
-import johnengine.core.input.IInput;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInputConverter;
 
 public class MouseKeyboardBooleanConverter implements IInputConverter<Float>{
     
-    private IInput.Event<Boolean> inputEvent;
+    private AInputEvent<Boolean> inputEvent;
     
     @Override
     public Float convert() {
@@ -14,7 +14,7 @@ public class MouseKeyboardBooleanConverter implements IInputConverter<Float>{
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setEvent(IInput.Event<?> event) {
-        this.inputEvent = (IInput.Event<Boolean>) event;
+    public void setEvent(AInputEvent<?> event) {
+        this.inputEvent = (AInputEvent<Boolean>) event;
     }
 }

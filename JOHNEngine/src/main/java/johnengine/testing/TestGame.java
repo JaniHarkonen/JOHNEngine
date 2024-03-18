@@ -102,26 +102,26 @@ public class TestGame extends AGame {
         this.worldMain.createInstance(box);
         
         ControlSchema cs = new ControlSchema();
-        cs.addBinding(
+        cs.bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_W),
             new ACTMoveForward(), 
-            new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_W)
-        ).addBinding(
+            new MouseKeyboardBooleanConverter()
+        ).bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_S),
             new ACTMoveBackward(), 
-            new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_S)
-        ).addBinding(
+            new MouseKeyboardBooleanConverter()
+        ).bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_A),
             new ACTMoveLeft(), 
-            new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_A)
-        ).addBinding(
+            new MouseKeyboardBooleanConverter()
+        ).bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_D),
             new ACTMoveRight(), 
-            new MouseKeyboardBooleanConverter(), 
-            new MouseKeyboardInputGL.KeyDown(GLFW.GLFW_KEY_D)
-        ).addBinding(
+            new MouseKeyboardBooleanConverter()
+        ).bind(
+            new MouseKeyboardInputGL.MouseMove(),
             new ACTTurn(), 
-            new MouseKeyboardPointConverter(), 
-            new MouseKeyboardInputGL.MouseMove()
+            new MouseKeyboardPointConverter()
         );
         
         JCamera camera = new JCamera(this.worldMain);
