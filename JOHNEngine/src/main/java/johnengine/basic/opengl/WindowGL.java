@@ -188,7 +188,6 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         GLFW.glfwSetWindowPos(winID, wpos.x, wpos.y);
         
         GLFW.glfwSwapInterval(this.properties.useVSync.currentValue ? 1 : 0);
-        
         GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         
         return winID;

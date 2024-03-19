@@ -2,7 +2,7 @@ package johnengine.core.renderer;
 
 import johnengine.core.IRenderable;
 
-public interface IRenderStrategy {
+public interface IRenderPass {
 
     public void prepare();
     

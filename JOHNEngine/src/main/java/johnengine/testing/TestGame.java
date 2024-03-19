@@ -44,6 +44,7 @@ public class TestGame extends AGame {
     private MilliCounter timer;
     private JWorld worldMain;
     private JGUI gui;
+    private CText text;
     private long tickCounter;
     private Physics physics;
     private Physics.World physicsWorld;
@@ -167,6 +168,7 @@ public class TestGame extends AGame {
         CText guiText = new CText("hello world :)", this.window.getInput());
         guiText.setFont(textFont);
         this.gui.addElement(guiText);
+        this.text = guiText;
         
             // Update the active world and the GUI of the renderer
         //RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
@@ -225,8 +227,39 @@ public class TestGame extends AGame {
         this.physics.update(deltaTime, this.physicsWorld);
         this.tickCounter++;
         //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
-        this.window.changeTitle("FPS: " + this.window.getFPS());
+        //this.window.changeTitle("FPS: " + this.window.getFPS());
+        this.text.setText(
+            "FPS: " + this.window.getFPS() + 
+            "\nTICK: " + this.engine.getTickRate() + 
+            "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
+        );
         //this.timer.count();
+        
+        if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_ESCAPE)) )
+        this.onClose();
+    }
+    
+    private String convertToLargestByte(long bytes) {
+        String[] abbreviations = new String[] {
+            " bytes",
+            "KB",
+            "MB",
+            "GB"
+        };
+        
+        long divisor = (long) Math.pow(1000, abbreviations.length - 1);
+        int s = abbreviations.length - 1;
+        for( int i = s; i > 0; i-- )
+        {
+            long largest = bytes / divisor;
+            
+            if( largest > 0 )
+            return largest + abbreviations[i];
+            
+            divisor /= 1000;
+        }
+        
+        return bytes + abbreviations[0];
     }
 
     @Override

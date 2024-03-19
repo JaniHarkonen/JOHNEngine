@@ -41,12 +41,12 @@ import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderBufferStrategoid;
 import johnengine.core.renderer.IRenderContext;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.RenderStrategoidManager;
 
-public class CachedVAORenderStrategy implements 
-    IRenderStrategy,
+public class CachedVAORenderPass implements 
+    IRenderPass,
     IHasRenderBuffer
 {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
@@ -61,7 +61,7 @@ public class CachedVAORenderStrategy implements
     
     private JWorld activeWorld;
     
-    public CachedVAORenderStrategy(RendererGL renderer) {
+    public CachedVAORenderPass(RendererGL renderer) {
         this.renderer = renderer;
         this.vaoCache = new VAOCache(DEFAULT_EXPIRATION_TIME * 1000);
         this.shaderProgram = new ShaderProgram();

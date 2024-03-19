@@ -22,13 +22,13 @@ import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderBufferStrategoid;
 import johnengine.core.renderer.IRenderContext;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.RenderStrategoidManager;
 
-public class GUIRenderStrategy implements
-    IRenderStrategy,
+public class GUIRenderPass implements
+    IRenderPass,
     IHasRenderBuffer
 {
     private final RendererGL renderer;
@@ -39,7 +39,7 @@ public class GUIRenderStrategy implements
     
     private JGUI activeGUI;
     
-    public GUIRenderStrategy(RendererGL renderer) {
+    public GUIRenderPass(RendererGL renderer) {
         this.renderer = renderer;
         this.vaoCache = new VAOCache(10*1000);
         this.shaderProgram = new ShaderProgram();
@@ -127,34 +127,38 @@ public class GUIRenderStrategy implements
         
         for( RenderUnit renderUnit : renderBuffer.getBuffer() )
         {
-            String text = renderUnit.text;
             Font font = renderUnit.font;
+            String[] lines = renderUnit.text.split("\n");
             
-            for( int i = 0; i < text.length(); i++ )
+            for( int i = 0; i < lines.length; i++ )
             {
-                char character = text.charAt(i);
-                Mesh mesh = font.getGlyphMesh(character);
-                
-                    // Determine text offset
-                UNIVector3f.class.cast(this.shaderProgram.getUniform("textOffset"))
-                .set(new Vector3f(i * 16, 0.0f, 0.0f));
-                
-                    // Bind texture
-                GL46.glActiveTexture(GL46.GL_TEXTURE0);
-                TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
-                textureGL.bind();
-                
-                    // Bind VAO
-                MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphicsStrategy();
-                VAO vao = this.vaoCache.fetchVAO(meshGL);
-                vao.bind();
-                
-                GL46.glDrawElements(
-                    GL46.GL_TRIANGLES, 
-                    mesh.getInfo().getAsset().get().getVertexCount() * 3, 
-                    GL46.GL_UNSIGNED_INT, 
-                    0
-                );
+                String text = lines[i];
+                for( int j = 0; j < text.length(); j++ )
+                {
+                    char character = text.charAt(j);
+                    Mesh mesh = font.getGlyphMesh(character);
+                    
+                        // Determine text offset
+                    UNIVector3f.class.cast(this.shaderProgram.getUniform("textOffset"))
+                    .set(new Vector3f(j * 16, i * 16, 0.0f));
+                    
+                        // Bind texture
+                    GL46.glActiveTexture(GL46.GL_TEXTURE0);
+                    TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
+                    textureGL.bind();
+                    
+                        // Bind VAO
+                    MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphicsStrategy();
+                    VAO vao = this.vaoCache.fetchVAO(meshGL);
+                    vao.bind();
+                    
+                    GL46.glDrawElements(
+                        GL46.GL_TRIANGLES, 
+                        mesh.getInfo().getAsset().get().getVertexCount() * 3, 
+                        GL46.GL_UNSIGNED_INT, 
+                        0
+                    );
+                }
             }
         }
         

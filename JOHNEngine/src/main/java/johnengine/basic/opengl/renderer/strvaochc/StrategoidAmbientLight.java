@@ -5,7 +5,7 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SAmbientLight;
 
 public class StrategoidAmbientLight extends ACachedVAOStrategoid<JAmbientLight> {
 
-    public StrategoidAmbientLight(CachedVAORenderStrategy strategy) {
+    public StrategoidAmbientLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

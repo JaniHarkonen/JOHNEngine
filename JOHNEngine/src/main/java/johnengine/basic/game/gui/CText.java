@@ -6,7 +6,7 @@ import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 
 public class CText implements IRenderable, ISceneGraphChild {
     
@@ -24,8 +24,8 @@ public class CText implements IRenderable, ISceneGraphChild {
     
     
     @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
+    public void render(IRenderPass renderPass) {
+        renderPass.executeStrategoid(this);
     }
 
     @Override

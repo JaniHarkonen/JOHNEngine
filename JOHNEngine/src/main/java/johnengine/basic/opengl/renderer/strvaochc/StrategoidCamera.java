@@ -9,7 +9,7 @@ import johnengine.core.window.IWindow;
 
 public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
 
-    public StrategoidCamera(CachedVAORenderStrategy strategy) {
+    public StrategoidCamera(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

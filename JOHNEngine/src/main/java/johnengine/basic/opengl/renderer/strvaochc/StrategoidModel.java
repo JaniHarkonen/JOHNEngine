@@ -6,7 +6,7 @@ import johnengine.basic.game.components.CModel;
 
 public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
 
-    public StrategoidModel(CachedVAORenderStrategy strategy) {
+    public StrategoidModel(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

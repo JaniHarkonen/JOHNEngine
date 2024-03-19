@@ -1,7 +1,7 @@
 package johnengine.core;
 
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 
 public interface IRenderable {
-    public void render(IRenderStrategy renderStrategy);
+    public void render(IRenderPass renderPass);
 }

@@ -132,4 +132,8 @@ public final class Engine extends AThreadable {
     public boolean isStopped() {
         return (this.state == STATE_STOPPED);
     }
+    
+    public float getTickRate() {
+        return this.tickRate;
+    }
 }

@@ -12,39 +12,32 @@ import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
-import johnengine.basic.opengl.renderer.strgui.GUIRenderStrategy;
-import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderStrategy;
+import johnengine.basic.opengl.renderer.strgui.GUIRenderPass;
+import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderPass;
 import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderBufferStrategy;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.testing.DebugUtils;
 
 public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
-    //private JWorld activeWorld;
-    //private IRenderStrategy renderStrategy;
-    private Map<String, IRenderStrategy> renderingPasses;
+    private Map<String, IRenderPass> renderingPasses;
     private List<String> renderingPassOrder;
     private IRenderBufferStrategy renderBufferStrategy;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     private String resourceRootFolder;
     
-    public RendererGL(WindowGL hostWindow, IRenderStrategy renderStrategy) {
+    public RendererGL(WindowGL hostWindow) {
         this.hostWindow = (WindowGL) hostWindow;
-        //this.activeWorld = null;
-        //this.renderStrategy = renderStrategy;
         this.renderingPasses = new HashMap<>();
         this.renderingPassOrder = new ArrayList<>();
         this.renderBufferStrategy = new DefaultRenderBufferStrategy();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
         this.resourceRootFolder = "";
-    }
-    
-    public RendererGL(WindowGL hostWindow) {
-        this(hostWindow, null);
-        this.addRenderingPass("scene-renderer", new CachedVAORenderStrategy(this));
-        this.addRenderingPass("gui-renderer", new GUIRenderStrategy(this));
+        
+        this.addRenderingPass("scene-renderer", new CachedVAORenderPass(this));
+        this.addRenderingPass("gui-renderer", new GUIRenderPass(this));
     }
     
     
@@ -69,8 +62,8 @@ public class RendererGL implements IRenderer {
     public void generateRenderBuffer() {
         for( String passKey : this.renderingPassOrder )
         {
-            IRenderStrategy renderStrategy = this.renderingPasses.get(passKey);
-            this.renderBufferStrategy.execute(renderStrategy.getRenderContext(), renderStrategy);
+            IRenderPass renderPass = this.renderingPasses.get(passKey);
+            this.renderBufferStrategy.execute(renderPass);
         }
     }
     
@@ -86,33 +79,18 @@ public class RendererGL implements IRenderer {
         this.renderingPasses.get(passKey).render();
     }
     
-    public void addRenderingPass(String passKey, IRenderStrategy passStrategy) {
+    public void addRenderingPass(String passKey, IRenderPass passStrategy) {
         this.renderingPasses.put(passKey, passStrategy);
         this.renderingPassOrder.add(passKey);
     }
     
-    
-    /*
-    public void setActiveWorld(JWorld world) {
-        if( world != null )
-        this.activeWorld = world;
-    }
-    
-    public JWorld getActiveWorld() {
-        return this.activeWorld;
-    }
-    */
-    
-    /*public IRenderStrategy getRenderStrategy() {
-        return this.renderStrategy;
-    }*/
     
     public void setResourceRootFolder(String resourceRootFolder) {
         this.resourceRootFolder = FileUtils.normalizePathSlashes(resourceRootFolder) + "/";
     }
     
     
-    public IRenderStrategy getStrategyOfRenderingPass(String passKey) {
+    public IRenderPass getStrategyOfRenderingPass(String passKey) {
         return this.renderingPasses.get(passKey);
     }
     

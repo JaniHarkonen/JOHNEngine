@@ -5,7 +5,7 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SDirectionalLight;
 
 public class StrategoidDirectionalLight extends ACachedVAOStrategoid<JDirectionalLight> {
 
-    public StrategoidDirectionalLight(CachedVAORenderStrategy strategy) {
+    public StrategoidDirectionalLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

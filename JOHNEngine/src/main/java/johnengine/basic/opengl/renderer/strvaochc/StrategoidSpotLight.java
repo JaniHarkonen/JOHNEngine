@@ -5,7 +5,7 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SSpotLight;
 
 public class StrategoidSpotLight extends ACachedVAOStrategoid<JSpotLight> {
 
-    public StrategoidSpotLight(CachedVAORenderStrategy strategy) {
+    public StrategoidSpotLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

@@ -5,9 +5,9 @@ import johnengine.core.renderer.IRenderBufferStrategoid;
 
 public abstract class ACachedVAOStrategoid<T extends IRenderable> implements IRenderBufferStrategoid<T> {
 
-    protected CachedVAORenderStrategy strategy;
+    protected CachedVAORenderPass strategy;
     
-    public ACachedVAOStrategoid(CachedVAORenderStrategy strategy) {
+    public ACachedVAOStrategoid(CachedVAORenderPass strategy) {
         this.strategy = strategy;
     }
 }

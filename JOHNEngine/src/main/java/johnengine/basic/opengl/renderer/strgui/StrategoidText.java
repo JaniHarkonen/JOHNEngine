@@ -8,9 +8,9 @@ import johnengine.core.renderer.IRenderBufferStrategoid;
 
 public class StrategoidText implements IRenderBufferStrategoid<CText> {
 
-    private final GUIRenderStrategy strategy;
+    private final GUIRenderPass strategy;
     
-    StrategoidText(GUIRenderStrategy strategy) {
+    StrategoidText(GUIRenderPass strategy) {
         this.strategy = strategy;
     }
     
