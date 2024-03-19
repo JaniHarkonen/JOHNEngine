@@ -8,7 +8,6 @@
 - change name of RenderBufferStrategy to RenderBuffer and strategoids to strategies
 as it is becoming clearer that RenderBufferStrategy is going to contain a snapshot
 of the game world
-	-> use OpenGL's disable cursor
 - RFullscreen doesn't work yet
 	-> doesn't work because windowed fullscreen requires rebuilding the window
 	-> rebuilding the window requires first destroying the initial window

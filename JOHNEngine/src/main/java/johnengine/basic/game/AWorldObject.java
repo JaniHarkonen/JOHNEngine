@@ -30,9 +30,9 @@ public abstract class AWorldObject extends AGameObject implements
     
     
     @Override
-    public void render(IRenderPass renderPass) {
+    public void submit(IRenderPass renderPass) {
         for( ISceneGraphChild child : this.children )
-        child.render(renderPass);
+        child.submit(renderPass);
         
         renderPass.executeStrategoid(this);
     }

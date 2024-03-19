@@ -14,7 +14,7 @@ public class DefaultRenderBufferStrategy implements IRenderBufferStrategy {
         
         IRenderable instance;
         while( (instance = renderContext.nextInstance()) != null )
-        instance.render(client);
+        instance.submit(client);
         
         client.newBuffer();
     }
