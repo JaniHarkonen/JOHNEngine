@@ -15,7 +15,7 @@ import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.strgui.GUIRenderPass;
 import johnengine.basic.opengl.renderer.strvaochc.CachedVAORenderPass;
 import johnengine.core.FileUtils;
-import johnengine.core.renderer.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderBufferPopulator;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.testing.DebugUtils;
@@ -24,7 +24,7 @@ public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
     private Map<String, IRenderPass> renderingPasses;
     private List<String> renderingPassOrder;
-    private IRenderBufferStrategy renderBufferStrategy;
+    private IRenderBufferPopulator renderBufferPopulator;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     private String resourceRootFolder;
     
@@ -32,7 +32,7 @@ public class RendererGL implements IRenderer {
         this.hostWindow = (WindowGL) hostWindow;
         this.renderingPasses = new HashMap<>();
         this.renderingPassOrder = new ArrayList<>();
-        this.renderBufferStrategy = new DefaultRenderBufferStrategy();
+        this.renderBufferPopulator = new DefaultRenderBufferPopulator();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
         this.resourceRootFolder = "";
         
@@ -63,7 +63,7 @@ public class RendererGL implements IRenderer {
         for( String passKey : this.renderingPassOrder )
         {
             IRenderPass renderPass = this.renderingPasses.get(passKey);
-            this.renderBufferStrategy.execute(renderPass);
+            this.renderBufferPopulator.execute(renderPass);
         }
     }
     

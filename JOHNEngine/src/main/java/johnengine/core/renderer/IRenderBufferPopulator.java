@@ -1,6 +1,6 @@
 package johnengine.core.renderer;
 
-public interface IRenderBufferStrategy {
+public interface IRenderBufferPopulator {
 
     public void execute(IRenderPass client);  
 }

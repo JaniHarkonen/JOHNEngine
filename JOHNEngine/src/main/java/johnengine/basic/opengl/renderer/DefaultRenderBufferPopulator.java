@@ -1,11 +1,11 @@
 package johnengine.basic.opengl.renderer;
 
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderBufferStrategy;
+import johnengine.core.renderer.IRenderBufferPopulator;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderPass;
 
-public class DefaultRenderBufferStrategy implements IRenderBufferStrategy {
+public class DefaultRenderBufferPopulator implements IRenderBufferPopulator {
     
     @Override
     public void execute(IRenderPass client) {
