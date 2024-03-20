@@ -179,7 +179,14 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         GLFW.glfwSetWindowPos(winID, wpos.x, wpos.y);
         
         GLFW.glfwSwapInterval(this.properties.useVSync.currentValue ? 1 : 0);
-        GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+        GLFW.glfwSetInputMode(
+            winID, 
+            GLFW.GLFW_CURSOR, (
+                (this.properties.isCursorLockedToCenter.currentValue) ? 
+                GLFW.GLFW_CURSOR_DISABLED : 
+                GLFW.GLFW_CURSOR_NORMAL
+            )
+        );
         
         return winID;
     }
@@ -259,13 +266,13 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 
     @Override
     public IWindow lockCursorToCenter() {
-        this.requestManager.addRequest(new RLockCursor(true));
+        this.requestManager.addRequest(new RLockCursor(true, this));
         return this;
     }
 
     @Override
     public IWindow releaseCursor() {
-        this.requestManager.addRequest(new RLockCursor(false));
+        this.requestManager.addRequest(new RLockCursor(false, this));
         return this;
     }
 

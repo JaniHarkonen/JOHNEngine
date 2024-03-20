@@ -61,7 +61,7 @@ public class TestGame extends AGame {
         renderer.setResourceRootFolder((new File("src/main/resources/test")).getAbsolutePath());
         
         this.window
-        //.hideCursor();
+        .lockCursorToCenter()
         .disableVSync();
         //.resize(1000, 1000);
         
@@ -236,7 +236,12 @@ public class TestGame extends AGame {
         //this.timer.count();
         
         if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_ESCAPE)) )
-        this.onClose();
+        {
+            if( this.window.isCursorLockedToCenter() )
+            this.window.releaseCursor();
+            else
+            this.window.lockCursorToCenter();
+        }
     }
     
     private String convertToLargestByte(long bytes) {
