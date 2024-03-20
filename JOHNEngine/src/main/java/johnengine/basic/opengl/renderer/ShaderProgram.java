@@ -57,6 +57,10 @@ public class ShaderProgram implements IGeneratable, IBindable {
     @Override
     public boolean dispose() {
         this.unbind();
+        
+        for( Shader shader : this.shaders )
+        shader.dispose();
+        
         GL46.glDeleteProgram(this.handle);
         this.uniforms = null;
         this.shaders = null;

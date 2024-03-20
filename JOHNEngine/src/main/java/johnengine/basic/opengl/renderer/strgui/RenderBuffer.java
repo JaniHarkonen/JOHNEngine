@@ -7,12 +7,9 @@ import org.joml.Matrix4f;
 
 import johnengine.core.renderer.IRenderBuffer;
 
-public class RenderBuffer implements
-    IRenderBuffer<RenderBuffer>,
-    IHasRenderBuffer
-{
+public class RenderBuffer implements IRenderBuffer<RenderBuffer> {
     
-    private List<RenderUnit> buffer;
+    private List<RenderElement> buffer;
     private Matrix4f projectionMatrix;
     
     public RenderBuffer() {
@@ -26,16 +23,15 @@ public class RenderBuffer implements
         return new RenderBuffer();
     }
     
-    @Override
     public void setProjectionMatrix(Matrix4f projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
     }
     
-    public void addRenderUnit(RenderUnit renderUnit) {
-        this.buffer.add(renderUnit);
+    public void addRenderElement(RenderElement renderElement) {
+        this.buffer.add(renderElement);
     }
     
-    public List<RenderUnit> getBuffer() {
+    public List<RenderElement> getBuffer() {
         return this.buffer;
     }
     

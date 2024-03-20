@@ -12,6 +12,8 @@ public interface IRenderPass {
     
     public void render();
     
+    public void dispose();
+    
     public void setRenderContext(IRenderContext renderContext);
     
     public IRenderer getRenderer();
@@ -19,6 +21,4 @@ public interface IRenderPass {
     public IRenderContext getRenderContext();
     
     public boolean canRender();
-    
-    public void dispose();
 }

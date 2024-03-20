@@ -2,14 +2,14 @@ package johnengine.basic.opengl.renderer.strgui;
 
 import johnengine.basic.assets.font.Font;
 
-public class RenderUnit {
+public class RenderElement {
 
     final String text;
     final Font font;
     final float x;
     final float y;
     
-    RenderUnit(String text, Font font, float x, float y) {
+    RenderElement(String text, Font font, float x, float y) {
         this.text = text;
         this.font = font;
         this.x = x;

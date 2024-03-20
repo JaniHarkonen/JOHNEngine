@@ -18,17 +18,19 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SPointLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SSpotLight;
 import johnengine.core.renderer.IRenderBuffer;
 
-public class RenderBuffer implements IHasRenderBuffer, IRenderBuffer<RenderBuffer> {
-    private static final SAmbientLight STRUCT_DEFAULT_AMBIENT_LIGHT = new SAmbientLight(
-        JAmbientLight.DEFAULT_COLOR,
-        JAmbientLight.DEFAULT_INTENSITY
-    );
+public class RenderBuffer implements IRenderBuffer<RenderBuffer> {
+    private static final SAmbientLight STRUCT_DEFAULT_AMBIENT_LIGHT = 
+        new SAmbientLight(
+            JAmbientLight.DEFAULT_COLOR,
+            JAmbientLight.DEFAULT_INTENSITY
+        );
     
-    private static final SDirectionalLight STRUCT_DEFAULT_DIRECTIONAL_LIGHT = new SDirectionalLight(
-        JDirectionalLight.DEFAULT_COLOR,
-        JDirectionalLight.DEFAULT_DIRECTION,
-        JDirectionalLight.DEFAULT_INTENSITY
-    );
+    private static final SDirectionalLight STRUCT_DEFAULT_DIRECTIONAL_LIGHT = 
+        new SDirectionalLight(
+            JDirectionalLight.DEFAULT_COLOR,
+            JDirectionalLight.DEFAULT_DIRECTION,
+            JDirectionalLight.DEFAULT_INTENSITY
+        );
     
     private List<RenderUnit> buffer;
     private Matrix4f projectionMatrix;
@@ -50,9 +52,22 @@ public class RenderBuffer implements IHasRenderBuffer, IRenderBuffer<RenderBuffe
     }
     
     
-    @Override
     public void addRenderUnit(RenderUnit unit) {
         this.buffer.add(unit);
+    }
+    
+    void addPointLight(
+        JPointLight pointLight, 
+        SPointLight pointLightStruct
+    ) {
+        this.pointLights.put(pointLight, pointLightStruct);
+    }
+    
+    void addSpotLight(
+        JSpotLight spotLight, 
+        SSpotLight spotLightStruct
+    ) {
+        this.spotLights.put(spotLight, spotLightStruct);
     }
     
     @Override
@@ -65,62 +80,48 @@ public class RenderBuffer implements IHasRenderBuffer, IRenderBuffer<RenderBuffe
         return this.buffer;
     }
 
-    @Override
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
+    void setProjectionMatrix(Matrix4f projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
     }
 
-    @Override
-    public void setCameraMatrix(Matrix4f cameraMatrix) {
+    void setCameraMatrix(Matrix4f cameraMatrix) {
         this.cameraMatrix = cameraMatrix;
     }
 
-    @Override
-    public void setAmbientLight(SAmbientLight ambientLight) {
+    void setAmbientLight(SAmbientLight ambientLight) {
         this.ambientLight = ambientLight;
     }
     
-    @Override
-    public void setDirectionalLight(SDirectionalLight directionalLight) {
+    void setDirectionalLight(SDirectionalLight directionalLight) {
         this.directionalLight = directionalLight;
     }
-
-    @Override
-    public void addPointLight(JPointLight pointLight, SPointLight pointLightStruct) {
-        this.pointLights.put(pointLight, pointLightStruct);
-    }
-    
-    @Override
-    public void addSpotLight(JSpotLight spotLight, SSpotLight spotLightStruct) {
-        this.spotLights.put(spotLight, spotLightStruct);
-    }
     
     
-    public Matrix4f getProjectionMatrix() {
+    Matrix4f getProjectionMatrix() {
         return this.projectionMatrix;
     }
     
-    public Matrix4f getCameraMatrix() {
+    Matrix4f getCameraMatrix() {
         return this.cameraMatrix;
     }
     
-    public SAmbientLight getAmbientLight() {
+    SAmbientLight getAmbientLight() {
         return this.ambientLight;
     }
     
-    public SDirectionalLight getDirectionalLight() {
+    SDirectionalLight getDirectionalLight() {
         return this.directionalLight;
     }
     
-    public Set<Map.Entry<JPointLight, SPointLight>> getPointLights() {
+    Set<Map.Entry<JPointLight, SPointLight>> getPointLights() {
         return this.pointLights.entrySet();
     }
     
-    public Set<Map.Entry<JSpotLight, SSpotLight>> getSpotLights() {
+    Set<Map.Entry<JSpotLight, SSpotLight>> getSpotLights() {
         return this.spotLights.entrySet();
     }
     
-    public SPointLight getPointLightStruct(JPointLight pointLight) {
+    SPointLight getPointLightStruct(JPointLight pointLight) {
         return this.pointLights.get(pointLight);
     }
 }

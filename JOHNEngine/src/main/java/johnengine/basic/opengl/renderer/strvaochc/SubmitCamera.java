@@ -9,19 +9,21 @@ import johnengine.core.window.IWindow;
 
 public class SubmitCamera extends ACachedVAOSubmission<JCamera> {
 
-    public SubmitCamera(CachedVAORenderPass strategy) {
-        super(strategy);
+    public SubmitCamera(CachedVAORenderPass renderPass) {
+        super(renderPass);
     }
 
     
     @Override
     public void execute(JCamera instance) {
-        IWindow window = strategy.getRenderer().getWindow();
+        IWindow window = renderPass.getRenderer().getWindow();
         CProjection cameraProjection = instance.getProjection();
         cameraProjection.setViewDimensions(window.getWidth(), window.getHeight());
         cameraProjection.calculate();
         
-        this.strategy.setProjectionMatrix(instance.getProjection().get());
+        this.renderPass
+        .getCurrentRenderBuffer()
+        .setProjectionMatrix(cameraProjection.get());
         
             // camera matrix: projection matrix * view matrix
             // view matrix:   matrix rotated and translated according to camera
@@ -33,6 +35,6 @@ public class SubmitCamera extends ACachedVAOSubmission<JCamera> {
         .rotate(cameraTransform.getRotation().getUnsafe())
         .translate(cameraTransform.getPosition().getUnsafe());
         
-        this.strategy.setCameraMatrix(cameraMatrix);
+        this.renderPass.getCurrentRenderBuffer().setCameraMatrix(cameraMatrix);
     }
 }

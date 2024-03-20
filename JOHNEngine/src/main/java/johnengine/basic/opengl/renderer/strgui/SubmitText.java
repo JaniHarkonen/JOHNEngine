@@ -8,10 +8,10 @@ import johnengine.core.renderer.IRenderSubmissionStrategy;
 
 public class SubmitText implements IRenderSubmissionStrategy<CText> {
 
-    private final GUIRenderPass strategy;
+    private final GUIRenderPass renderPass;
     
-    SubmitText(GUIRenderPass strategy) {
-        this.strategy = strategy;
+    SubmitText(GUIRenderPass renderPass) {
+        this.renderPass = renderPass;
     }
     
     
@@ -20,7 +20,10 @@ public class SubmitText implements IRenderSubmissionStrategy<CText> {
         CTransform transform = target.getTransform();
         Vector3f position = transform.getPosition().get();
         
-        this.strategy.addRenderUnit(new RenderUnit(
+        this.renderPass
+        .getCurrentRenderBuffer()
+        .addRenderElement(
+            new RenderElement(
             target.getText(),
             target.getFont(),
             position.x,

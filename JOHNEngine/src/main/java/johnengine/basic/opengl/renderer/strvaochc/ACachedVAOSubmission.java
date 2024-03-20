@@ -5,9 +5,9 @@ import johnengine.core.renderer.IRenderSubmissionStrategy;
 
 public abstract class ACachedVAOSubmission<T extends IRenderable> implements IRenderSubmissionStrategy<T> {
 
-    protected CachedVAORenderPass strategy;
+    protected CachedVAORenderPass renderPass;
     
-    public ACachedVAOSubmission(CachedVAORenderPass strategy) {
-        this.strategy = strategy;
+    public ACachedVAOSubmission(CachedVAORenderPass renderPass) {
+        this.renderPass = renderPass;
     }
 }

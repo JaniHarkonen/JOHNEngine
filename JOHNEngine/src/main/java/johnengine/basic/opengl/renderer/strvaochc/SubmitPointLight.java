@@ -7,8 +7,8 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SPointLight;
 
 public class SubmitPointLight extends ACachedVAOSubmission<JPointLight> {
 
-    public SubmitPointLight(CachedVAORenderPass strategy) {
-        super(strategy);
+    public SubmitPointLight(CachedVAORenderPass renderPass) {
+        super(renderPass);
     }
 
     
@@ -26,6 +26,6 @@ public class SubmitPointLight extends ACachedVAOSubmission<JPointLight> {
         attenuationStruct.fExponent = attenuation.getExponent();
         
         struct.attenuation = attenuationStruct;
-        this.strategy.addPointLight(instance, struct);
+        this.renderPass.getCurrentRenderBuffer().addPointLight(instance, struct);
     }
 }

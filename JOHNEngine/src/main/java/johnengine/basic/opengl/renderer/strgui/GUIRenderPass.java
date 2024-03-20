@@ -27,10 +27,7 @@ import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.SubmissionStrategyManager;
 
-public class GUIRenderPass implements
-    IRenderPass,
-    IHasRenderBuffer
-{
+public class GUIRenderPass implements IRenderPass {
     private final RendererGL renderer;
     private final VAOCache vaoCache;
     private ShaderProgram shaderProgram;
@@ -45,6 +42,7 @@ public class GUIRenderPass implements
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
         this.submissionManager = new SubmissionStrategyManager();
+        
         this.activeGUI = null;
         
         this.submissionManager
@@ -54,10 +52,12 @@ public class GUIRenderPass implements
 
     @Override
     public void prepare() {
-        Shader vertexShader = new Shader(GL46.GL_VERTEX_SHADER, "vertex-shader", true, null);
+        Shader vertexShader = 
+            new Shader(GL46.GL_VERTEX_SHADER, "vertex-shader", true, null);
         this.loadShader(vertexShader, "gui.vert");
         
-        Shader fragmentShader = new Shader(GL46.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
+        Shader fragmentShader = 
+            new Shader(GL46.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
         this.loadShader(fragmentShader, "gui.frag");
         
             // Add shaders and generate shader program
@@ -66,9 +66,12 @@ public class GUIRenderPass implements
         .addShader(fragmentShader)
         .generate();
         
-        UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
-        UNIVector3f textOffset = new UNIVector3f("textOffset", "uTextOffset");
-        UNIInteger textureSampler = new UNIInteger("textureSampler", "uTextureSampler");
+        UNIMatrix4f projectionMatrix = 
+            new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
+        UNIVector3f textOffset = 
+            new UNIVector3f("textOffset", "uTextOffset");
+        UNIInteger textureSampler = 
+            new UNIInteger("textureSampler", "uTextureSampler");
         
         this.shaderProgram
         .declareUniform(projectionMatrix)
@@ -79,7 +82,9 @@ public class GUIRenderPass implements
     private void loadShader(Shader targetShader, String filename) {
         TextAsset.LoadTask loadTask = new TextAsset.LoadTask();
         loadTask.setTarget(targetShader);
-        loadTask.setPath(this.renderer.getResourceRootFolder() + "shaders/" + filename);
+        loadTask.setPath(
+            this.renderer.getResourceRootFolder() + "shaders/" + filename
+        );
         loadTask.load();
     }
 
@@ -126,7 +131,7 @@ public class GUIRenderPass implements
         UNIMatrix4f.class.cast(this.shaderProgram.getUniform("projectionMatrix"))
         .set(projectionMatrix);
         
-        for( RenderUnit renderUnit : renderBuffer.getBuffer() )
+        for( RenderElement renderUnit : renderBuffer.getBuffer() )
         {
             Font font = renderUnit.font;
             String[] lines = renderUnit.text.split("\n");
@@ -171,9 +176,8 @@ public class GUIRenderPass implements
         this.activeGUI = (JGUI) renderContext;
     }
     
-    @Override
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.renderBufferManager.getCurrentBuffer().setProjectionMatrix(projectionMatrix);
+    RenderBuffer getCurrentRenderBuffer() {
+        return this.renderBufferManager.getCurrentBuffer();
     }
 
     @Override
@@ -193,11 +197,6 @@ public class GUIRenderPass implements
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    public void addRenderUnit(RenderUnit renderUnit) {
-        this.renderBufferManager.getCurrentBuffer().addRenderUnit(renderUnit);
+        this.shaderProgram.dispose();
     }
 }

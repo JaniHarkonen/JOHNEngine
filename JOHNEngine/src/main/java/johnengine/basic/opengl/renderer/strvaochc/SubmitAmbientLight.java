@@ -5,8 +5,8 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SAmbientLight;
 
 public class SubmitAmbientLight extends ACachedVAOSubmission<JAmbientLight> {
 
-    public SubmitAmbientLight(CachedVAORenderPass strategy) {
-        super(strategy);
+    public SubmitAmbientLight(CachedVAORenderPass renderPass) {
+        super(renderPass);
     }
 
     
@@ -16,6 +16,6 @@ public class SubmitAmbientLight extends ACachedVAOSubmission<JAmbientLight> {
         struct.c3Ambient = instance.getColor();
         struct.fIntensity = instance.getIntensity();
         
-        this.strategy.setAmbientLight(struct);
+        this.renderPass.getCurrentRenderBuffer().setAmbientLight(struct);
     }
 }

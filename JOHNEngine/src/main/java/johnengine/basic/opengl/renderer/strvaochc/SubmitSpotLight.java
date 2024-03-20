@@ -5,8 +5,8 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SSpotLight;
 
 public class SubmitSpotLight extends ACachedVAOSubmission<JSpotLight> {
 
-    public SubmitSpotLight(CachedVAORenderPass strategy) {
-        super(strategy);
+    public SubmitSpotLight(CachedVAORenderPass renderPass) {
+        super(renderPass);
     }
 
     
@@ -15,7 +15,11 @@ public class SubmitSpotLight extends ACachedVAOSubmission<JSpotLight> {
         SSpotLight struct = new SSpotLight();
         struct.v3Direction = instance.getConeDirection();
         struct.fCutOff = instance.getCutOff();
-        struct.pointLight = this.strategy.getPointLightStruct(instance.getPointLight());
-        this.strategy.addSpotLight(instance, struct);
+        
+        RenderBuffer renderBuffer = this.renderPass.getCurrentRenderBuffer();
+        struct.pointLight = 
+            renderBuffer.getPointLightStruct(instance.getPointLight());
+        
+        renderBuffer.addSpotLight(instance, struct);
     }
 }

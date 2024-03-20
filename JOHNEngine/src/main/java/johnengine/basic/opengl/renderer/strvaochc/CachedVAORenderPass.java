@@ -2,12 +2,9 @@ package johnengine.basic.opengl.renderer.strvaochc;
 
 import java.util.Map;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 
-import johnengine.basic.assets.mesh.Mesh;
-import johnengine.basic.assets.mesh.MeshInfo;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.assets.texture.Texture;
@@ -20,11 +17,8 @@ import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.Shader;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
-import johnengine.basic.opengl.renderer.strvaochc.structs.SAmbientLight;
-import johnengine.basic.opengl.renderer.strvaochc.structs.SDirectionalLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SMaterial;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SPointLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SSpotLight;
@@ -39,16 +33,13 @@ import johnengine.basic.opengl.renderer.uniforms.UniformArray;
 import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderPass;
+import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.SubmissionStrategyManager;
 
-public class CachedVAORenderPass implements 
-    IRenderPass,
-    IHasRenderBuffer
-{
+public class CachedVAORenderPass implements IRenderPass {
     public static final int DEFAULT_EXPIRATION_TIME = 10;   // in seconds
     public static final int MAX_POINT_LIGHT_COUNT = 5;
     public static final int MAX_SPOT_LIGHT_COUNT = 5;
@@ -68,7 +59,7 @@ public class CachedVAORenderPass implements
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
         this.activeWorld = null;
         
-        this.submissionManager = (new SubmissionStrategyManager())
+        this.submissionManager = new SubmissionStrategyManager()
         .addStrategy(CModel.class, new SubmitModel(this))
         .addStrategy(JCamera.class, new SubmitCamera(this))
         .addStrategy(JAmbientLight.class, new SubmitAmbientLight(this))
@@ -82,10 +73,20 @@ public class CachedVAORenderPass implements
     public void prepare() {
         
             // Load shaders
-        Shader vertexShader = new Shader(GL46.GL_VERTEX_SHADER, "vertex-shader", true, null);
+        Shader vertexShader = new Shader(
+            GL46.GL_VERTEX_SHADER, 
+            "vertex-shader", 
+            true, 
+            null
+        );
         this.loadShader(vertexShader, "default.vert");
         
-        Shader fragmentShader = new Shader(GL46.GL_FRAGMENT_SHADER, "fragment-shader", true, null);
+        Shader fragmentShader = new Shader(
+            GL46.GL_FRAGMENT_SHADER, 
+            "fragment-shader", 
+            true, 
+            null
+        );
         this.loadShader(fragmentShader, "default.frag");
         
             // Add shaders
@@ -97,14 +98,24 @@ public class CachedVAORenderPass implements
         this.shaderProgram.generate();
         
             // Declare uniforms
-        UNIInteger textureSampler = new UNIInteger("textureSampler", "uTextureSampler");
-        UNIInteger normalSampler = new UNIInteger("normalSampler", "uNormalSampler");
-        UNIMatrix4f projectionMatrix = new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
+        UNIInteger textureSampler = new UNIInteger(
+            "textureSampler", "uTextureSampler"
+        );
+        UNIInteger normalSampler = new UNIInteger(
+            "normalSampler", "uNormalSampler"
+        );
+        UNIMatrix4f projectionMatrix = new UNIMatrix4f(
+            "projectionMatrix", "uProjectionMatrix"
+        );
         UNIMatrix4f cameraMatrix = new UNIMatrix4f("cameraMatrix", "uCameraMatrix");
         UNIMatrix4f modelMatrix = new UNIMatrix4f("modelMatrix", "uModelMatrix");
         
-        UNIAmbientLight ambientLight = new UNIAmbientLight("ambientLight", "uAmbientLight");
-        UNIDirectionalLight directionalLight = new UNIDirectionalLight("directionalLight", "uDirectionalLight");
+        UNIAmbientLight ambientLight = new UNIAmbientLight(
+            "ambientLight", "uAmbientLight"
+        );
+        UNIDirectionalLight directionalLight = new UNIDirectionalLight(
+            "directionalLight", "uDirectionalLight"
+        );
         UNIMaterial material = new UNIMaterial("material", "uMaterial");
         UniformArray<SPointLight, UNIPointLight> pointLight = 
             new UniformArray<SPointLight, UNIPointLight>(
@@ -146,7 +157,7 @@ public class CachedVAORenderPass implements
         TextAsset.LoadTask loadTask = new TextAsset.LoadTask();
         loadTask.setTarget(targetShader);
         loadTask.setPath(
-                this.renderer.getResourceRootFolder() + "shaders/" + filename
+            this.renderer.getResourceRootFolder() + "shaders/" + filename
         );
         loadTask.load();
     }
@@ -226,18 +237,15 @@ public class CachedVAORenderPass implements
         this.preRender(renderBuffer);
         
             // Issue draw calls based on the render units
-        UNIMatrix4f modelMatrix = (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
+        UNIMatrix4f modelMatrix = 
+            (UNIMatrix4f) this.shaderProgram.getUniform("modelMatrix");
         for( RenderUnit unit : renderBuffer.getBuffer() )
         {
                 // Set position matrix
-            modelMatrix.set(unit.getPositionMatrix());
-            
-                // Get VAO and mesh data
-            Mesh mesh = unit.getMesh();
-            MeshInfo meshData = unit.getMesh().getInfo();
+            modelMatrix.set(unit.positionMatrix);
             
                 // Create the material struct
-            Material material = mesh.getMaterial();
+            Material material = unit.material;
             SMaterial materialStruct = new SMaterial();
             materialStruct.c4Diffuse = material.getDiffuseColor();
             materialStruct.c4Specular = material.getSpecularColor();
@@ -246,7 +254,8 @@ public class CachedVAORenderPass implements
                 // Get and bind texture
             Texture texture = material.getTexture();
             Texture normalMap = material.getNormalMap();
-            TextureGraphicsGL textureGraphics = (TextureGraphicsGL) texture.getGraphicsStrategy();
+            TextureGraphicsGL textureGraphics = 
+                (TextureGraphicsGL) texture.getGraphicsStrategy();
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
             
@@ -259,11 +268,15 @@ public class CachedVAORenderPass implements
                 ((TextureGraphicsGL) normalMap.getGraphicsStrategy()).bind();
             }
             
-                // Bind mesh and issue draw call
-            MeshGraphicsGL meshGraphics = (MeshGraphicsGL) mesh.getGraphicsStrategy();
-            VAO vao = this.vaoCache.fetchVAO(meshGraphics);
+                // Bind VAO and issue a draw call
+            VAO vao = this.vaoCache.fetchVAO(unit.meshGraphics);
             vao.bind();
-            GL46.glDrawElements(GL46.GL_TRIANGLES, meshData.getAsset().get().getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
+            GL46.glDrawElements(
+                GL46.GL_TRIANGLES,
+                unit.meshData.getVertexCount() * 3,
+                GL46.GL_UNSIGNED_INT,
+                0
+            );
         }
         
             // Post-render
@@ -286,44 +299,8 @@ public class CachedVAORenderPass implements
         this.shaderProgram.dispose();
     }
     
-    @Override
-    public void addRenderUnit(RenderUnit unit) {
-        this.renderBufferManager.getCurrentBuffer().addRenderUnit(unit);
-    }
-    
-    @Override
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.renderBufferManager.getCurrentBuffer().setProjectionMatrix(projectionMatrix);
-    }
-    
-    @Override
-    public void setCameraMatrix(Matrix4f cameraMatrix) {
-        this.renderBufferManager.getCurrentBuffer().setCameraMatrix(cameraMatrix);
-    }
-    
-    @Override
-    public void setAmbientLight(SAmbientLight ambientLight) {
-        this.renderBufferManager.getCurrentBuffer().setAmbientLight(ambientLight);
-    }
-    
-    @Override
-    public void setDirectionalLight(SDirectionalLight directionalLight) {
-        this.renderBufferManager.getCurrentBuffer().setDirectionalLight(directionalLight);
-    }
-    
-    @Override
-    public void addPointLight(JPointLight pointLight, SPointLight pointLightStruct) {
-        this.renderBufferManager.getCurrentBuffer().addPointLight(pointLight, pointLightStruct);
-    }
-    
-    @Override
-    public void addSpotLight(JSpotLight spotLight, SSpotLight spotLightStruct) {
-        this.renderBufferManager.getCurrentBuffer().addSpotLight(spotLight, spotLightStruct);
-    }
-    
-    @Override
-    public SPointLight getPointLightStruct(JPointLight pointLight) {
-        return this.renderBufferManager.getCurrentBuffer().getPointLightStruct(pointLight);
+    RenderBuffer getCurrentRenderBuffer() {
+        return this.renderBufferManager.getCurrentBuffer();
     }
 
     @Override

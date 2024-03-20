@@ -5,8 +5,8 @@ import johnengine.basic.opengl.renderer.strvaochc.structs.SDirectionalLight;
 
 public class SubmitDirectionalLight extends ACachedVAOSubmission<JDirectionalLight> {
 
-    public SubmitDirectionalLight(CachedVAORenderPass strategy) {
-        super(strategy);
+    public SubmitDirectionalLight(CachedVAORenderPass renderPass) {
+        super(renderPass);
     }
 
     
@@ -16,6 +16,6 @@ public class SubmitDirectionalLight extends ACachedVAOSubmission<JDirectionalLig
         struct.c3Light = instance.getColor();
         struct.v3Direction = instance.getDirection();
         struct.fIntensity = instance.getIntensity();
-        this.strategy.setDirectionalLight(struct);
+        this.renderPass.getCurrentRenderBuffer().setDirectionalLight(struct);
     }
 }
