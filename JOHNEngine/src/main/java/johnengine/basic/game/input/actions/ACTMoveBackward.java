@@ -18,7 +18,7 @@ public class ACTMoveBackward extends AMove {
     }
 
     @Override
-    public ACTMoveBackward createInstance(AInputEvent<?> event, IInputConverter<?> converter) {
+    public <T> ACTMoveBackward createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         ACTMoveBackward action = new ACTMoveBackward();
         action.setIntensityFromInputEvent(event, converter);
         return action;

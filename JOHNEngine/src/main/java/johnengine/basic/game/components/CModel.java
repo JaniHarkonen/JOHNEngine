@@ -23,7 +23,7 @@ public class CModel implements ISceneGraphChild {
     
     @Override
     public void submit(IRenderPass renderPass) {
-        renderPass.executeStrategoid(this);
+        renderPass.executeSubmissionStrategy(this);
     }
     
     

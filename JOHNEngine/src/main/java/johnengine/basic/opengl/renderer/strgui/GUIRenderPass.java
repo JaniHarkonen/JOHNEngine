@@ -20,12 +20,12 @@ import johnengine.basic.opengl.renderer.uniforms.UNIVector3f;
 import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderBufferStrategoid;
+import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderBufferManager;
-import johnengine.core.renderer.RenderStrategoidManager;
+import johnengine.core.renderer.SubmissionStrategyManager;
 
 public class GUIRenderPass implements
     IRenderPass,
@@ -35,7 +35,7 @@ public class GUIRenderPass implements
     private final VAOCache vaoCache;
     private ShaderProgram shaderProgram;
     private RenderBufferManager<RenderBuffer> renderBufferManager;
-    private RenderStrategoidManager strategoidManager;
+    private SubmissionStrategyManager submissionManager;
     
     private JGUI activeGUI;
     
@@ -44,11 +44,11 @@ public class GUIRenderPass implements
         this.vaoCache = new VAOCache(10*1000);
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
-        this.strategoidManager = new RenderStrategoidManager();
+        this.submissionManager = new SubmissionStrategyManager();
         this.activeGUI = null;
         
-        this.strategoidManager
-        .addStrategoid(CText.class, new StrategoidText(this));
+        this.submissionManager
+        .addStrategy(CText.class, new SubmitText(this));
     }
     
 
@@ -89,13 +89,14 @@ public class GUIRenderPass implements
     }
 
     @Override
-    public boolean executeStrategoid(IRenderable target) {
-        IRenderBufferStrategoid<IRenderable> strategoid = this.strategoidManager.getStrategoid(target.getClass());
+    public boolean executeSubmissionStrategy(IRenderable target) {
+        IRenderSubmissionStrategy<IRenderable> submissionStrategy = 
+            this.submissionManager.getStrategy(target.getClass());
         
-        if( strategoid == null )
+        if( submissionStrategy == null )
         return false;
         
-        strategoid.execute(target);
+        submissionStrategy.execute(target);
         return true;
     }
 

@@ -4,13 +4,13 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.basic.game.gui.CText;
-import johnengine.core.renderer.IRenderBufferStrategoid;
+import johnengine.core.renderer.IRenderSubmissionStrategy;
 
-public class StrategoidText implements IRenderBufferStrategoid<CText> {
+public class SubmitText implements IRenderSubmissionStrategy<CText> {
 
     private final GUIRenderPass strategy;
     
-    StrategoidText(GUIRenderPass strategy) {
+    SubmitText(GUIRenderPass strategy) {
         this.strategy = strategy;
     }
     

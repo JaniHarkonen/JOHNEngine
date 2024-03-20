@@ -13,12 +13,11 @@ public class ACTMoveForward extends AMove {
     
     @Override
     public void perform(IControllable target) {
-        //target.moveForward(this.intensity);
         target.control(this);
     }
 
     @Override
-    public ACTMoveForward createInstance(AInputEvent<?> event, IInputConverter<?> converter) {
+    public <T> ACTMoveForward createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         ACTMoveForward action = new ACTMoveForward();
         action.setIntensityFromInputEvent(event, converter);
         return action;

@@ -17,7 +17,7 @@ public abstract class AMove extends AControllerAction {
     }
     
     
-    protected void setIntensityFromInputEvent(AInputEvent<?> event, IInputConverter<?> converter) {
+    protected <T> void setIntensityFromInputEvent(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         this.intensity = (float) converter.convert(event);
     }
 }

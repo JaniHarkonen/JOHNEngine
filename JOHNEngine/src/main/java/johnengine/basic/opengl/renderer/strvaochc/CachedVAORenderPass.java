@@ -39,11 +39,11 @@ import johnengine.basic.opengl.renderer.uniforms.UniformArray;
 import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderBufferStrategoid;
+import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.RenderBufferManager;
-import johnengine.core.renderer.RenderStrategoidManager;
+import johnengine.core.renderer.SubmissionStrategyManager;
 
 public class CachedVAORenderPass implements 
     IRenderPass,
@@ -57,7 +57,7 @@ public class CachedVAORenderPass implements
     private final VAOCache vaoCache;
     private final ShaderProgram shaderProgram;
     private RenderBufferManager<RenderBuffer> renderBufferManager;
-    private RenderStrategoidManager strategoidManager;
+    private SubmissionStrategyManager submissionManager;
     
     private JWorld activeWorld;
     
@@ -68,13 +68,13 @@ public class CachedVAORenderPass implements
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
         this.activeWorld = null;
         
-        this.strategoidManager = (new RenderStrategoidManager())
-        .addStrategoid(CModel.class, new StrategoidModel(this))
-        .addStrategoid(JCamera.class, new StrategoidCamera(this))
-        .addStrategoid(JAmbientLight.class, new StrategoidAmbientLight(this))
-        .addStrategoid(JPointLight.class, new StrategoidPointLight(this))
-        .addStrategoid(JDirectionalLight.class, new StrategoidDirectionalLight(this))
-        .addStrategoid(JSpotLight.class, new StrategoidSpotLight(this));
+        this.submissionManager = (new SubmissionStrategyManager())
+        .addStrategy(CModel.class, new SubmitModel(this))
+        .addStrategy(JCamera.class, new SubmitCamera(this))
+        .addStrategy(JAmbientLight.class, new SubmitAmbientLight(this))
+        .addStrategy(JPointLight.class, new SubmitPointLight(this))
+        .addStrategy(JDirectionalLight.class, new SubmitDirectionalLight(this))
+        .addStrategy(JSpotLight.class, new SubmitSpotLight(this));
     }
     
     
@@ -157,13 +157,14 @@ public class CachedVAORenderPass implements
     }
     
     @Override
-    public boolean executeStrategoid(IRenderable target) {
-        IRenderBufferStrategoid<IRenderable> strategoid = this.strategoidManager.getStrategoid(target.getClass());
+    public boolean executeSubmissionStrategy(IRenderable target) {
+        IRenderSubmissionStrategy<IRenderable> submissionStrategy = 
+            this.submissionManager.getStrategy(target.getClass());
         
-        if( strategoid == null )
+        if( submissionStrategy == null )
         return false;
         
-        strategoid.execute(target);
+        submissionStrategy.execute(target);
         return true;
     }
     

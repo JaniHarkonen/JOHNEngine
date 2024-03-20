@@ -8,11 +8,11 @@ import johnengine.core.input.IInputConverter;
 
 public class ControlSchema {
     private static class ConverterActionPair {
-        private IInputConverter<?> converter;
+        private IInputConverter<?, ?> converter;
         private AControllerAction action;
         
         private ConverterActionPair(
-            IInputConverter<?> converter, 
+            IInputConverter<?, ?> converter, 
             AControllerAction action
         ) {
             this.converter = converter;
@@ -31,7 +31,7 @@ public class ControlSchema {
     public ControlSchema bind(
         AInputEvent<?> event,
         AControllerAction action, 
-        IInputConverter<?> converter
+        IInputConverter<?, ?> converter
     ) {
         this.bindings.put(event, new ConverterActionPair(converter, action));
         return this;
@@ -42,12 +42,13 @@ public class ControlSchema {
         return this;
     }
     
-    public AControllerAction getAction(AInputEvent<?> event) {
+    @SuppressWarnings("unchecked")
+    public <T> AControllerAction getAction(AInputEvent<T> event) {
         ConverterActionPair pair = this.bindings.get(event);    
         
         if( pair == null )
         return null;
         
-        return pair.action.createInstance(event, pair.converter);
+        return pair.action.createInstance(event, (IInputConverter<T, ?>) pair.converter);
     }
 }

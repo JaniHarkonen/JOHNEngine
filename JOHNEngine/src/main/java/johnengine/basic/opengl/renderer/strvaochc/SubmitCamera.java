@@ -7,9 +7,9 @@ import johnengine.basic.game.components.geometry.CProjection;
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.core.window.IWindow;
 
-public class StrategoidCamera extends ACachedVAOStrategoid<JCamera> {
+public class SubmitCamera extends ACachedVAOSubmission<JCamera> {
 
-    public StrategoidCamera(CachedVAORenderPass strategy) {
+    public SubmitCamera(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

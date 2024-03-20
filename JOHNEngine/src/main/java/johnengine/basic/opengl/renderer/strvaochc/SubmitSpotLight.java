@@ -3,9 +3,9 @@ package johnengine.basic.opengl.renderer.strvaochc;
 import johnengine.basic.game.lights.JSpotLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SSpotLight;
 
-public class StrategoidSpotLight extends ACachedVAOStrategoid<JSpotLight> {
+public class SubmitSpotLight extends ACachedVAOSubmission<JSpotLight> {
 
-    public StrategoidSpotLight(CachedVAORenderPass strategy) {
+    public SubmitSpotLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

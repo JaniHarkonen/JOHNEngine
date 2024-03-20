@@ -25,7 +25,7 @@ public class ACTTurn extends AControllerAction {
     }
     
     @Override
-    public ACTTurn createInstance(AInputEvent<?> event, IInputConverter<?> converter) {
+    public <T> ACTTurn createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         ACTTurn action = new ACTTurn();
         Point2D.Float delta = (Point2D.Float) converter.convert(event);
         action.deltaX = delta.x;

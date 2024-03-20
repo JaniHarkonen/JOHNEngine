@@ -3,9 +3,9 @@ package johnengine.basic.opengl.renderer.strvaochc;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SDirectionalLight;
 
-public class StrategoidDirectionalLight extends ACachedVAOStrategoid<JDirectionalLight> {
+public class SubmitDirectionalLight extends ACachedVAOSubmission<JDirectionalLight> {
 
-    public StrategoidDirectionalLight(CachedVAORenderPass strategy) {
+    public SubmitDirectionalLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

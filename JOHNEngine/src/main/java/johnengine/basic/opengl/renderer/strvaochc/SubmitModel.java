@@ -4,9 +4,9 @@ import org.joml.Matrix4f;
 
 import johnengine.basic.game.components.CModel;
 
-public class StrategoidModel extends ACachedVAOStrategoid<CModel> {
+public class SubmitModel extends ACachedVAOSubmission<CModel> {
 
-    public StrategoidModel(CachedVAORenderPass strategy) {
+    public SubmitModel(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

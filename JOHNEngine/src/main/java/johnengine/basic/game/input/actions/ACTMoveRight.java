@@ -18,7 +18,7 @@ public class ACTMoveRight extends AMove {
     }
 
     @Override
-    public ACTMoveRight createInstance(AInputEvent<?> event, IInputConverter<?> converter) {
+    public <T> ACTMoveRight createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         ACTMoveRight action = new ACTMoveRight();
         action.setIntensityFromInputEvent(event, converter);
         return action;

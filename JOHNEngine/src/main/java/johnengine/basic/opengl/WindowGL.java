@@ -75,14 +75,6 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
             
-                // Lock cursor to the center of the screen if enabled
-            //long inputTimestamp = this.input.getState().getTimestamp();
-            /*if( this.isCursorLockedToCenter() && previousInputTimestamp != inputTimestamp )
-            {
-                Point size = this.properties.size.currentValue;
-                GLFW.glfwSetCursorPos(this.windowID, size.x / 2, size.y / 2);
-            }*/
-            
                 // FPS-counter
             long currentTime = System.currentTimeMillis();
             fpsCounter++;
@@ -113,7 +105,6 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 
     @Override
     public void beforeTick(float deltaTime) {
-        //this.input.snapshot();
         this.input.pollEvents();
         this.properties.snapshot();
     }

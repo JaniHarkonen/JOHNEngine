@@ -3,9 +3,9 @@ package johnengine.basic.opengl.renderer.strvaochc;
 import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SAmbientLight;
 
-public class StrategoidAmbientLight extends ACachedVAOStrategoid<JAmbientLight> {
+public class SubmitAmbientLight extends ACachedVAOSubmission<JAmbientLight> {
 
-    public StrategoidAmbientLight(CachedVAORenderPass strategy) {
+    public SubmitAmbientLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

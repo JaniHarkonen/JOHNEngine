@@ -34,7 +34,7 @@ public abstract class AWorldObject extends AGameObject implements
         for( ISceneGraphChild child : this.children )
         child.submit(renderPass);
         
-        renderPass.executeStrategoid(this);
+        renderPass.executeSubmissionStrategy(this);
     }
     
     @Override

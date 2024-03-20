@@ -5,9 +5,9 @@ import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SAttenuation;
 import johnengine.basic.opengl.renderer.strvaochc.structs.SPointLight;
 
-public class StrategoidPointLight extends ACachedVAOStrategoid<JPointLight> {
+public class SubmitPointLight extends ACachedVAOSubmission<JPointLight> {
 
-    public StrategoidPointLight(CachedVAORenderPass strategy) {
+    public SubmitPointLight(CachedVAORenderPass strategy) {
         super(strategy);
     }
 

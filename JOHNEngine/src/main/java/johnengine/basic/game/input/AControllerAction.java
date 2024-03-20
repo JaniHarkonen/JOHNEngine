@@ -13,8 +13,8 @@ public abstract class AControllerAction {
     
     public abstract void perform(IControllable target);
     
-    public abstract AControllerAction createInstance(
-        AInputEvent<?> event, 
-        IInputConverter<?> converter
+    public abstract <T> AControllerAction createInstance(
+        AInputEvent<T> event, 
+        IInputConverter<T, ?> converter
     );
 }

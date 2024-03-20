@@ -8,7 +8,7 @@ public interface IRenderPass {
     
     public void newBuffer();
     
-    public boolean executeStrategoid(IRenderable target);
+    public boolean executeSubmissionStrategy(IRenderable target);
     
     public void render();
     

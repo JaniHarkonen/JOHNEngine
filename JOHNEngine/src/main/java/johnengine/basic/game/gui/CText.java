@@ -25,7 +25,7 @@ public class CText implements IRenderable, ISceneGraphChild {
     
     @Override
     public void submit(IRenderPass renderPass) {
-        renderPass.executeStrategoid(this);
+        renderPass.executeSubmissionStrategy(this);
     }
 
     @Override
