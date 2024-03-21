@@ -1,378 +1,374 @@
 package johnengine.basic.opengl.input;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import johnengine.basic.opengl.WindowGL;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInput;
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.window.IWindow;
 
 public final class MouseKeyboardInputGL implements IInput {
     
-    /************************ BooleanEvent-class ************************/
     
-    private static class BooleanEvent {
-        protected boolean didOccur;
+    /***************************** KeyPressed-class ****************************/
+    
+    private static final int KEY_PRESSED_HASH = 1;
+    
+    public static final class KeyPressed extends AInputEvent<Boolean> {
         
-        public BooleanEvent() {
-            this.didOccur = false;
-        }
-    }
-    
-    
-    /************************ MouseEvent-class ************************/
-    
-    private static class MouseEvent extends BooleanEvent {
-        protected int mouseButton;
+        public final int key;
         
-        public MouseEvent(int mouseButton) {
-            super();
-            this.mouseButton = mouseButton;
-        }
-    }
-    
-    
-    /************************ KeyboardEvent-class ************************/
-    
-    private static class KeyboardEvent extends BooleanEvent {
-        protected int key;
-        
-        public KeyboardEvent(int key) {
-            super();
+        public KeyPressed(int key) {
+            super(MouseKeyboardInputGL.KEY_PRESSED_HASH);
             this.key = key;
         }
-    }
-    
-    
-    /************************ KeyDown-class ************************/
-    
-    public static class KeyDown extends KeyboardEvent implements IInput.Event<Boolean> {
-        
-        public KeyDown(int key) {
-            super(key);
-        }
 
-        @Override
-        public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInputGL.State) state).isKeyDown(this.key);
-            return this.didOccur;
-        }
         
         @Override
         public Boolean getValue() {
-            return this.didOccur;
-        }
-    }
-    
-    
-    /************************ KeyReleased-class ************************/
-    
-    public static class KeyReleased extends KeyboardEvent implements IInput.Event<Boolean> {
-        
-        public KeyReleased(int key) {
-            super(key);
-        }
-
-        @Override
-        public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInputGL.State) state).isKeyReleased(this.key);
-            return this.didOccur;
-        }
-        
-        @Override
-        public Boolean getValue() {
-            return this.didOccur;
-        }
-    }
-    
-    
-    /************************ KeyboardString-class ************************/
-    
-    public static class KeyboardString implements IInput.Event<String> {
-
-        @Override
-        public boolean check(IInput.State targetState) {
-            return false;
-        }
-
-        @Override
-        public String getValue() {
-            return null;
-        }
-    }
-    
-    
-    /************************ MouseDown-class ************************/
-    
-    public static class MouseDown extends MouseEvent implements IInput.Event<Boolean> {
-        
-        public MouseDown(int mouseButton) {
-            super(mouseButton);
-        }
-
-        @Override
-        public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInputGL.State) state).isMouseDown(this.mouseButton);
-            return this.didOccur;
-        }
-        
-        @Override
-        public Boolean getValue() {
-            return this.didOccur;
-        }
-    }
-    
-    
-    /************************ MouseReleased-class ************************/
-    
-    public static class MouseReleased extends MouseEvent implements IInput.Event<Boolean> {
-        
-        public MouseReleased(int mouseButton) {
-            super(mouseButton);
-        }
-
-        @Override
-        public boolean check(IInput.State state) {
-            this.didOccur = ((MouseKeyboardInputGL.State) state).isMouseReleased(this.mouseButton);
-            return this.didOccur;
-        }
-        
-        @Override
-        public Boolean getValue() {
-            return this.didOccur;
-        }
-    }
-    
-    
-    /************************ MouseMove-class ************************/
-    
-    public static class MouseMove implements IInput.Event<Point2D.Double> {
-        protected Point2D.Double mouseFromCenter;
-        
-        public MouseMove() {
-            this.mouseFromCenter = new Point2D.Double();
-        }
-
-        @Override
-        public boolean check(IInput.State state) {
-            MouseKeyboardInputGL.State cstate = (MouseKeyboardInputGL.State) state;
-            this.mouseFromCenter.x = cstate.getMouseFromCenterX();
-            this.mouseFromCenter.y = cstate.getMouseFromCenterY();
             return true;
         }
         
         @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof KeyPressed )
+            return (KeyPressed.class.cast(obj).key == this.key);
+            
+            return false;
+        }
+        
+    }
+    
+    
+    /***************************** KeyHeld-class ****************************/
+    
+    private static final int KEY_HELD_HASH = 2;
+    
+    public static final class KeyHeld extends AInputEvent<Boolean> {
+        
+        public final int key;
+        
+        public KeyHeld(int key) {
+            super(MouseKeyboardInputGL.KEY_HELD_HASH);
+            this.key = key;
+        }
+        
+
+        @Override
+        public Boolean getValue() {
+            return true;
+        }
+
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof KeyHeld )
+            return (KeyHeld.class.cast(obj).key == this.key);
+            
+            return false;
+        }
+    }
+    
+    
+    /***************************** KeyReleased-class ****************************/
+    
+    private static final int KEY_RELEASED_HASH = 3;
+    
+    public static final class KeyReleased extends AInputEvent<Boolean> {
+
+        public final int key;
+        
+        public KeyReleased(int key) {
+            super(MouseKeyboardInputGL.KEY_RELEASED_HASH);
+            this.key = key;
+        }
+        
+
+        @Override
+        public Boolean getValue() {
+            return true;
+        }
+        
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof KeyReleased )
+            return (KeyReleased.class.cast(obj).key == this.key);
+            
+            return false;
+        }
+    }
+    
+    
+    /***************************** MousePressed-class ****************************/
+    
+    private static final int MOUSE_PRESSED_HASH = 4;
+    
+    public static final class MousePressed extends AInputEvent<Boolean> {
+
+        public final int mouseButton;
+        
+        public MousePressed(int mouseButton) {
+            super(MouseKeyboardInputGL.MOUSE_PRESSED_HASH);
+            this.mouseButton = mouseButton;
+        }
+        
+
+        @Override
+        public Boolean getValue() {
+            return true;
+        }
+
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof MousePressed )
+            return (MousePressed.class.cast(obj).mouseButton == this.mouseButton);
+            
+            return false;
+        }
+    }
+    
+    
+    /***************************** MouseHeld-class ****************************/
+    
+    private static final int MOUSE_HELD_HASH = 5;
+    
+    public static final class MouseHeld extends AInputEvent<Boolean> {
+
+        public final int mouseButton;
+        
+        public MouseHeld(int mouseButton) {
+            super(MouseKeyboardInputGL.MOUSE_HELD_HASH);
+            this.mouseButton = mouseButton;
+        }
+        
+
+        @Override
+        public Boolean getValue() {
+            return true;
+        }
+
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof MouseHeld )
+            return (MouseHeld.class.cast(obj).mouseButton == this.mouseButton);
+            
+            return false;
+        }
+    }
+    
+    
+    /***************************** MouseReleased-class ****************************/
+    
+    private static final int MOUSE_RELEASED_HASH = 6;
+    
+    public static final class MouseReleased extends AInputEvent<Boolean> {
+
+        public final int mouseButton;
+        
+        public MouseReleased(int mouseButton) {
+            super(MouseKeyboardInputGL.MOUSE_RELEASED_HASH);
+            this.mouseButton = mouseButton;
+        }
+        
+
+        @Override
+        public Boolean getValue() {
+            return true;
+        }
+
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            if( obj instanceof MouseReleased )
+            return (MouseReleased.class.cast(obj).mouseButton == this.mouseButton);
+            
+            return false;
+        }
+    }
+    
+    
+    /***************************** MouseMove-class ****************************/
+    
+    private static final int MOUSE_MOVE_HASH = 7;
+    
+    public static final class MouseMove extends AInputEvent<Point2D.Double> {
+
+        public final Point2D.Double mousePosition;
+        
+        public MouseMove(double mouseX, double mouseY) {
+            super(MouseKeyboardInputGL.MOUSE_MOVE_HASH);
+            this.mousePosition = new Point2D.Double(mouseX, mouseY);
+        }
+        
+        public MouseMove() {
+            super(MouseKeyboardInputGL.MOUSE_MOVE_HASH);
+            this.mousePosition = null;
+        }
+        
+
+        @Override
         public Point2D.Double getValue() {
-            return this.mouseFromCenter;
+            return this.mousePosition;
+        }
+        
+        @Override
+        protected boolean equalsImpl(Object obj) {
+            return (obj instanceof MouseMove);
         }
     }
     
     
-    /************************ State-class ************************/
-        
-        // The state has been promoted to its own class because a snapshot has 
-        // to be maintained for each tick
-    public class State implements IInput.State {
-        private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
-        private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
-        
-        private static final int INPUT_NO_ACTION = 0;
-        private static final int INPUT_RELEASED = 1;
-        private static final int INPUT_PRESSED = 2;
-        
-        private final int[] keyMap;
-        private final int[] buttonMap;
-        private double mouseX;
-        private double mouseY;
-        private double mouseFromCenterX;
-        private double mouseFromCenterY;
-        private String keyboardString;
-        
-        private long timestamp;
-        private final IInput input;
-        
-        public State(IInput input) {
-            this.input = input;
-            this.keyMap = new int[KEY_MAP_SIZE];
-            this.buttonMap = new int[MOUSE_BUTTON_MAP_SIZE];
-            this.mouseX = 0;
-            this.mouseY = 0;
-            this.mouseFromCenterX = 0;
-            this.mouseFromCenterY = 0;
-            this.keyboardString = "";
-            this.timestamp = 0;
-        }
-        
-        
-        @Override
-        public void takeSnapshot(IInput.State destState) {
-            State dest = (State) destState;
-            for( int i = 0; i < KEY_MAP_SIZE; i++ )
-            {
-                int keyMapValue = this.keyMap[i];
-                dest.keyMap[i] = keyMapValue;
-                
-                    // Reset released keys
-                if( keyMapValue == INPUT_RELEASED )
-                this.keyMap[i] = INPUT_NO_ACTION;
-                
-                    // Log held keys to the keyboar string
-                if( keyMapValue == INPUT_PRESSED )
-                this.keyboardString += Character.toString(i);
-                
-                if( i >= MOUSE_BUTTON_MAP_SIZE )
-                continue;
-                
-                dest.buttonMap[i] = this.buttonMap[i];
-                
-                    // Reset released mouse buttons
-                if( this.buttonMap[i] == INPUT_RELEASED )
-                this.buttonMap[i] = INPUT_NO_ACTION;
-            }
-            
-            AWindowFramework window = this.input.getWindow();
-            
-            if( window.isWindowOpen() )
-            {
-                double xCenter = window.getWidth() / 2;
-                double yCenter = window.getHeight() / 2;
-                
-                dest.mouseFromCenterX = this.mouseX - xCenter;
-                dest.mouseFromCenterY = this.mouseY - yCenter;
-            }
-            
-            dest.mouseX = this.mouseX;
-            dest.mouseY = this.mouseY;
-            
-            dest.keyboardString = this.keyboardString;
-            dest.timestamp = System.nanoTime();
-        }
-        
-        
-        @Override
-        public long getTimestamp() {
-            return this.timestamp;
-        }
-        
-        @Override
-        public IInput getInput() {
-            return this.input;
-        }
-        
-        private boolean checkKey(int key, int state) {
-            return (this.keyMap[key] == state);
-        }
-        
-        private boolean checkMouseButton(int mouseButton, int state) {
-            return (this.buttonMap[mouseButton] == state);
-        }
-        
-        public boolean isKeyDown(int key) {
-            return this.checkKey(key, INPUT_PRESSED);
-        }
-        
-        public boolean isKeyReleased(int key) {
-            return this.checkKey(key, INPUT_RELEASED);
-        }
-        
-        public boolean isMouseDown(int button) {
-            return this.checkMouseButton(button, INPUT_PRESSED);
-        }
-        
-        public boolean isMouseReleased(int button) {
-            return this.checkMouseButton(button, INPUT_RELEASED);
-        }
-        
-        public double getMouseX() {
-            return this.mouseX;
-        }
-        
-        public double getMouseY() {
-            return this.mouseY;
-        }
+    /***************************** MouseKeyboardInputGL-class ****************************/
+ 
+    private static final int NONE = 0;
+    private static final int PRESSED = 1;
+    private static final int HELD = 2;
+    private static final int RELEASED = 3;
     
-        public double getMouseFromCenterX() {
-            return this.mouseFromCenterX;
-        }
-    
-        public double getMouseFromCenterY() {
-            return this.mouseFromCenterY;
-        }
-        
-        public String getKeyboardString() {
-            return this.keyboardString;
-        }
-    }
-    
-    
-    /************************ MouseKeyboardInput-class ************************/
+    private static final int KEY_MAP_SIZE = 
+        GLFW.GLFW_KEY_LAST + 1;
+    private static final int MOUSE_BUTTON_MAP_SIZE = 
+        GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
     
     private final WindowGL hostWindow;
-    private final State updatingState;
-    private final State snapshotState;
-
+    private final int[] keyMap;
+    private final int[] mouseButtonMap;
+    private List<AInputEvent<?>> eventList;
+    private List<AInputEvent<?>> lastEventList;
+    
     public MouseKeyboardInputGL(WindowGL hostWindow) {
         this.hostWindow = hostWindow;
-        this.updatingState = new State(this);
-        this.snapshotState = new State(this);
+        this.keyMap = new int[KEY_MAP_SIZE];
+        this.mouseButtonMap = new int[MOUSE_BUTTON_MAP_SIZE];
+        this.eventList = new ArrayList<>();
+        this.lastEventList = new ArrayList<>();
     }
     
     
     @Override
     public void setup() {
         long windowID = this.hostWindow.getWindowID();
-        GLFW.glfwSetKeyCallback(windowID, (window, key, scancode, action, mods) -> keyListener(key, action));
-        GLFW.glfwSetCursorPosCallback(windowID, (handle, xpos, ypos) -> mousePositionListener(xpos, ypos));
-        GLFW.glfwSetMouseButtonCallback(windowID, (handle, button, action, mode) -> mouseListener(button, action));
+        
+            // Set keyboard callback
+        GLFWKeyCallbackI keyCallback = (window, key, scancode, action, mods) -> {
+            keyListener(key, action);
+        };
+        GLFW.glfwSetKeyCallback(windowID, keyCallback);
+        
+            // Set mouse move callback
+        GLFWCursorPosCallbackI cursorPosCallback = (handle, xpos, ypos) -> {
+            mousePositionListener(xpos, ypos);
+        };
+        GLFW.glfwSetCursorPosCallback(windowID, cursorPosCallback);
+        
+            // Set mouse button callback
+        GLFWMouseButtonCallbackI mouseButtonCallback = (handle, button, action, mode) -> {
+            mouseListener(button, action);
+        };
+        GLFW.glfwSetMouseButtonCallback(windowID, mouseButtonCallback);
+        
         //GLFW.glfwSetScrollCallback(window, cbfun)
+    }
+
+    @Override
+    public void update() {
+        for( int i = 0; i < KEY_MAP_SIZE; i++ )
+        {
+            int keyValue = this.keyMap[i];
+            
+            if( keyValue == PRESSED || keyValue == HELD )
+            {
+                this.keyMap[i] = HELD;
+                this.recordEvent(new KeyHeld(i));
+            }
+            else if( keyValue == RELEASED )
+            this.keyMap[i] = NONE;
+        }
+        
+        for( int i = 0; i < MOUSE_BUTTON_MAP_SIZE; i++ )
+        {
+            int buttonValue = this.mouseButtonMap[i];
+            
+            if( buttonValue == PRESSED )
+            {
+                this.mouseButtonMap[i] = HELD;
+                this.recordEvent(new MouseReleased(i));
+            }
+            else if( buttonValue == RELEASED )
+            this.mouseButtonMap[i] = NONE;
+        }
+            
+        GLFW.glfwPollEvents();
+    }
+    
+    private void recordEvent(AInputEvent<?> event) {
+        this.eventList.add(event);
+    }
+
+    @Override
+    public void pollEvents() {
+        this.lastEventList = Collections.unmodifiableList(this.eventList);
+        this.eventList = new ArrayList<>();
     }
     
     @Override
-    public void snapshot() {
-        this.updatingState.takeSnapshot(this.snapshotState);
+    public void dispose() {
+        long windowID = this.hostWindow.getWindowID();
+        GLFW.glfwSetKeyCallback(windowID, null);
+        GLFW.glfwSetCursorPosCallback(windowID, null);
+        GLFW.glfwSetMouseButtonCallback(windowID, null);
+        GLFW.glfwSetScrollCallback(windowID, null);
     }
+
+    
+    /***************************** LISTENERS ****************************/
     
     private void keyListener(int key, int action) {
-        if( action != GLFW.GLFW_REPEAT )
-        this.setStateKey(this.updatingState, key, action + 1);
+        if( action == GLFW.GLFW_PRESS )
+        {
+            this.keyMap[key] = PRESSED;
+            this.recordEvent(new KeyPressed(key));
+        }
+        else if( action == GLFW.GLFW_RELEASE )
+        {
+            this.keyMap[key] = RELEASED;
+            this.recordEvent(new KeyReleased(key));
+        }
     }
     
     private void mousePositionListener(double mouseX, double mouseY) {
-        this.setStateMousePosition(this.updatingState, mouseX, mouseY);
+        this.eventList.add(new MouseMove(mouseX, mouseY));
     }
     
     private void mouseListener(int button, int action) {
-        this.setStateMouseButton(this.updatingState, button, action + 1);
+        if( action == GLFW.GLFW_PRESS )
+        {
+            this.mouseButtonMap[button] = PRESSED;
+            this.recordEvent(new MousePressed(button));
+        }
+        else if( action == GLFW.GLFW_RELEASE )
+        {
+            this.mouseButtonMap[button] = RELEASED;
+            this.recordEvent(new MouseReleased(button));
+        }
     }
     
     
     /***************************** SETTERS ****************************/
-    
-    protected void setStateKey(State state, int key, int value) {
-        state.keyMap[key] = value;
-    }
-    
-    protected void setStateMouseButton(State state, int mouseButton, int value) {
-        state.buttonMap[mouseButton] = value;
-    }
-    
-    protected void setStateMousePosition(State state, double mouseX, double mouseY) {
-        state.mouseX = mouseX;
-        state.mouseY = mouseY;
-    }
-    
-    
-    /***************************** GETTERS ****************************/
-    
-    @Override
-    public State getState() {
-        return this.snapshotState;
-    }
-
 
     @Override
-    public AWindowFramework getWindow() {
+    public List<AInputEvent<?>> getEvents() {
+        return this.lastEventList;
+    }
+
+    @Override
+    public IWindow getWindow() {
         return this.hostWindow;
     }
 }

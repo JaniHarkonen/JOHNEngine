@@ -1,11 +1,13 @@
 package johnengine.basic.game.components;
 
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.IControllable;
 import johnengine.core.ITickable;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInput;
 
 public class CController implements ITickable {
@@ -27,11 +29,16 @@ public class CController implements ITickable {
     
     @Override
     public void tick(float deltaTime) {
-        IInput.State state = this.inputSource.getState();
-        Queue<AControllerAction> actionQueue = this.controlSchema.generateActions(state);
+        List<AControllerAction> actions = new ArrayList<>();
+        for( AInputEvent<?> event : this.inputSource.getEvents() )
+        {
+            AControllerAction action = this.controlSchema.getAction(event);
+            
+            if( action != null )
+            actions.add(action);
+        }
         
-        AControllerAction action;
-        while( (action = actionQueue.poll()) != null )
+        for( AControllerAction action : actions )
         action.perform(this.controlledInstance);
     }
     

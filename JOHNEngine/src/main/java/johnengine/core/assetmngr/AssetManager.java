@@ -1,27 +1,55 @@
 package johnengine.core.assetmngr;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import johnengine.core.FileUtils;
 import johnengine.core.IEngineComponent;
-import johnengine.core.assetmngr.asset.AAssetLoader;
+import johnengine.core.assetmngr.asset.ALoadTask;
 import johnengine.core.assetmngr.asset.AssetGroup;
 import johnengine.core.assetmngr.asset.IAsset;
+import johnengine.core.exception.JOHNException;
 import johnengine.core.threadable.AThreadable;
-import johnengine.testing.DebugUtils;
 
 public final class AssetManager implements IEngineComponent {
+    
+    /************************* NullTaskException-class *************************/
+    
+    @SuppressWarnings("serial")
+    public static class NullTaskException extends JOHNException {
+        public NullTaskException() {
+            super("Trying to schedule a NULL loading task!");
+        }
+    }
+    
+    /************************* NullTaskException-class *************************/
+    
+    @SuppressWarnings("serial")
+    public static class NonExistingRootDirectoryException extends JOHNException {
+        public NonExistingRootDirectoryException(String directory) {
+            super(
+                "Trying to set a non-existing root directory!\nDirectory:\n%directory", 
+                "%directory", 
+                directory
+            );
+        }
+    }
+    
+    
+    /************************* LoaderProcess-class *************************/
     
     private static class LoaderProcess extends AThreadable {
         public static final long DEFAULT_SLEEP_TIME = 500;
         
-        private Queue<AAssetLoader> queuedLoaders;
+        private Queue<ALoadTask> queuedTasks;
         private boolean isRunning;
         
         LoaderProcess() {
-            this.queuedLoaders = new ConcurrentLinkedQueue<>();
+            this.queuedTasks = new ConcurrentLinkedQueue<>();
             this.isRunning = false;
         }
 
@@ -32,10 +60,10 @@ public final class AssetManager implements IEngineComponent {
             
             while( this.isRunning )
             {
-                AAssetLoader loader = this.queuedLoaders.poll();
+                ALoadTask loadTask = this.queuedTasks.poll();
                 
-                if( loader != null )
-                loader.load();
+                if( loadTask != null )
+                loadTask.load();
                 else
                 {
                     try 
@@ -56,8 +84,8 @@ public final class AssetManager implements IEngineComponent {
             this.isRunning = false;
         }
         
-        public void addTask(AAssetLoader loader) {
-            this.queuedLoaders.add(loader);
+        public void addTask(ALoadTask loadTask) {
+            this.queuedTasks.add(loadTask);
         }
     }
     
@@ -84,16 +112,21 @@ public final class AssetManager implements IEngineComponent {
         return setup(DEFAULT_NUMBER_OF_THREADS);
     }
     
+    
+    /************************* Class body *************************/
+    
     private Map<String, IAsset> assets;
     private LoaderProcess[] loaderProcesses;
     private int nextThreadIndex;
     private int numberOfThreads;
+    private String rootDirectory;
     
     public AssetManager(int numberOfThreads) {
         this.assets = new HashMap<>();
         this.loaderProcesses = new LoaderProcess[numberOfThreads];
         this.nextThreadIndex = 0;
         this.numberOfThreads = numberOfThreads;
+        this.rootDirectory = "";
     }
     
     
@@ -115,18 +148,18 @@ public final class AssetManager implements IEngineComponent {
         return new AssetGroup(groupName, this);
     }
     
-    public AssetManager load(AAssetLoader loader) {
-        this.getNextLoaderProcess().addTask(loader);
+    public AssetManager schedule(ALoadTask loadTask) {
+        this.getNextLoaderProcess().addTask(loadTask);
         return this;
     }
     
-    public AssetManager loadFrom(String path, AAssetLoader loader) {
-        if( loader == null )
-        DebugUtils.log(this, "FAIL: null loader");
+    public AssetManager scheduleFrom(String path, ALoadTask loadTask) {
+        if( loadTask == null )
+        throw new NullTaskException();
         else
-        loader.setPath(path);
+        loadTask.setPath(this.rootDirectory + FileUtils.normalizePathSlashes(path));
         
-        return this.load(loader);
+        return this.schedule(loadTask);
     }
     
     public AssetManager deloadAsset(String assetName) {
@@ -164,10 +197,17 @@ public final class AssetManager implements IEngineComponent {
     }
 
     private LoaderProcess getNextLoaderProcess() {
-        if( this.nextThreadIndex >= numberOfThreads )
-        this.nextThreadIndex = 0;
-        
+        this.nextThreadIndex %= this.numberOfThreads;
         return this.loaderProcesses[this.nextThreadIndex++];
+    }
+    
+    public void setRootDirectory(String rootDirectory) {
+        String normalizedRootDirectory = FileUtils.normalizePathSlashes(rootDirectory);
+        
+        if( Files.exists(Paths.get(normalizedRootDirectory)) )
+        this.rootDirectory = normalizedRootDirectory + "/";
+        else
+        throw new NonExistingRootDirectoryException(normalizedRootDirectory);
     }
     
     public IAsset getAsset(String assetName) {

@@ -1,7 +1,11 @@
 package johnengine.basic.assets;
 
-public interface IGraphicsAsset<T> extends IGeneratable {
-    public IGraphicsAsset<T> createInstance(IRendererAsset asset);
+import johnengine.core.assetmngr.asset.IAsset;
+
+public interface IGraphicsAsset extends IAsset {
+
+    public void setGraphicsStrategy(IGraphicsStrategy graphicsStrategy);
     
-    public T getData();
+    public IGraphicsStrategy getGraphicsStrategy();
+    
 }

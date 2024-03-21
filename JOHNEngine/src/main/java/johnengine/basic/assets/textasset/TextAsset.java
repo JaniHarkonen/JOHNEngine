@@ -4,22 +4,30 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import johnengine.core.assetmngr.asset.AAsset;
-import johnengine.core.assetmngr.asset.AAssetLoader;
-import johnengine.testing.DebugUtils;
+import johnengine.core.assetmngr.asset.ALoadTask;
+import johnengine.core.exception.JOHNException;
 
 public class TextAsset extends AAsset<String> {
-
-    public static class Loader extends AAssetLoader {
+    
+    public static class LoadTask extends ALoadTask {
+        
+        @SuppressWarnings("serial")
+        public static class TextFileException extends JOHNException {
+            public TextFileException(String message, TextAsset targetAsset, String path) {
+                super(message, "%name", targetAsset.getName(), "%path", path);
+            }
+        }
+        
         protected String text;
         protected TextAsset targetAsset;
         
-        public Loader(String path, TextAsset targetAsset) {
+        public LoadTask(String path, TextAsset targetAsset) {
             super(path);
             this.text = "";
             this.targetAsset = targetAsset;
         }
         
-        public Loader() {
+        public LoadTask() {
             this(null, null);
         }
         
@@ -40,7 +48,12 @@ public class TextAsset extends AAsset<String> {
             }
             catch( Exception e )
             {
-                DebugUtils.log(this, "Error loading text file!");
+                e.printStackTrace();
+                throw new TextFileException(
+                    "Failed to load text asset '%name' from path:\n%path",
+                    this.targetAsset,
+                    this.path
+                );
             }
         }
         
@@ -48,7 +61,8 @@ public class TextAsset extends AAsset<String> {
             if( !this.isLoaded() )
             return false;
             
-            targetAsset.asset = this.text;
+            //targetAsset.asset = this.text;
+            targetAsset.setAsset(this.text);
             return true;            
         }
         
@@ -74,8 +88,13 @@ public class TextAsset extends AAsset<String> {
     }
     
     
-    @Override
+    /*@Override
     public String getDefault() {
+        return "";
+    }*/
+    
+    @Override
+    public String getDefaultAsset() {
         return "";
     }
 }

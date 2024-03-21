@@ -1,20 +1,26 @@
 package johnengine.basic.opengl;
 
+import java.awt.Point;
+
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import johnengine.basic.opengl.input.MouseKeyboardInputGL;
-import johnengine.basic.renderer.RendererGL;
+import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.core.IEngineComponent;
 import johnengine.core.renderer.IRenderer;
-import johnengine.core.reqmngr.BufferedRequestManager;
 import johnengine.core.threadable.IThreadable;
-import johnengine.core.winframe.AWindowFramework;
+import johnengine.core.window.IWindow;
+import johnengine.core.window.WindowRequestManager;
 
-public final class WindowGL extends AWindowFramework 
-    implements IEngineComponent, IThreadable {
+public final class WindowGL implements IWindow, IEngineComponent, IThreadable
+{
     
     private MouseKeyboardInputGL input;
+    private WindowRequestManager requestManager;
+    private IWindow.Properties properties;
+    private RendererGL renderer;
     private long primaryMonitorID;
     private long windowID;
     
@@ -30,16 +36,14 @@ public final class WindowGL extends AWindowFramework
     }*/
     
     public WindowGL() {
-        super(new Properties(), new Properties(), new BufferedRequestManager());
-        
         this.reset();
-        this.requestManager.setContext(new WindowRequestContextGL(this));
         this.input = new MouseKeyboardInputGL(this);
+        this.requestManager = new WindowRequestManager();
+        this.properties = new IWindow.Properties();
         this.primaryMonitorID = 0;
         this.windowID = 0;
     }
-    
-    
+
     @Override
     public void start() {
         GLFW.glfwInit();
@@ -51,37 +55,25 @@ public final class WindowGL extends AWindowFramework
         this.input.setup();
         
         GLFW.glfwMakeContextCurrent(this.windowID);
+        GL.createCapabilities();
         this.renderer.initialize();
-        this.setWindowState(STATE_OPEN);
+        this.properties.windowState.set(IWindow.STATE_OPEN);
         
         this.loop();
         this.stop();
     }
-    
+
     @Override
     public void loop() {
         long startTime = System.currentTimeMillis();
         long fpsCounter = 0;
-        long previousInputTimestamp = 0;
         
         while( !this.isWindowClosing() )
         {
-            this.requestManager.processRequests();
-            GLFW.glfwPollEvents();
+            this.requestManager.processRequests(this.properties);
+            this.input.update();
             GLFW.glfwSwapBuffers(this.windowID);
             this.renderer.render();
-            
-                // Lock cursor to the center of the screen if enabled
-            long inputTimestamp = this.input.getState().getTimestamp();
-            if( this.isCursorLockedToCenter() && previousInputTimestamp != inputTimestamp )
-            {
-                Properties updating = this.updatingProperties;
-                GLFW.glfwSetCursorPos(
-                    this.windowID,
-                    /*updating.x + */updating.width / 2,
-                    /*updating.y +*/ updating.height / 2
-                );
-            }
             
                 // FPS-counter
             long currentTime = System.currentTimeMillis();
@@ -89,7 +81,7 @@ public final class WindowGL extends AWindowFramework
             
             if( currentTime - startTime >= 1000 )
             {
-                this.setFPS(fpsCounter);
+                this.properties.fps.set(fpsCounter);
                 fpsCounter = 0;
                 startTime = currentTime;
             }
@@ -97,24 +89,24 @@ public final class WindowGL extends AWindowFramework
         
         this.dispose();
     }
-    
+
     @Override
     public void stop() {
         if( this.isWindowClosing() )
         return;
         
-        this.setWindowState(STATE_CLOSED);
+        this.properties.windowState.set(IWindow.STATE_CLOSED);
     }
-
+    
     public void dispose() {
         GLFW.glfwTerminate();
         this.reset();
     }
-    
+
     @Override
     public void beforeTick(float deltaTime) {
-        this.input.snapshot();
-        this.snapshotProperties.copy(this.updatingProperties);
+        this.input.pollEvents();
+        this.properties.snapshot();
     }
 
     @Override
@@ -124,20 +116,21 @@ public final class WindowGL extends AWindowFramework
     }
     
     protected long createWindow() {
-        
+            
             // Remove deocration (borders) when in fullscreen mode
         GLFW.glfwWindowHint(
             GLFW.GLFW_DECORATED,
-            this.updatingProperties.isFullscreen ? 
+            this.properties.isInFullscreen.currentValue ? 
             GLFW.GLFW_FALSE : 
             GLFW.GLFW_TRUE
         );
         
             // Create window
+        Point size = this.properties.size.currentValue;
         long winID = GLFW.glfwCreateWindow(
-            this.updatingProperties.width,
-            this.updatingProperties.height,
-            this.updatingProperties.title,
+            size.x,
+            size.y,
+            this.properties.title.currentValue,
             MemoryUtil.NULL,
             MemoryUtil.NULL
         );
@@ -173,14 +166,27 @@ public final class WindowGL extends AWindowFramework
         );
         
             // Whether cursor is to be shown or hidden
-        GLFW.glfwSetInputMode(winID, GLFW.GLFW_CURSOR,
-            this.updatingProperties.isCursorVisible ? 
+        GLFW.glfwSetInputMode(
+            winID, 
+            GLFW.GLFW_CURSOR,
+            this.properties.isCursorVisible.currentValue ?
             GLFW.GLFW_CURSOR_NORMAL : 
             GLFW.GLFW_CURSOR_HIDDEN
         );
         
             // Position the window
-        GLFW.glfwSetWindowPos(winID, this.updatingProperties.x, this.updatingProperties.y);
+        Point wpos = this.properties.position.currentValue;
+        GLFW.glfwSetWindowPos(winID, wpos.x, wpos.y);
+        
+        GLFW.glfwSwapInterval(this.properties.useVSync.currentValue ? 1 : 0);
+        GLFW.glfwSetInputMode(
+            winID, 
+            GLFW.GLFW_CURSOR, (
+                (this.properties.isCursorLockedToCenter.currentValue) ? 
+                GLFW.GLFW_CURSOR_DISABLED : 
+                GLFW.GLFW_CURSOR_NORMAL
+            )
+        );
         
         return winID;
     }
@@ -194,89 +200,225 @@ public final class WindowGL extends AWindowFramework
     
     void rebuildWindow() {
         GLFW.glfwDestroyWindow(this.windowID);
-        this.setWindowState(STATE_INITIALIZING);
+        
+        this.properties.windowState.set(IWindow.STATE_INITIALIZING);
         this.windowID = this.createWindow();
-        this.setWindowState(STATE_OPEN);
+        this.properties.windowState.set(IWindow.STATE_OPEN);
+        
         GLFW.glfwMakeContextCurrent(this.windowID);
     }
     
     
-    /************************* REQUESTS ***************************/
+    /************************* LISTENERS ***************************/
     
-    @Override
-    public AWindowFramework move(int x, int y) {
-        this.requestManager.request(new RMoveGL(x, y));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework resize(int width, int height) {
-        this.requestManager.request(new RResizeGL(width, height));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework changeTitle(String title) {
-        this.requestManager.request(new RChangeTitleGL(title));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework lockCursorToCenter() {
-        this.requestManager.request(new RLockCursorGL(true));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework freeCursorLock() {
-        this.requestManager.request(new RLockCursorGL(false));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework showCursor() {
-        this.requestManager.request(new RChangeCursorVisibilityGL(true));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework hideCursor() {
-        this.requestManager.request(new RChangeCursorVisibilityGL(false));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework enableVSync() {
-        this.requestManager.request(new RVSyncGL(true));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework disableVSync() {
-        this.requestManager.request(new RVSyncGL(false));
-        return this;
-    }
-
-    @Override
-    public AWindowFramework moveMouse(int x, int y) {
-        this.requestManager.request(new RMoveMouseGL(x, y));
-        return this;
+    protected void focusListener(boolean isFocused) {
+        this.properties.isFocused.set(isFocused);
     }
     
-    @Override
-    public WindowGL enterFullscreen() {
-        this.requestManager.request(new RFullscreenGL(true));
-        return this;
+    protected void maximizeListener(boolean isMaximized) {
+        this.properties.isMaximized.set(isMaximized);
     }
     
-    @Override
-    public WindowGL exitFullscreen() {
-        this.requestManager.request(new RFullscreenGL(false));
-        return this;
+    protected void positionListener(int xpos, int ypos) {
+        this.properties.position.set(new Point(xpos, ypos));
+    }
+    
+    protected void resizeListener(int width, int height) {
+        this.properties.size.set(new Point(width, height));
+    }
+    
+    protected void closeListener() {
+        this.properties.windowState.set(IWindow.STATE_CLOSED);
     }
     
     
-    /*********************** GETTERS ****************************/
+    /*************************** REQUESTS ***************************/
+
+    @Override
+    public IWindow move(int x, int y) {
+        this.requestManager.addRequest(new RMove(x, y, this));
+        return this;
+    }
+
+    @Override
+    public IWindow resize(int width, int height) {
+        this.requestManager.addRequest(new RResize(width, height, this));
+        return this;
+    }
+
+    @Override
+    public IWindow changeTitle(String title) {
+        this.requestManager.addRequest(new RChangeTitle(title, this));
+        return this;
+    }   
+
+    @Override
+    public IWindow showBorder() {
+        //this.requestManager.addRequest(new RMove(x, y));
+        return this;
+    }
+
+    @Override
+    public IWindow hideBorder() {
+        //this.requestManager.addRequest(new RMove(x, y));
+        return this;
+    }
+
+    @Override
+    public IWindow lockCursorToCenter() {
+        this.requestManager.addRequest(new RLockCursor(true, this));
+        return this;
+    }
+
+    @Override
+    public IWindow releaseCursor() {
+        this.requestManager.addRequest(new RLockCursor(false, this));
+        return this;
+    }
+
+    @Override
+    public IWindow showCursor() {
+        this.requestManager.addRequest(new RChangeCursorVisibility(true, this));
+        return this;
+    }
+
+    @Override
+    public IWindow hideCursor() {
+        this.requestManager.addRequest(new RChangeCursorVisibility(false, this));
+        return this;
+    }
+
+    @Override
+    public IWindow enableVSync() {
+        this.requestManager.addRequest(new RUseVSync(true));
+        return this;
+    }
+
+    @Override
+    public IWindow disableVSync() {
+        this.requestManager.addRequest(new RUseVSync(false));
+        return this;
+    }
+
+    @Override
+    public IWindow enterFullscreen() {
+        this.requestManager.addRequest(new RFullscreen(true, this));
+        return this;
+    }
+
+    @Override
+    public IWindow exitFullscreen() {
+        this.requestManager.addRequest(new RFullscreen(false, this));
+        return this;
+    }
+
+    
+    /*************************** GETTERS ***************************/
+    
+    @Override
+    public int getX() {
+        return this.properties.position.lastValue.x;
+    }
+
+    @Override
+    public int getY() {
+        return this.properties.position.lastValue.y;
+    }
+
+    @Override
+    public int getWidth() {
+        return this.properties.size.lastValue.x;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.properties.size.lastValue.y;
+    }
+
+    @Override
+    public String getTitle() {
+        return this.properties.title.lastValue;
+    }
+    
+    @Override
+    public long getFPS() {
+        return this.properties.fps.lastValue;
+    }
+
+    @Override
+    public boolean hasBorder() {
+        return this.properties.hasBorder.lastValue;
+    }
+
+    @Override
+    public boolean isCursorLockedToCenter() {
+        return this.properties.isCursorLockedToCenter.lastValue;
+    }
+
+    @Override
+    public boolean isCursorVisible() {
+        return this.properties.isCursorVisible.lastValue;
+    }
+
+    @Override
+    public boolean useVSync() {
+        return this.properties.useVSync.lastValue;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return this.properties.isFocused.lastValue;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return this.properties.isMaximized.lastValue;
+    }
+
+    @Override
+    public boolean isInFullscreen() {
+        return this.properties.isInFullscreen.lastValue;
+    }
+
+    @Override
+    public int getWindowState() {
+        return this.properties.windowState.lastValue;
+    }
+
+    @Override
+    public Object getProperty(String propertyKey) {
+        return this.properties.getProperty(propertyKey);
+    }
+
+    @Override
+    public boolean hasWindowClosed() {
+        return (this.getWindowState() == STATE_CLOSED);
+    }
+
+    @Override
+    public boolean isWindowClosing() {
+        return (this.properties.windowState.currentValue == IWindow.STATE_CLOSED);
+    }
+
+    @Override
+    public boolean isWindowInitializing() {
+        return (this.getWindowState() == STATE_INITIALIZING);
+    }
+
+    @Override
+    public boolean isWindowOpen() {
+        return (this.getWindowState() == STATE_OPEN);
+    }
+
+    @Override
+    public MouseKeyboardInputGL getInput() {
+        return this.input;
+    }
+    
+    @Override
+    public RendererGL getRenderer() {
+        return (RendererGL) this.renderer;
+    }
     
     public long getPrimaryMonitorID() {
         return this.primaryMonitorID;
@@ -285,16 +427,12 @@ public final class WindowGL extends AWindowFramework
     public long getWindowID() {
         return this.windowID;
     }
+
     
-    public boolean isFullscreen() {
-        return this.snapshotProperties.isFullscreen;
-    }
+    /*************************** SETTERS ***************************/
     
-    public MouseKeyboardInputGL getInput() {
-        return this.input;
-    }
-    
-    public IRenderer getRenderer() {
-        return this.renderer;
+    @Override
+    public void setRenderer(IRenderer renderer) {
+        this.renderer = (RendererGL) renderer;
     }
 }

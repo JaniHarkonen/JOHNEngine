@@ -1,26 +1,20 @@
 package johnengine.core.input;
 
-import johnengine.core.winframe.AWindowFramework;
+import java.util.List;
+
+import johnengine.core.window.IWindow;
 
 public interface IInput {
-
-    public interface State {
-        public void takeSnapshot(IInput.State dest);
-        public long getTimestamp();
-        public IInput getInput();
-    }
-    
-    public interface Event<T> {
-        public boolean check(IInput.State targetState);
-        
-        public T getValue();
-    }
     
     public void setup();
     
-    public void snapshot();
+    public void dispose();
     
-    public IInput.State getState();
+    public List<AInputEvent<?>> getEvents();
     
-    public AWindowFramework getWindow();
+    public IWindow getWindow();
+    
+    public void update();
+    
+    public void pollEvents();
 }

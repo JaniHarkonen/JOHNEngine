@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.Action;
 import johnengine.basic.game.input.IControllable;
-import johnengine.core.input.IInput;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInputConverter;
 
 public class ACTTurn extends AControllerAction {
@@ -25,7 +25,7 @@ public class ACTTurn extends AControllerAction {
     }
     
     @Override
-    public ACTTurn createInstance(IInput.Event<?> event, IInputConverter<?> converter) {
+    public <T> ACTTurn createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         ACTTurn action = new ACTTurn();
         Point2D.Float delta = (Point2D.Float) converter.convert(event);
         action.deltaX = delta.x;

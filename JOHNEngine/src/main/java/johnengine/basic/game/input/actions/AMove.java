@@ -2,7 +2,7 @@ package johnengine.basic.game.input.actions;
 
 import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.Action;
-import johnengine.core.input.IInput;
+import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInputConverter;
 
 public abstract class AMove extends AControllerAction {
@@ -17,7 +17,7 @@ public abstract class AMove extends AControllerAction {
     }
     
     
-    protected void setIntensityFromInputEvent(IInput.Event<?> event, IInputConverter<?> converter) {
+    protected <T> void setIntensityFromInputEvent(AInputEvent<T> event, IInputConverter<T, ?> converter) {
         this.intensity = (float) converter.convert(event);
     }
 }

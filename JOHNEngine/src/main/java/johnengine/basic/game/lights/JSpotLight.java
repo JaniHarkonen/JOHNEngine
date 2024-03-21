@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.JWorld;
-import johnengine.core.renderer.IRenderStrategy;
 
 public class JSpotLight extends AWorldObject {
 
@@ -28,11 +27,6 @@ public class JSpotLight extends AWorldObject {
     public void tick(float deltaTime) {
         
         //this.pointLight.getPosition().set(this.position.get());
-    }
-    
-    @Override
-    public void render(IRenderStrategy renderStrategy) {
-        super.render(renderStrategy);
     }
 
     

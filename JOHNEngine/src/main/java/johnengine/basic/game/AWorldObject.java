@@ -5,7 +5,7 @@ import java.util.List;
 
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 
 public abstract class AWorldObject extends AGameObject implements 
     IRenderable, 
@@ -30,11 +30,11 @@ public abstract class AWorldObject extends AGameObject implements
     
     
     @Override
-    public void render(IRenderStrategy renderStrategy) {
+    public void submit(IRenderPass renderPass) {
         for( ISceneGraphChild child : this.children )
-        child.render(renderStrategy);
+        child.submit(renderPass);
         
-        renderStrategy.executeStrategoid(this);
+        renderPass.executeSubmissionStrategy(this);
     }
     
     @Override

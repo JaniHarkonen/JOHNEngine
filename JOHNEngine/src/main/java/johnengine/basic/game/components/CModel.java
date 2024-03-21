@@ -1,12 +1,12 @@
 package johnengine.basic.game.components;
 
+import johnengine.basic.assets.mesh.Mesh;
+import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.ISceneGraphChild;
 import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
-import johnengine.basic.renderer.asset.Mesh;
-import johnengine.basic.renderer.asset.Texture;
-import johnengine.core.renderer.IRenderStrategy;
+import johnengine.core.renderer.IRenderPass;
 
 public class CModel implements ISceneGraphChild {
     
@@ -16,14 +16,14 @@ public class CModel implements ISceneGraphChild {
     
     public CModel() {
         this.transform = new CTransform();
-        this.mesh = new Mesh("default");
-        this.texture = new Texture("default");
+        this.mesh = null;
+        this.texture = null;
     }
     
     
     @Override
-    public void render(IRenderStrategy renderStrategy) {
-        renderStrategy.executeStrategoid(this);
+    public void submit(IRenderPass renderPass) {
+        renderPass.executeSubmissionStrategy(this);
     }
     
     
