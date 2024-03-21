@@ -20,9 +20,9 @@ import johnengine.basic.opengl.renderer.uniforms.UNIVector3f;
 import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
-import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.IRenderContext;
 import johnengine.core.renderer.IRenderPass;
+import johnengine.core.renderer.IRenderSubmissionStrategy;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderBufferManager;
 import johnengine.core.renderer.SubmissionStrategyManager;
@@ -122,35 +122,41 @@ public class GUIRenderPass implements IRenderPass {
         projectionMatrix
         .identity()
         .setOrtho2D(
-            -windowHorizontalCenter, 
-            windowHorizontalCenter, 
-            windowVerticalCenter, 
-            -windowVerticalCenter
+            0, 
+            windowHorizontalCenter * 2, 
+            windowVerticalCenter * 2, 
+            0
         );
         
         UNIMatrix4f.class.cast(this.shaderProgram.getUniform("projectionMatrix"))
         .set(projectionMatrix);
         
-        for( RenderElement renderUnit : renderBuffer.getBuffer() )
+        for( RenderElement renderElement : renderBuffer.getBuffer() )
         {
-            Font font = renderUnit.font;
-            String[] lines = renderUnit.text.split("\n");
+            Font font = renderElement.font;
+            float lineHeight = 48;
+            float baseLine = 30;
+            String[] lines = renderElement.text.split("\n");
             
+            float textY = 0.0f;
             for( int i = 0; i < lines.length; i++ )
             {
+                float textX = 0.0f;
                 String text = lines[i];
                 for( int j = 0; j < text.length(); j++ )
                 {
                     char character = text.charAt(j);
-                    Mesh mesh = font.getGlyphMesh(character);
+                    Font.Glyph glyph = font.getGlyph(character);
+                    Mesh mesh = glyph.getMesh();
                     
                         // Determine text offset
                     UNIVector3f.class.cast(this.shaderProgram.getUniform("textOffset"))
-                    .set(new Vector3f(j * 16, i * 16, 0.0f));
+                    .set(new Vector3f(textX + glyph.getOriginX(), textY + baseLine - glyph.getOriginY(), 0.0f));
                     
                         // Bind texture
                     GL46.glActiveTexture(GL46.GL_TEXTURE0);
-                    TextureGraphicsGL textureGL = (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
+                    TextureGraphicsGL textureGL = 
+                        (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
                     textureGL.bind();
                     
                         // Bind VAO
@@ -164,7 +170,11 @@ public class GUIRenderPass implements IRenderPass {
                         GL46.GL_UNSIGNED_INT, 
                         0
                     );
+                    
+                    textX += glyph.getAdvance() + glyph.getOriginX();
                 }
+                
+                textY += lineHeight;
             }
         }
         

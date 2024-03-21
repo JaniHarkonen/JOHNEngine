@@ -16,9 +16,3 @@
 	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
 
 - could compute shaders be used to calculate collisions?
-- specify different glyph layouts in Font so that the glyphs can either be placed
-in symmetric cells or in cells of differing sizes
-	-- GridLayout, where the font texture is divided using a grid where each cell
-	is of equal size
-	-- TileLayout, where each glyph occupies its own tile whose coordinates and
-	dimensions are recorded in a separate table
