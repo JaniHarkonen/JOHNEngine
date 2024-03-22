@@ -13,4 +13,6 @@ public interface IRenderer {
     public void render();
     
     public IWindow getWindow();
+    
+    public RenderPassManager getRenderPassManager();
 }

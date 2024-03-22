@@ -123,8 +123,8 @@ public class GUIRenderPass implements IRenderPass {
         .identity()
         .setOrtho2D(
             0, 
-            windowHorizontalCenter * 2, 
-            windowVerticalCenter * 2, 
+            windowHorizontalCenter * 4, 
+            windowVerticalCenter * 4, 
             0
         );
         
@@ -151,7 +151,7 @@ public class GUIRenderPass implements IRenderPass {
                     
                         // Determine text offset
                     UNIVector3f.class.cast(this.shaderProgram.getUniform("textOffset"))
-                    .set(new Vector3f(textX + glyph.getOriginX(), textY + baseLine - glyph.getOriginY(), 0.0f));
+                    .set(new Vector3f(textX, textY + baseLine - glyph.getOriginY(), 0.0f));
                     
                         // Bind texture
                     GL46.glActiveTexture(GL46.GL_TEXTURE0);
@@ -171,7 +171,7 @@ public class GUIRenderPass implements IRenderPass {
                         0
                     );
                     
-                    textX += glyph.getAdvance() + glyph.getOriginX();
+                    textX += glyph.getWidth();
                 }
                 
                 textY += lineHeight;

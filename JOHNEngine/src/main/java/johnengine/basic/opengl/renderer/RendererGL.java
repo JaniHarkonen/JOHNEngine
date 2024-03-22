@@ -1,10 +1,5 @@
 package johnengine.basic.opengl.renderer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.lwjgl.opengl.GL11;
 
 import johnengine.basic.assets.mesh.Mesh;
@@ -18,26 +13,29 @@ import johnengine.core.FileUtils;
 import johnengine.core.renderer.IRenderBufferPopulator;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
+import johnengine.core.renderer.RenderPassManager;
 import johnengine.testing.DebugUtils;
 
 public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
-    private Map<String, IRenderPass> renderingPasses;
-    private List<String> renderingPassOrder;
+    private RenderPassManager renderPassManager;
     private IRenderBufferPopulator renderBufferPopulator;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     private String resourceRootFolder;
     
     public RendererGL(WindowGL hostWindow) {
         this.hostWindow = (WindowGL) hostWindow;
-        this.renderingPasses = new HashMap<>();
-        this.renderingPassOrder = new ArrayList<>();
+        this.renderPassManager = new RenderPassManager();
         this.renderBufferPopulator = new DefaultRenderBufferPopulator();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
         this.resourceRootFolder = "";
         
-        this.addRenderingPass("scene-renderer", new CachedVAORenderPass(this));
-        this.addRenderingPass("gui-renderer", new GUIRenderPass(this));
+        this.renderPassManager.addRenderPass(
+            "scene-renderer", new CachedVAORenderPass(this)
+        );
+        this.renderPassManager.addRenderPass(
+            "gui-renderer", new GUIRenderPass(this)
+        );
     }
     
     
@@ -54,15 +52,15 @@ public class RendererGL implements IRenderer {
     public void initialize() {
         this.generateDefaults();
         
-        for( String passKey : this.renderingPassOrder )
-        this.renderingPasses.get(passKey).prepare();
+        for( String passKey : this.renderPassManager.getOrder() )
+        this.renderPassManager.getPass(passKey).prepare();
     }
     
     @Override
     public void generateRenderBuffer() {
-        for( String passKey : this.renderingPassOrder )
+        for( String passKey : this.renderPassManager.getOrder() )
         {
-            IRenderPass renderPass = this.renderingPasses.get(passKey);
+            IRenderPass renderPass = this.renderPassManager.getPass(passKey);
             this.renderBufferPopulator.execute(renderPass);
         }
     }
@@ -71,27 +69,17 @@ public class RendererGL implements IRenderer {
     public void render() {
         this.graphicsAssetProcessor.processGraphicsRequests();
         
-        GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
-        for( String passKey : this.renderingPassOrder )
-        this.renderingPasses.get(passKey).render();
-    }
-    
-    public void addRenderingPass(String passKey, IRenderPass passStrategy) {
-        this.renderingPasses.put(passKey, passStrategy);
-        this.renderingPassOrder.add(passKey);
+        for( String passKey : this.renderPassManager.getOrder() )
+        this.renderPassManager.getPass(passKey).render();
     }
     
     
     public void setResourceRootFolder(String resourceRootFolder) {
         this.resourceRootFolder = FileUtils.normalizePathSlashes(resourceRootFolder) + "/";
-    }
-    
-    
-    public IRenderPass getStrategyOfRenderingPass(String passKey) {
-        return this.renderingPasses.get(passKey);
     }
     
     public GraphicsAssetProcessorGL getGraphicsAssetProcessor() {
@@ -101,6 +89,11 @@ public class RendererGL implements IRenderer {
     @Override
     public WindowGL getWindow() {
         return this.hostWindow;
+    }
+    
+    @Override
+    public RenderPassManager getRenderPassManager() {
+        return this.renderPassManager;
     }
     
     public String getResourceRootFolder() {

@@ -8,6 +8,7 @@ import johnengine.basic.assets.texture.Texture;
 public class Material {
     private Texture texture;
     private Texture normal;
+    private Texture roughness;
     private Vector4f diffuseColor;
     private Vector4f specularColor;
     private float reflectance;
@@ -23,6 +24,7 @@ public class Material {
         this.texture = texture;
         this.reflectance = reflectance;
         this.normal = null;
+        this.roughness = null;
     }
     
     public Material() {
@@ -41,6 +43,10 @@ public class Material {
     
     public void setNormalMap(Texture normal) {
         this.normal = normal;
+    }
+    
+    public void setRoughnessMap(Texture roughness) {
+        this.roughness = roughness;
     }
     
     public void setDiffuseColor(Vector4f diffuseColor) {
@@ -62,6 +68,10 @@ public class Material {
     
     public Texture getNormalMap() {
         return this.normal;
+    }
+    
+    public Texture getRoughnessMap() {
+        return this.roughness;
     }
     
     public Vector4f getDiffuseColor() {

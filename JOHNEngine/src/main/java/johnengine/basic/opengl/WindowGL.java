@@ -115,7 +115,7 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         this.renderer.generateRenderBuffer();
     }
     
-    protected long createWindow() {
+    private long createWindow() {
             
             // Remove deocration (borders) when in fullscreen mode
         GLFW.glfwWindowHint(
@@ -191,7 +191,7 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
         return winID;
     }
     
-    protected void reset() {
+    private void reset() {
         this.windowID = 0;
         this.primaryMonitorID = 0;
         this.renderer = null;
@@ -211,23 +211,23 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     
     /************************* LISTENERS ***************************/
     
-    protected void focusListener(boolean isFocused) {
+    private void focusListener(boolean isFocused) {
         this.properties.isFocused.set(isFocused);
     }
     
-    protected void maximizeListener(boolean isMaximized) {
+    private void maximizeListener(boolean isMaximized) {
         this.properties.isMaximized.set(isMaximized);
     }
     
-    protected void positionListener(int xpos, int ypos) {
+    private void positionListener(int xpos, int ypos) {
         this.properties.position.set(new Point(xpos, ypos));
     }
     
-    protected void resizeListener(int width, int height) {
+    private void resizeListener(int width, int height) {
         this.properties.size.set(new Point(width, height));
     }
     
-    protected void closeListener() {
+    private void closeListener() {
         this.properties.windowState.set(IWindow.STATE_CLOSED);
     }
     

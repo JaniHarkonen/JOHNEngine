@@ -84,6 +84,9 @@ public class TestGame extends AGame {
         Texture normalMap = new Texture("normale");
         this.loadTexture("brick/Bricks082B_4K_NormalDX.jpg", normalMap, am);
         
+        Texture roughnessMap = new Texture("rough");
+        this.loadTexture("brick/Bricks082B_4K_Roughness", roughnessMap, am);
+        
         Texture testFont = new Texture("fon");
         this.loadTexture("font_irregular.png", testFont, am);
         
@@ -272,19 +275,20 @@ public class TestGame extends AGame {
         }
         catch(Exception e) {}*/
         
-        CText guiText = new CText("\n\n    WWWWopq|_.:;W_qP?\nWWWWopq|_.:;W_qP? :)", this.window.getInput());
+        CText guiText = new CText("", this.window.getInput());
         guiText.setFont(textFont);
         this.gui.addElement(guiText);
         this.text = guiText;
         
             // Update the active world and the GUI of the renderer
-        //RendererGL renderer = RendererGL.class.cast(this.window.getRenderer());
         renderer
-        .getStrategyOfRenderingPass("scene-renderer")
+        .getRenderPassManager()
+        .getPass("scene-renderer")
         .setRenderContext(this.worldMain);
         
         renderer
-        .getStrategyOfRenderingPass("gui-renderer")
+        .getRenderPassManager()
+        .getPass("gui-renderer")
         .setRenderContext(this.gui);
         /*this.timer = new MilliCounter(1000) {
             @Override
@@ -335,11 +339,11 @@ public class TestGame extends AGame {
         this.tickCounter++;
         //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         //this.window.changeTitle("FPS: " + this.window.getFPS());
-        /*this.text.setText(
-            "FPS: " + this.window.getFPS() + 
-            "\nTICK: " + this.engine.getTickRate() + 
-            "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
-        );*/
+        this.text.setText(
+            "fps: " + this.window.getFPS() + 
+            "\ntick: " + this.engine.getTickRate() + 
+            "\nheap: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
+        );
         //this.timer.count();
         
         if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyPressed(GLFW.GLFW_KEY_ESCAPE)) )
