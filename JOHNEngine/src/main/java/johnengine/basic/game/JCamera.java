@@ -6,7 +6,7 @@ public class JCamera extends AWorldObject {
     
     private CProjection viewProjection;
 
-    public JCamera(JWorld world) {
+    public JCamera(IWorld world) {
         super(world);
         this.viewProjection = new CProjection();
     }

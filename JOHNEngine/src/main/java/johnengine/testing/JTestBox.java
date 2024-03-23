@@ -1,7 +1,7 @@
 package johnengine.testing;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.physics.CPhysics;
 import johnengine.basic.game.physics.IPhysicsObject;
@@ -13,7 +13,7 @@ public class JTestBox extends AWorldObject implements IPhysicsObject {
     private CPhysics physics;
     private boolean settedup = false;
 
-    public JTestBox(JWorld world, CModel model) {
+    public JTestBox(IWorld world, CModel model) {
         super(world);
         this.physics = new CPhysics(this);
         

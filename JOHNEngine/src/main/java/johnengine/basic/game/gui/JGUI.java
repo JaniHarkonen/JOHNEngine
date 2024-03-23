@@ -1,22 +1,23 @@
-package johnengine.basic.game;
+package johnengine.basic.game.gui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import johnengine.basic.game.gui.CText;
+import johnengine.basic.game.AGameObject;
+import johnengine.basic.game.IWorld;
 import johnengine.core.AGame;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderContext;
 
-public class JGUI extends AGameObject implements IRenderContext {
+public class JGUI extends AGameObject implements IWorld, IRenderContext {
 
     private int iteratorIndex;
-    private List<CText> DEBUGinstances;
+    private List<JFrame> frames;
     
     public JGUI(AGame game) {
         super(game);
         this.iteratorIndex = 0;
-        this.DEBUGinstances = new ArrayList<>();
+        this.frames = new ArrayList<>();
     }
 
     
@@ -27,19 +28,18 @@ public class JGUI extends AGameObject implements IRenderContext {
 
     @Override
     public IRenderable nextInstance() {
-        if( this.iteratorIndex >= this.DEBUGinstances.size() )
+        if( this.iteratorIndex >= this.frames.size() )
         return null;
         
-        return this.DEBUGinstances.get(this.iteratorIndex++);
+        return this.frames.get(this.iteratorIndex++);
     }
 
     @Override
     public void tick(float deltaTime) {
-        // TODO Auto-generated method stub
         
     }
     
-    public void addElement(CText e) {
-        this.DEBUGinstances.add(e);
+    public void addFrame(JFrame frame) {
+        this.frames.add(frame);
     }
 }

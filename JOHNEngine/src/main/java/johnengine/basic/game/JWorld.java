@@ -5,7 +5,7 @@ import johnengine.core.AGame;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderContext;
 
-public class JWorld extends AGameObject implements IRenderContext {
+public class JWorld extends AGameObject implements IWorld, IRenderContext {
     private final InstanceManager<AWorldObject> worldManager;
     
     public JWorld(AGame game) {

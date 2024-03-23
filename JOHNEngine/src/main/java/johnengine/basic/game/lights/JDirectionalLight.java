@@ -3,7 +3,7 @@ package johnengine.basic.game.lights;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 
 public class JDirectionalLight extends AWorldObject {
 
@@ -15,7 +15,7 @@ public class JDirectionalLight extends AWorldObject {
     private Vector3f direction;
     private float intensity;
     
-    public JDirectionalLight(JWorld world) {
+    public JDirectionalLight(IWorld world) {
         super(world);
         this.color = DEFAULT_COLOR;
         this.direction = DEFAULT_DIRECTION;

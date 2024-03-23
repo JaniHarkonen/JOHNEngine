@@ -13,13 +13,13 @@ public abstract class AWorldObject extends AGameObject implements
     ISceneGraphChild
 {
     
-    protected JWorld world;
+    protected IWorld world;
     protected boolean isVisible;
     protected CTransform transform;
     protected AWorldObject parent;
     protected List<ISceneGraphChild> children;
 
-    public AWorldObject(JWorld world) {
+    public AWorldObject(IWorld world) {
         super(world.getGame());
         this.world = world;
         this.isVisible = true;
@@ -39,15 +39,14 @@ public abstract class AWorldObject extends AGameObject implements
     
     @Override
     public void destroy() {
-        if( this.world != null )
+        /*if( this.world != null )
         this.world.destroyInstance(this);
         
-        super.destroy();
+        super.destroy();*/
     }
     
     @Override
     public void attach(ISceneGraphChild child) {
-        //ISceneGraphParent.super.attach(child);
         child.attached(this);
         this.children.add(child);
     }
@@ -101,7 +100,7 @@ public abstract class AWorldObject extends AGameObject implements
         this.isVisible = true;
     }
     
-    public JWorld getWorld() {
+    public IWorld getWorld() {
         return this.world;
     }
     
