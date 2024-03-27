@@ -1,5 +1,8 @@
 package johnengine.basic.opengl.renderer.gui;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
@@ -141,19 +144,22 @@ public class GUIRenderPass implements IRenderPass {
 
     @Override
     public void render() {
-        this.preRender();
         DOM dom = this.renderBufferManager.poll();
+        GL46.glDisable(GL46.GL_DEPTH_TEST);
         
+        this.preRender();
+        
+        Deque<RendererContext> contextStack = new ArrayDeque<>();
         RendererContext context = new RendererContext(
             this.shaderProgram, this.vaoCache
         );
         
         for( DOM.Node frameNode : dom.getFrameNodes() )
         {
-            frameNode.submission.render(context);
+            context.font = frameNode.submission.font;
             
             for( DOM.Node node : frameNode.children )
-            this.renderChildrenRecursively(node, context);
+            this.renderChildrenRecursively(node, context, contextStack);
         }
         
         this.vaoCache.update();
@@ -161,12 +167,23 @@ public class GUIRenderPass implements IRenderPass {
     
     private void renderChildrenRecursively(
         DOM.Node rootNode, 
-        RendererContext context
+        RendererContext context,
+        Deque<RendererContext> contextStack
     ) {
+        contextStack.push(context);
+        
+        RendererContext newContext = new RendererContext(
+            context.shaderProgram, context.vaoCache
+        ); 
+        newContext.setFont(rootNode.submission.font, context.font);
+        context = newContext;
+        
         rootNode.submission.render(context);
         
         for( DOM.Node node : rootNode.children )
-        this.renderChildrenRecursively(node, context);
+        this.renderChildrenRecursively(node, context, contextStack);
+        
+        contextStack.pop();
     }
 
     @Override

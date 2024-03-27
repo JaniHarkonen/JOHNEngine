@@ -33,7 +33,8 @@ public class DOMPopulator implements IRenderBufferPopulator {
         JGUI gui = (JGUI) this.client.getRenderContext();
         for( JFrame frame : gui.getFrames() )
         {
-            client.executeSubmissionStrategy(frame);
+            //client.executeSubmissionStrategy(frame);
+            frame.submit(this.client);
             this.submitChildrenRecursively(frame.getChildren());
         }
         
@@ -44,7 +45,8 @@ public class DOMPopulator implements IRenderBufferPopulator {
     private void submitChildrenRecursively(List<AGUIComponent> children) {
         for( AGUIComponent child : children )
         {
-            this.client.executeSubmissionStrategy(child);
+            //this.client.executeSubmissionStrategy(child);
+            child.submit(this.client);
             this.submitChildrenRecursively(child.getChildren());
             this.client.getCurrentDOM().traverseUp();
         }

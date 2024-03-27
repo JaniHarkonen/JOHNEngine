@@ -2,7 +2,6 @@ package johnengine.basic.opengl.renderer.cachedvao;
 
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.sceneobj.Material;
@@ -150,7 +149,7 @@ public class CachedVAORenderPass implements IRenderPass {
         .declareUniform(spotLight);
         
             // OpenGL configuration
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        //GL11.glEnable(GL11.GL_DEPTH_TEST);
         //GL11.glEnable(GL11.GL_CULL_FACE);
         //GL13.glEnable(GL13.GL_MULTISAMPLE);
         //GL11.glCullFace(GL11.GL_BACK);
@@ -240,6 +239,7 @@ public class CachedVAORenderPass implements IRenderPass {
     
     @Override
     public void render() {
+        GL46.glEnable(GL46.GL_DEPTH_TEST);
             // Pre-render
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
         this.preRender(renderBuffer);

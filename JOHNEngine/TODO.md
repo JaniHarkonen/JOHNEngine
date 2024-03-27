@@ -21,6 +21,5 @@ IRenderContexts so that they too can extend IRenderable
 	strategies will essentially do their work
 - instead of using custom exceptions, create a logger-class that can log into
 different targets, such as the console or a text file
-- change naming of "topLevel..." in GUI RendererContext to "container..."
 
 - could compute shaders be used to calculate collisions?

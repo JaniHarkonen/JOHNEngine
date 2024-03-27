@@ -78,19 +78,22 @@ public class TestGame extends AGame {
         am.setRootDirectory((new File("src/main/resources/test")).getAbsolutePath());
         
         Mesh mesh = new Mesh("man");
-        this.loadMesh("brick/Brick.fbx", mesh, am);
+        this.loadMesh("brick/Brick.fbx", mesh);
         
         Texture texture = new Texture("creep");
-        this.loadTexture("brick/Bricks082B_4K_Color.jpg", texture, am);
+        this.loadTexture("brick/Bricks082B_4K_Color.jpg", texture);
         
         Texture normalMap = new Texture("normale");
-        this.loadTexture("brick/Bricks082B_4K_NormalDX.jpg", normalMap, am);
+        this.loadTexture("brick/Bricks082B_4K_NormalDX.jpg", normalMap);
         
         Texture roughnessMap = new Texture("rough");
-        this.loadTexture("brick/Bricks082B_4K_Roughness", roughnessMap, am);
+        this.loadTexture("brick/Bricks082B_4K_Roughness", roughnessMap);
         
         Texture testFont = new Texture("fon");
-        this.loadTexture("font_arial20.png", testFont, am);
+        this.loadTexture("font_arial20.png", testFont);
+        
+        Texture testFontBig = new Texture("big");
+        this.loadTexture("font_irregular.png", testFontBig);
         
         Material material = new Material();
         material.setTexture(texture);
@@ -164,17 +167,37 @@ public class TestGame extends AGame {
         textFont.setMeshGraphicsStrategy(renderer.getGraphicsStrategy(new Mesh("temp")));
         textFont.generate();
         
-        JFrame frame = new JFrame(this.gui, 0, 0, 400, 400);
-        JForm form = new JForm(this.gui, 20, 20);
+        Font bigFont = FontUtils.jsonToFont(
+            "gui-font-big", 
+            testFontBig, 
+            "0123456789 !\"#$%&'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 
+            DebugUtils.createDefaultFontJsonBig()
+        );
+        bigFont.setMeshGraphicsStrategy(renderer.getGraphicsStrategy(new Mesh("temp3")));
+        bigFont.generate();
+        
         Mesh imageMesh = new Mesh("temp2");
         imageMesh.setGraphicsStrategy(renderer.getGraphicsStrategy(imageMesh));
-        //JImage image = new JImage(this.gui, imageMesh, texture);
-        this.testText = new JText(this.gui, textFont, "hello world :)))");
         
+        JFrame frame = new JFrame(this.gui, 0, 0, 640, 480);
+            JForm topLevelForm = new JForm(this.gui, 10, 10);
+                JForm leftForm = new JForm(this.gui, 20, 20);
+                    JImage leftFormImage = new JImage(this.gui, imageMesh, texture);
+                    JText leftFormText = new JText(this.gui, "left");
+                leftForm.addComponent(leftFormImage, 0, 0, 1, 1);
+                leftForm.addComponentAndFinalize(leftFormText, 0, 0, 1, 1);
+                JForm rightForm = new JForm(this.gui, 20, 20);
+                    JImage rightFormImage = new JImage(this.gui, imageMesh, texture);
+                    JText rightFormText = new JText(this.gui, "right");
+                    rightFormText.setFont(bigFont);
+                rightForm.addComponent(rightFormImage, 0, 0, 1, 1);
+                rightForm.addComponentAndFinalize(rightFormText, 0, 0, 1, 1);
+                    
+                topLevelForm.addComponent(leftForm, 0, 0, 2, 2);
+                topLevelForm.addComponentAndFinalize(rightForm, 8, 0, 2, 2);
+            frame.addAndFinalize(topLevelForm);
+            frame.setFont(textFont);
         this.gui.addFrame(frame);
-        form.addComponentAndFinalize(testText, 1, 1, 1, 1);
-        //form.addComponentAndFinalize(image, 0, 0, 2, 1);
-        frame.addAndFinalize(form);
         
         /*try {
         Thread.sleep(1000);
@@ -205,8 +228,8 @@ public class TestGame extends AGame {
         this.physicsWorld.addObject(box);
     }
     
-    private void loadMesh(String relativePath, Mesh mesh, AssetManager am) {
-        am.declareAsset(mesh);
+    private void loadMesh(String relativePath, Mesh mesh) {
+        this.assetManager.declareAsset(mesh);
         
         IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(mesh);
         mesh.setGraphicsStrategy(graphicsStrategy);
@@ -215,11 +238,11 @@ public class TestGame extends AGame {
             mesh, 
             this.window.getRenderer().getGraphicsStrategy(mesh)
         );
-        am.scheduleFrom(relativePath, objLoadTask);
+        this.assetManager.scheduleFrom(relativePath, objLoadTask);
     }
     
-    private void loadTexture(String relativePath, Texture texture, AssetManager am) {
-        am.declareAsset(texture);
+    private void loadTexture(String relativePath, Texture texture) {
+        this.assetManager.declareAsset(texture);
         
         IGraphicsStrategy graphicsStrategy = this.window.getRenderer().getGraphicsStrategy(texture);
         texture.setGraphicsStrategy(graphicsStrategy);
@@ -227,7 +250,7 @@ public class TestGame extends AGame {
             graphicsStrategy, 
             texture
         );
-        am.scheduleFrom(relativePath, textureLoadTask);
+        this.assetManager.scheduleFrom(relativePath, textureLoadTask);
     }
 
     @Override
@@ -240,11 +263,11 @@ public class TestGame extends AGame {
         this.tickCounter++;
         //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         //this.window.changeTitle("FPS: " + this.window.getFPS());
-        this.testText.setTextString(
+        /*this.testText.setTextString(
             "FPS: " + this.window.getFPS() + 
             "\nTICK: " + this.engine.getTickRate() + 
             "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
-        );
+        );*/
         //this.timer.count();
         
         if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyPressed(GLFW.GLFW_KEY_ESCAPE)) )

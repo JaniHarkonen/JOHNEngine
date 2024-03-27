@@ -2,6 +2,7 @@ package johnengine.basic.game.gui;
 
 import java.util.List;
 
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.game.AGameObject;
 import johnengine.core.AGame;
 import johnengine.core.IRenderable;
@@ -9,8 +10,9 @@ import johnengine.core.renderer.IRenderPass;
 
 public abstract class AGUIElement 
     extends AGameObject 
-    implements IRenderable 
+    implements IRenderable
 {
+    protected Font font;
     protected float x;
     protected float y;
     protected float width;
@@ -20,6 +22,7 @@ public abstract class AGUIElement
     
     public AGUIElement(AGame game, int columns, int rows) {
         super(game);
+        this.font = null;
         this.x = 0.0f;
         this.y = 0.0f;
         this.width = 0.0f;
@@ -49,8 +52,9 @@ public abstract class AGUIElement
     
     @Override
     public void submit(IRenderPass renderPass) {
-        for( AGUIComponent child : this.getChildren() )
-        child.submit(renderPass);
+        renderPass.executeSubmissionStrategy(this);
+        //for( AGUIComponent child : this.getChildren() )
+        //child.submit(renderPass);
     }
     
     
@@ -70,6 +74,12 @@ public abstract class AGUIElement
         this.rows = rows;
     }
     
+    public void setFont(Font font) {
+        this.font = font;
+    }
+    
+    
+    public abstract List<AGUIComponent> getChildren();
     
     public float getX() {
         return this.x;
@@ -95,5 +105,7 @@ public abstract class AGUIElement
         return this.rows;
     }
     
-    public abstract List<AGUIComponent> getChildren();
+    public Font getFont() {
+        return this.font;
+    }
 }

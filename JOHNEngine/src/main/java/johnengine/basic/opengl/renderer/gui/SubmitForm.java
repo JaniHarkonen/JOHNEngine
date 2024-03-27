@@ -1,12 +1,12 @@
 package johnengine.basic.opengl.renderer.gui;
 
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.game.gui.JForm;
 
 public class SubmitForm extends AGUISubmission<JForm> {
     
-    private SubmitForm(
-    ) {
-        super(0, 0, 0, 0);
+    private SubmitForm(Font font) {
+        super(font, 0, 0, 0, 0);
     }
     
     SubmitForm(GUIRenderPass renderPass) {
@@ -18,7 +18,7 @@ public class SubmitForm extends AGUISubmission<JForm> {
     public void execute(JForm target) {
         this.renderPass
         .getCurrentDOM()
-        .addNode(new SubmitForm());
+        .addNode(new SubmitForm(target.getFont()));
     }
 
     @Override

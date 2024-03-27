@@ -3,6 +3,7 @@ package johnengine.basic.opengl.renderer.gui;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
+import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.gui.JImage;
@@ -17,6 +18,7 @@ public class SubmitImage extends AGUISubmission<JImage> {
     private Texture texture;
     
     private SubmitImage(
+        Font font,
         Mesh mesh,
         Texture texture,
         float x,
@@ -24,7 +26,7 @@ public class SubmitImage extends AGUISubmission<JImage> {
         float width,
         float height
     ) {
-        super(x, y, width, height);
+        super(font, x, y, width, height);
         this.mesh = mesh;
         this.texture = texture;
     }
@@ -39,6 +41,7 @@ public class SubmitImage extends AGUISubmission<JImage> {
         this.renderPass
         .getCurrentDOM()
         .addNode(new SubmitImage(
+            target.getFont(),
             target.getMesh(),
             target.getTexture(),
             target.getX(),

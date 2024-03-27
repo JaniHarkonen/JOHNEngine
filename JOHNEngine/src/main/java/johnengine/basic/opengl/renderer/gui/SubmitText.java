@@ -13,7 +13,6 @@ import johnengine.basic.opengl.renderer.vao.VAO;
 
 public class SubmitText extends AGUISubmission<JText> {
     
-    private Font font;
     private String textString;
     
     private SubmitText(
@@ -24,8 +23,7 @@ public class SubmitText extends AGUISubmission<JText> {
         float width,
         float height
     ) {
-        super(x, y, width, height);
-        this.font = font;
+        super(font, x, y, width, height);
         this.textString = textString;
     }
     
@@ -53,7 +51,7 @@ public class SubmitText extends AGUISubmission<JText> {
         UNIMatrix4f modelMatrixUniform = 
             ((UNIMatrix4f) context.shaderProgram.getUniform("modelMatrix"));
         
-        Font font = this.font;
+        Font font = context.font;
         float lineHeight = 22;  // these should be provided by renderer context
         float baseLine = 16;  // these should be provided by renderer context
         String[] lines = this.textString.split("\n");
