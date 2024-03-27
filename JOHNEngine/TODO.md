@@ -14,5 +14,13 @@
 	-> this will transfer most of the OpenGL objects to the new context, with the
 	exception of state objects (VAOs and FBOs)
 	-> VAOs and FBOs have to be regenerated, otherwise nothing will get rendered
+- consider if, instead of using populators, submission strategies were used for
+IRenderContexts so that they too can extend IRenderable
+	-> perhaps eliminate IRenderContext in favor of IRenderable
+	-> also eliminates the need for IRenderBufferPopulators as the submission 
+	strategies will essentially do their work
+- instead of using custom exceptions, create a logger-class that can log into
+different targets, such as the console or a text file
+- change naming of "topLevel..." in GUI RendererContext to "container..."
 
 - could compute shaders be used to calculate collisions?

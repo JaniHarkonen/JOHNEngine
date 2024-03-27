@@ -10,7 +10,6 @@ import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.cachedvao.CachedVAORenderPass;
 import johnengine.basic.opengl.renderer.gui.GUIRenderPass;
 import johnengine.core.FileUtils;
-import johnengine.core.renderer.IRenderBufferPopulator;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderPassManager;
@@ -19,14 +18,12 @@ import johnengine.testing.DebugUtils;
 public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
     private RenderPassManager renderPassManager;
-    private IRenderBufferPopulator renderBufferPopulator;
     private GraphicsAssetProcessorGL graphicsAssetProcessor;
     private String resourceRootFolder;
     
     public RendererGL(WindowGL hostWindow) {
         this.hostWindow = (WindowGL) hostWindow;
         this.renderPassManager = new RenderPassManager();
-        this.renderBufferPopulator = new DefaultRenderBufferPopulator();
         this.graphicsAssetProcessor = new GraphicsAssetProcessorGL();
         this.resourceRootFolder = "";
         
@@ -57,11 +54,11 @@ public class RendererGL implements IRenderer {
     }
     
     @Override
-    public void generateRenderBuffer() {
+    public void generateRenderBuffers() {
         for( String passKey : this.renderPassManager.getOrder() )
         {
             IRenderPass renderPass = this.renderPassManager.getPass(passKey);
-            this.renderBufferPopulator.execute(renderPass);
+            renderPass.populateBuffer();
         }
     }
     
@@ -69,7 +66,7 @@ public class RendererGL implements IRenderer {
     public void render() {
         this.graphicsAssetProcessor.processGraphicsRequests();
         
-        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GL11.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         

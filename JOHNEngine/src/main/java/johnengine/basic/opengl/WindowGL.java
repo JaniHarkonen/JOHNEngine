@@ -112,7 +112,7 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     @Override
     public void afterTick(float deltaTime) {
         this.requestManager.newBuffer();
-        this.renderer.generateRenderBuffer();
+        this.renderer.generateRenderBuffers();
     }
     
     private long createWindow() {

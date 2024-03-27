@@ -42,4 +42,8 @@ public class JGUI extends AGameObject implements IWorld, IRenderContext {
     public void addFrame(JFrame frame) {
         this.frames.add(frame);
     }
+    
+    public List<JFrame> getFrames() {
+        return this.frames;
+    }
 }

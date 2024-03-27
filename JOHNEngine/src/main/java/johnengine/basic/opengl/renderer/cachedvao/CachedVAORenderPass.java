@@ -15,6 +15,7 @@ import johnengine.basic.game.lights.JAmbientLight;
 import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.game.lights.JSpotLight;
+import johnengine.basic.opengl.renderer.DefaultRenderBufferPopulator;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.ShaderProgram;
 import johnengine.basic.opengl.renderer.asset.Shader;
@@ -49,6 +50,7 @@ public class CachedVAORenderPass implements IRenderPass {
     private final ShaderProgram shaderProgram;
     private RenderBufferManager<RenderBuffer> renderBufferManager;
     private SubmissionStrategyManager submissionManager;
+    private DefaultRenderBufferPopulator renderBufferPopulator;
     
     private JWorld activeWorld;
     
@@ -58,6 +60,7 @@ public class CachedVAORenderPass implements IRenderPass {
         this.shaderProgram = new ShaderProgram();
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
         this.activeWorld = null;
+        this.renderBufferPopulator = new DefaultRenderBufferPopulator();
         
         this.submissionManager = new SubmissionStrategyManager()
         .addStrategy(CModel.class, new SubmitModel(this))
@@ -165,6 +168,11 @@ public class CachedVAORenderPass implements IRenderPass {
     @Override
     public void newBuffer() {
         this.renderBufferManager.newBuffer();
+    }
+    
+    @Override
+    public void populateBuffer() {
+        this.renderBufferPopulator.execute(this);
     }
     
     @Override

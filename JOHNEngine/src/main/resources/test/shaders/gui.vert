@@ -9,11 +9,11 @@ layout(location = 4) in vec2 inTextureCoord;
 out vec2 ioTexCoord;
 
 uniform mat4 uProjectionMatrix;
+uniform mat4 uModelMatrix;
 uniform vec3 uTextOffset;
 
 void main()
 {
-    vec3 v3TextPosition = uTextOffset + inPosition;
-    gl_Position = uProjectionMatrix * vec4(v3TextPosition.xy, 0.0, 1.0);
+    gl_Position = uProjectionMatrix * (uModelMatrix * vec4(inPosition, 1.0));
     ioTexCoord = inTextureCoord;
 }  

@@ -8,7 +8,7 @@ public interface IRenderer {
     
     public void initialize();
     
-    public void generateRenderBuffer();
+    public void generateRenderBuffers();
     
     public void render();
     

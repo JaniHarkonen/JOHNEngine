@@ -3,12 +3,12 @@ package johnengine.basic.game.components;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.ISceneGraphChild;
+import johnengine.basic.game.ISceneGraphNode;
 import johnengine.basic.game.ISceneGraphParent;
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.core.renderer.IRenderPass;
 
-public class CModel implements ISceneGraphChild {
+public class CModel implements ISceneGraphNode {
     
     private Mesh mesh;
     private Texture texture;

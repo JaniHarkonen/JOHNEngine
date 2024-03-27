@@ -1,23 +1,20 @@
 package johnengine.basic.opengl.renderer.gui;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
-import johnengine.basic.assets.font.Font;
-import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.textasset.TextAsset;
-import johnengine.basic.game.gui.CText;
+import johnengine.basic.game.gui.JForm;
+import johnengine.basic.game.gui.JFrame;
 import johnengine.basic.game.gui.JGUI;
+import johnengine.basic.game.gui.JImage;
+import johnengine.basic.game.gui.JText;
 import johnengine.basic.opengl.renderer.RendererGL;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.Shader;
-import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.opengl.renderer.uniforms.UNIVector3f;
-import johnengine.basic.opengl.renderer.vao.VAO;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderContext;
@@ -31,8 +28,9 @@ public class GUIRenderPass implements IRenderPass {
     private final RendererGL renderer;
     private final VAOCache vaoCache;
     private ShaderProgram shaderProgram;
-    private RenderBufferManager<RenderBuffer> renderBufferManager;
+    private RenderBufferManager<DOM> renderBufferManager;
     private SubmissionStrategyManager submissionManager;
+    private DOMPopulator domPopulator;
     
     private JGUI activeGUI;
     
@@ -40,13 +38,17 @@ public class GUIRenderPass implements IRenderPass {
         this.renderer = renderer;
         this.vaoCache = new VAOCache(10*1000);
         this.shaderProgram = new ShaderProgram();
-        this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
+        this.renderBufferManager = new RenderBufferManager<>(new DOM());
         this.submissionManager = new SubmissionStrategyManager();
+        this.domPopulator = new DOMPopulator();
         
         this.activeGUI = null;
         
         this.submissionManager
-        .addStrategy(CText.class, new SubmitText(this));
+        .addStrategy(JFrame.class, new SubmitFrame(this))
+        .addStrategy(JForm.class, new SubmitForm(this))
+        .addStrategy(JImage.class, new SubmitImage(this))
+        .addStrategy(JText.class, new SubmitText(this));
     }
     
 
@@ -72,11 +74,14 @@ public class GUIRenderPass implements IRenderPass {
             new UNIVector3f("textOffset", "uTextOffset");
         UNIInteger textureSampler = 
             new UNIInteger("textureSampler", "uTextureSampler");
+        UNIMatrix4f modelMatrix =
+            new UNIMatrix4f("modelMatrix", "uModelMatrix");
         
         this.shaderProgram
         .declareUniform(projectionMatrix)
         .declareUniform(textOffset)
-        .declareUniform(textureSampler);
+        .declareUniform(textureSampler)
+        .declareUniform(modelMatrix);
     }
     
     private void loadShader(Shader targetShader, String filename) {
@@ -92,6 +97,11 @@ public class GUIRenderPass implements IRenderPass {
     public void newBuffer() {
         this.renderBufferManager.newBuffer();
     }
+    
+    @Override
+    public void populateBuffer() {
+        this.domPopulator.execute(this);
+    }
 
     @Override
     public boolean executeSubmissionStrategy(IRenderable target) {
@@ -104,13 +114,10 @@ public class GUIRenderPass implements IRenderPass {
         submissionStrategy.execute(target);
         return true;
     }
-
-    @Override
-    public void render() {
+    
+    public void preRender() {
         GL46.glEnable(GL46.GL_BLEND);
         GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
-        
-        RenderBuffer renderBuffer = this.renderBufferManager.poll();
         
         this.shaderProgram.bind();
         this.shaderProgram.getUniform("textureSampler").set();
@@ -123,62 +130,43 @@ public class GUIRenderPass implements IRenderPass {
         .identity()
         .setOrtho2D(
             0, 
-            windowHorizontalCenter * 4, 
-            windowVerticalCenter * 4, 
+            windowHorizontalCenter * 2, 
+            windowVerticalCenter * 2, 
             0
         );
         
         UNIMatrix4f.class.cast(this.shaderProgram.getUniform("projectionMatrix"))
         .set(projectionMatrix);
+    }
+
+    @Override
+    public void render() {
+        this.preRender();
+        DOM dom = this.renderBufferManager.poll();
         
-        for( RenderElement renderElement : renderBuffer.getBuffer() )
+        RendererContext context = new RendererContext(
+            this.shaderProgram, this.vaoCache
+        );
+        
+        for( DOM.Node frameNode : dom.getFrameNodes() )
         {
-            Font font = renderElement.font;
-            float lineHeight = 48;
-            float baseLine = 30;
-            String[] lines = renderElement.text.split("\n");
+            frameNode.submission.render(context);
             
-            float textY = 0.0f;
-            for( int i = 0; i < lines.length; i++ )
-            {
-                float textX = 0.0f;
-                String text = lines[i];
-                for( int j = 0; j < text.length(); j++ )
-                {
-                    char character = text.charAt(j);
-                    Font.Glyph glyph = font.getGlyph(character);
-                    Mesh mesh = glyph.getMesh();
-                    
-                        // Determine text offset
-                    UNIVector3f.class.cast(this.shaderProgram.getUniform("textOffset"))
-                    .set(new Vector3f(textX, textY + baseLine - glyph.getOriginY(), 0.0f));
-                    
-                        // Bind texture
-                    GL46.glActiveTexture(GL46.GL_TEXTURE0);
-                    TextureGraphicsGL textureGL = 
-                        (TextureGraphicsGL) font.getTexture().getGraphicsStrategy();
-                    textureGL.bind();
-                    
-                        // Bind VAO
-                    MeshGraphicsGL meshGL = (MeshGraphicsGL) mesh.getGraphicsStrategy();
-                    VAO vao = this.vaoCache.fetchVAO(meshGL);
-                    vao.bind();
-                    
-                    GL46.glDrawElements(
-                        GL46.GL_TRIANGLES, 
-                        mesh.getInfo().getAsset().get().getVertexCount() * 3, 
-                        GL46.GL_UNSIGNED_INT, 
-                        0
-                    );
-                    
-                    textX += glyph.getWidth();
-                }
-                
-                textY += lineHeight;
-            }
+            for( DOM.Node node : frameNode.children )
+            this.renderChildrenRecursively(node, context);
         }
         
         this.vaoCache.update();
+    }
+    
+    private void renderChildrenRecursively(
+        DOM.Node rootNode, 
+        RendererContext context
+    ) {
+        rootNode.submission.render(context);
+        
+        for( DOM.Node node : rootNode.children )
+        this.renderChildrenRecursively(node, context);
     }
 
     @Override
@@ -186,7 +174,7 @@ public class GUIRenderPass implements IRenderPass {
         this.activeGUI = (JGUI) renderContext;
     }
     
-    RenderBuffer getCurrentRenderBuffer() {
+    DOM getCurrentDOM() {
         return this.renderBufferManager.getCurrentBuffer();
     }
 

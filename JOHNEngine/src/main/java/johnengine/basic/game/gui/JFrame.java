@@ -1,15 +1,19 @@
 package johnengine.basic.game.gui;
 
-import johnengine.basic.game.AWorldObject;
-import johnengine.core.renderer.IRenderPass;
+import java.util.List;
 
-public class JFrame extends AWorldObject {
+import johnengine.basic.NodeManager;
+
+public class JFrame extends AGUIElement {
     
-    private float width;
-    private float height;
+    private NodeManager<JGUI, AGUIComponent> nodeManager;
     
-    public JFrame(JGUI gui, float width, float height) {
-        super(gui);
+    public JFrame(JGUI gui, float x, float y, float width, float height) {
+        super(gui.getGame(), 1, 1);
+        this.nodeManager = new NodeManager<>();
+        this.nodeManager.setParent(gui);
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
     }
@@ -20,30 +24,21 @@ public class JFrame extends AWorldObject {
         
     }
     
+    public JFrame add(AGUIComponent component) {
+        component.configureCells(0, 0, 1, 1);
+        this.nodeManager.addChild(component);
+        component.setParent(this);
+        return this;
+    }
+    
+    public void addAndFinalize(AGUIComponent component) {
+        this.add(component);
+        this.updateChildCoordinates();
+    }
+    
+    
     @Override
-    public void submit(IRenderPass renderPass) {
-        renderPass.executeSubmissionStrategy(this);
-    }
-    
-    
-    public AGUIComponent add(AGUIComponent component) {
-        this.attach(component);
-        component.setCellDimensions(0, 0, 1, 1);
-        return component;
-    }
-    
-    
-    public void setDimensions(float width, float height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    
-    public float getWidth() {
-        return this.width;
-    }
-    
-    public float getHeight() {
-        return this.height;
+    public List<AGUIComponent> getChildren() {
+        return this.nodeManager.getChildren();
     }
 }
