@@ -2,6 +2,9 @@ package johnengine.basic.game.gui;
 
 import java.util.List;
 
+import org.joml.Vector4f;
+
+import johnengine.Defaults;
 import johnengine.basic.assets.font.Font;
 import johnengine.basic.game.AGameObject;
 import johnengine.core.AGame;
@@ -13,6 +16,8 @@ public abstract class AGUIElement
     implements IRenderable
 {
     protected Font font;
+    protected Vector4f color;
+    protected Vector4f textColor;
     protected float x;
     protected float y;
     protected float width;
@@ -23,6 +28,8 @@ public abstract class AGUIElement
     public AGUIElement(AGame game, int columns, int rows) {
         super(game);
         this.font = null;
+        this.color = Defaults.DEFAULT_GUI_ELEMENT_COLOR;
+        this.textColor = Defaults.DEFAULT_GUI_TEXT_COLOR;
         this.x = 0.0f;
         this.y = 0.0f;
         this.width = 0.0f;
@@ -51,10 +58,14 @@ public abstract class AGUIElement
     }
     
     @Override
+    public void tick(float deltaTime) {
+        for( AGUIComponent child : this.getChildren() )
+        child.tick(deltaTime);
+    }
+    
+    @Override
     public void submit(IRenderPass renderPass) {
         renderPass.executeSubmissionStrategy(this);
-        //for( AGUIComponent child : this.getChildren() )
-        //child.submit(renderPass);
     }
     
     
@@ -76,6 +87,14 @@ public abstract class AGUIElement
     
     public void setFont(Font font) {
         this.font = font;
+    }
+    
+    public void setColor(Vector4f color) {
+        this.color = color;
+    }
+    
+    public void setTextColor(Vector4f textColor) {
+        this.textColor = textColor;
     }
     
     
@@ -107,5 +126,13 @@ public abstract class AGUIElement
     
     public Font getFont() {
         return this.font;
+    }
+    
+    public Vector4f getColor() {
+        return this.color;
+    }
+    
+    public Vector4f getTextColor() {
+        return this.textColor;
     }
 }

@@ -1,37 +1,29 @@
 package johnengine.basic.game.input.actions;
 
-import java.awt.geom.Point2D;
-
 import johnengine.basic.game.input.AControllerAction;
 import johnengine.basic.game.input.Action;
 import johnengine.basic.game.input.IControllable;
 import johnengine.core.input.AInputEvent;
 import johnengine.core.input.IInputConverter;
 
-public class ACTTurn extends AControllerAction {
+public class ACTGUIEvent extends AControllerAction {
+
     
-    public ACTTurn() {
-        super(Action.TURN);
+    
+    public ACTGUIEvent() {
+        super(Action.GUI_EVENT);
     }
-    
-    public float deltaX;
-    public float deltaY;
-    
-    
+
     @Override
     public void perform(IControllable target) {
         target.control(this);
     }
-    
+
     @Override
-    public <T> ACTTurn createInstance(
+    public <T> ACTGUIEvent createInstance(
         AInputEvent<T> event, IInputConverter<T, ?> converter
     ) {
-        ACTTurn action = new ACTTurn();
-        Point2D.Float delta = (Point2D.Float) converter.convert(event);
-        action.deltaX = delta.x;
-        action.deltaY = delta.y;
-        
-        return action;
+        ACTGUIEvent guiEvent = new ACTGUIEvent();
+        return null;
     }
 }

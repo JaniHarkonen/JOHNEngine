@@ -7,6 +7,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.textasset.TextAsset;
+import johnengine.basic.game.gui.JButton;
 import johnengine.basic.game.gui.JForm;
 import johnengine.basic.game.gui.JFrame;
 import johnengine.basic.game.gui.JGUI;
@@ -17,7 +18,7 @@ import johnengine.basic.opengl.renderer.ShaderProgram;
 import johnengine.basic.opengl.renderer.asset.Shader;
 import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
-import johnengine.basic.opengl.renderer.uniforms.UNIVector3f;
+import johnengine.basic.opengl.renderer.uniforms.UNIVector4f;
 import johnengine.basic.opengl.renderer.vaocache.VAOCache;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderContext;
@@ -51,7 +52,8 @@ public class GUIRenderPass implements IRenderPass {
         .addStrategy(JFrame.class, new SubmitFrame(this))
         .addStrategy(JForm.class, new SubmitForm(this))
         .addStrategy(JImage.class, new SubmitImage(this))
-        .addStrategy(JText.class, new SubmitText(this));
+        .addStrategy(JText.class, new SubmitText(this))
+        .addStrategy(JButton.class, new SubmitButton(this));
     }
     
 
@@ -73,18 +75,24 @@ public class GUIRenderPass implements IRenderPass {
         
         UNIMatrix4f projectionMatrix = 
             new UNIMatrix4f("projectionMatrix", "uProjectionMatrix");
-        UNIVector3f textOffset = 
-            new UNIVector3f("textOffset", "uTextOffset");
         UNIInteger textureSampler = 
             new UNIInteger("textureSampler", "uTextureSampler");
         UNIMatrix4f modelMatrix =
             new UNIMatrix4f("modelMatrix", "uModelMatrix");
+        UNIInteger hasTexture =
+            new UNIInteger("hasTexture", "uHasTexture");
+        UNIVector4f elementColor =
+            new UNIVector4f("elementColor", "uElementColor");
+        UNIVector4f textColor = 
+            new UNIVector4f("textColor", "uTextColor");
         
         this.shaderProgram
         .declareUniform(projectionMatrix)
-        .declareUniform(textOffset)
         .declareUniform(textureSampler)
-        .declareUniform(modelMatrix);
+        .declareUniform(modelMatrix)
+        .declareUniform(hasTexture)
+        .declareUniform(elementColor)
+        .declareUniform(textColor);
     }
     
     private void loadShader(Shader targetShader, String filename) {
@@ -176,6 +184,12 @@ public class GUIRenderPass implements IRenderPass {
             context.shaderProgram, context.vaoCache
         ); 
         newContext.setFont(rootNode.submission.font, context.font);
+        newContext.setColor(
+            rootNode.submission.color, context.color
+        );
+        newContext.setTextColor(
+            rootNode.submission.textColor, context.textColor
+        );
         context = newContext;
         
         rootNode.submission.render(context);

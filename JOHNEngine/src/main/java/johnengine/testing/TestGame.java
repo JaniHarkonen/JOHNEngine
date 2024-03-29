@@ -2,6 +2,7 @@ package johnengine.testing;
 
 import java.io.File;
 
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 import johnengine.basic.assets.IGraphicsStrategy;
@@ -14,6 +15,8 @@ import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
+import johnengine.basic.game.components.CMouseListener;
+import johnengine.basic.game.gui.JButton;
 import johnengine.basic.game.gui.JForm;
 import johnengine.basic.game.gui.JFrame;
 import johnengine.basic.game.gui.JGUI;
@@ -101,7 +104,7 @@ public class TestGame extends AGame {
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
-        this.gui = new JGUI(this);
+        this.gui = new JGUI(this, this.window.getInput());
         
         CModel model = new CModel();
         model.setMesh(mesh);
@@ -183,9 +186,38 @@ public class TestGame extends AGame {
             JForm topLevelForm = new JForm(this.gui, 10, 10);
                 JForm leftForm = new JForm(this.gui, 20, 20);
                     JImage leftFormImage = new JImage(this.gui, imageMesh, texture);
-                    JText leftFormText = new JText(this.gui, "left");
+                    //JText leftFormText = new JText(this.gui, "left");
+                    this.testText = new JText(this.gui, "left");
+                    JButton leftButton = new JButton(this.gui, "O_O", imageMesh);
+                        CMouseListener leftButtonMouseListener = new CMouseListener(
+                            this.window.getInput(), 
+                            new MouseKeyboardInputGL.MouseMove(), 
+                            leftButton
+                        ) {
+                            @Override
+                            public void eventOccurred(CMouseListener.EventContext context) {
+                                switch( context.type )
+                                {
+                                    case CMouseListener.EMIT_MOUSE_PRESSED:
+                                        DebugUtils.log(this, "mouse has been pressed :)");
+                                        break;
+                                        
+                                    case CMouseListener.EMIT_MOUSE_ENTER:
+                                        context.source.setColor(new Vector4f(1.0f, 0.5f, 0.5f, 1.0f));
+                                        break;
+                                        
+                                    case CMouseListener.EMIT_MOUSE_LEAVE:
+                                        context.source.setColor(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f));
+                                        break;
+                                }
+                            }
+                        };
+                        leftButtonMouseListener.listen(new MouseKeyboardInputGL.MousePressed(GLFW.GLFW_MOUSE_BUTTON_1), CMouseListener.EMIT_MOUSE_PRESSED);
+                    leftButton.setMouseListener(leftButtonMouseListener);
+                    leftButton.setColor(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f));
                 leftForm.addComponent(leftFormImage, 0, 0, 1, 1);
-                leftForm.addComponentAndFinalize(leftFormText, 0, 0, 1, 1);
+                leftForm.addComponentAndFinalize(leftButton, 0, 0, 10, 10);
+                //leftForm.addComponentAndFinalize(/*leftFormText*/this.testText, 0, 0, 1, 1);
                 JForm rightForm = new JForm(this.gui, 20, 20);
                     JImage rightFormImage = new JImage(this.gui, imageMesh, texture);
                     JText rightFormText = new JText(this.gui, "right");
@@ -263,12 +295,13 @@ public class TestGame extends AGame {
         this.tickCounter++;
         //this.window.moveMouse(this.window.getWidth() / 2, this.window.getHeight() / 2);
         //this.window.changeTitle("FPS: " + this.window.getFPS());
-        /*this.testText.setTextString(
+        this.testText.setTextString(
             "FPS: " + this.window.getFPS() + 
             "\nTICK: " + this.engine.getTickRate() + 
             "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
-        );*/
+        );
         //this.timer.count();
+        this.gui.tick(deltaTime);
         
         if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyPressed(GLFW.GLFW_KEY_ESCAPE)) )
         {

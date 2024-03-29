@@ -14,12 +14,7 @@ public class JImage extends AGUIComponent {
         this.mesh = mesh;
         this.imageTexture = texture;
     }
-
     
-    @Override
-    public void tick(float deltaTime) {
-        
-    }
     
     @Override
     public void submit(IRenderPass renderPass) {

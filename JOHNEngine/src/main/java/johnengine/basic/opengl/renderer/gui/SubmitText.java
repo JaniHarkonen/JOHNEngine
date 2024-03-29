@@ -1,6 +1,7 @@
 package johnengine.basic.opengl.renderer.gui;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.font.Font;
@@ -8,7 +9,9 @@ import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.game.gui.JText;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
+import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
+import johnengine.basic.opengl.renderer.uniforms.UNIVector4f;
 import johnengine.basic.opengl.renderer.vao.VAO;
 
 public class SubmitText extends AGUISubmission<JText> {
@@ -17,13 +20,15 @@ public class SubmitText extends AGUISubmission<JText> {
     
     private SubmitText(
         Font font,
+        Vector4f color,
+        Vector4f textColor,
         String textString,
         float x,
         float y,
         float width,
         float height
     ) {
-        super(font, x, y, width, height);
+        super(font, color, textColor, x, y, width, height);
         this.textString = textString;
     }
     
@@ -38,6 +43,8 @@ public class SubmitText extends AGUISubmission<JText> {
         .getCurrentDOM()
         .addNode(new SubmitText(
             target.getFont(),
+            target.getColor(),
+            target.getTextColor(),
             target.getTextString(),
             target.getX(),
             target.getY(),
@@ -50,6 +57,12 @@ public class SubmitText extends AGUISubmission<JText> {
     public void render(RendererContext context) {
         UNIMatrix4f modelMatrixUniform = 
             ((UNIMatrix4f) context.shaderProgram.getUniform("modelMatrix"));
+        
+        ((UNIInteger) context.shaderProgram.getUniform("hasTexture"))
+        .set(1);
+        
+        ((UNIVector4f) context.shaderProgram.getUniform("elementColor"))
+        .set(context.textColor);
         
         Font font = context.font;
         float lineHeight = 22;  // these should be provided by renderer context

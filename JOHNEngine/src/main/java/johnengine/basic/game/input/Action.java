@@ -5,5 +5,6 @@ public enum Action {
     MOVE_BACKWARD,
     MOVE_LEFT,
     MOVE_RIGHT,
-    TURN
+    TURN,
+    GUI_EVENT
 }

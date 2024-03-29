@@ -17,12 +17,7 @@ public class JFrame extends AGUIElement {
         this.width = width;
         this.height = height;
     }
-
     
-    @Override
-    public void tick(float deltaTime) {
-        
-    }
     
     public JFrame add(AGUIComponent component) {
         component.configureCells(0, 0, 1, 1);

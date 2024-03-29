@@ -13,12 +13,13 @@ public class ACTMoveBackward extends AMove {
     
     @Override
     public void perform(IControllable target) {
-        //target.moveBackward(this.intensity);
         target.control(this);
     }
 
     @Override
-    public <T> ACTMoveBackward createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
+    public <T> ACTMoveBackward createInstance(
+        AInputEvent<T> event, IInputConverter<T, ?> converter
+    ) {
         ACTMoveBackward action = new ACTMoveBackward();
         action.setIntensityFromInputEvent(event, converter);
         return action;

@@ -13,12 +13,13 @@ public class ACTMoveLeft extends AMove {
     
     @Override
     public void perform(IControllable target) {
-        //target.moveLeft(this.intensity);
         target.control(this);
     }
 
     @Override
-    public <T> ACTMoveLeft createInstance(AInputEvent<T> event, IInputConverter<T, ?> converter) {
+    public <T> ACTMoveLeft createInstance(
+        AInputEvent<T> event, IInputConverter<T, ?> converter
+    ) {
         ACTMoveLeft action = new ACTMoveLeft();
         action.setIntensityFromInputEvent(event, converter);
         return action;

@@ -6,25 +6,22 @@ import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.mesh.Mesh;
-import johnengine.basic.assets.texture.Texture;
-import johnengine.basic.game.gui.JImage;
+import johnengine.basic.game.gui.JButton;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
-import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
+import johnengine.basic.opengl.renderer.uniforms.UNIVector4f;
 import johnengine.basic.opengl.renderer.vao.VAO;
 
-public class SubmitImage extends AGUISubmission<JImage> {
+public class SubmitButton extends AGUISubmission<JButton> {
     
     private Mesh mesh;
-    private Texture texture;
     
-    private SubmitImage(
+    private SubmitButton(
         Font font,
         Vector4f color,
         Vector4f textColor,
         Mesh mesh,
-        Texture texture,
         float x,
         float y,
         float width,
@@ -32,24 +29,22 @@ public class SubmitImage extends AGUISubmission<JImage> {
     ) {
         super(font, color, textColor, x, y, width, height);
         this.mesh = mesh;
-        this.texture = texture;
     }
     
-    SubmitImage(GUIRenderPass renderPass) {
+    SubmitButton(GUIRenderPass renderPass) {
         super(renderPass);
     }
     
     
     @Override
-    public void execute(JImage target) {
+    public void execute(JButton target) {
         this.renderPass
         .getCurrentDOM()
-        .addNode(new SubmitImage(
+        .addNode(new SubmitButton(
             target.getFont(),
             target.getColor(),
             target.getTextColor(),
-            target.getMesh(),
-            target.getTexture(),
+            target.DEBUGgetMesh(),
             target.getX(),
             target.getY(),
             target.getWidth(),
@@ -67,13 +62,10 @@ public class SubmitImage extends AGUISubmission<JImage> {
         .set(modelMatrix);
         
         ((UNIInteger) context.shaderProgram.getUniform("hasTexture"))
-        .set(1);
+        .set(0);
         
-            // Bind texture
-        GL46.glActiveTexture(GL46.GL_TEXTURE0);
-        TextureGraphicsGL textureGL = 
-            (TextureGraphicsGL) this.texture.getGraphicsStrategy();
-        textureGL.bind();
+        ((UNIVector4f) context.shaderProgram.getUniform("elementColor"))
+        .set(context.color);
         
             // Bind mesh
         MeshGraphicsGL meshGL = (MeshGraphicsGL) this.mesh.getGraphicsStrategy();

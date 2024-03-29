@@ -5,7 +5,6 @@ import java.util.List;
 import johnengine.basic.NodeManager;
 
 public abstract class AGUIComponent extends AGUIElement {
-    protected CEventListener eventListener;
     protected NodeManager<AGUIElement, AGUIComponent> nodeManager;
     protected int column;
     protected int row;
@@ -14,7 +13,6 @@ public abstract class AGUIComponent extends AGUIElement {
 
     public AGUIComponent(JGUI gui, int columns, int rows) {
         super(gui.getGame(), columns, rows);
-        this.eventListener = new CEventListener();
         this.nodeManager = new NodeManager<>();
         this.column = 0;
         this.row = 0;
@@ -70,10 +68,6 @@ public abstract class AGUIComponent extends AGUIElement {
     public void setGridDimensions(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
-    }
-    
-    public void setEventListener(CEventListener eventListener) {
-        this.eventListener = eventListener;
     }
     
     

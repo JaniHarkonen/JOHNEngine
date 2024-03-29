@@ -7,17 +7,20 @@ import johnengine.basic.game.AGameObject;
 import johnengine.basic.game.IWorld;
 import johnengine.core.AGame;
 import johnengine.core.IRenderable;
+import johnengine.core.input.IInput;
 import johnengine.core.renderer.IRenderContext;
 
 public class JGUI extends AGameObject implements IWorld, IRenderContext {
 
     private int iteratorIndex;
     private List<JFrame> frames;
+    private IInput inputSource;
     
-    public JGUI(AGame game) {
+    public JGUI(AGame game, IInput inputSource) {
         super(game);
         this.iteratorIndex = 0;
         this.frames = new ArrayList<>();
+        this.inputSource = inputSource;
     }
 
     
@@ -36,7 +39,8 @@ public class JGUI extends AGameObject implements IWorld, IRenderContext {
 
     @Override
     public void tick(float deltaTime) {
-        
+        for( JFrame frame : this.frames )
+        frame.tick(deltaTime);
     }
     
     public void addFrame(JFrame frame) {
@@ -45,5 +49,9 @@ public class JGUI extends AGameObject implements IWorld, IRenderContext {
     
     public List<JFrame> getFrames() {
         return this.frames;
+    }
+    
+    public IInput getInputSource() {
+        return this.inputSource;
     }
 }

@@ -153,4 +153,23 @@ public final class Defaults {
         DEFAULT_MESH_INFO = new MeshInfo("default-mesh-info", true, DEFAULT_MESHINFO_DATA);
         MeshInfo.generateDefaults();
     }
+    
+    
+    /******************************* GUI *******************************/
+    
+    /**
+     * Default RGBA-color of a GUI-element.
+     */
+    public static final Vector4f DEFAULT_GUI_ELEMENT_COLOR;
+    static {
+        DEFAULT_GUI_ELEMENT_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    
+    /**
+     * Default RGBA-color of the text of a GUI-element.
+     */
+    public static final Vector4f DEFAULT_GUI_TEXT_COLOR;
+    static {
+        DEFAULT_GUI_TEXT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    }
 }

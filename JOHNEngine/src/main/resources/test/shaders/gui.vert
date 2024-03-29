@@ -10,7 +10,6 @@ out vec2 ioTexCoord;
 
 uniform mat4 uProjectionMatrix;
 uniform mat4 uModelMatrix;
-uniform vec3 uTextOffset;
 
 void main()
 {

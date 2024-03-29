@@ -21,5 +21,14 @@ IRenderContexts so that they too can extend IRenderable
 	strategies will essentially do their work
 - instead of using custom exceptions, create a logger-class that can log into
 different targets, such as the console or a text file
+- remove Action-enum and switch to using strings
+	-> better compatibility with GUI
+- consider if GUI could be written using AWorldObjects as they contain many of the
+same functionalities (inheritance of position and scaling) as AGUIElements
+	-> this would be a better fit as GUI is a type of IWorld and subsequently
+	its elements should be AWorldObjects
+- the model matrices for GUI-elements are currently being generated on the fly
+while being submitted to the render pass
+	-> see if the matrix can be calculated seldom and cached
 
 - could compute shaders be used to calculate collisions?
