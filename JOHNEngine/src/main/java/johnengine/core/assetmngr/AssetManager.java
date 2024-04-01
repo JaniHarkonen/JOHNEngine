@@ -213,4 +213,8 @@ public final class AssetManager implements IEngineComponent {
     public IAsset getAsset(String assetName) {
         return this.assets.get(assetName);
     }
+    
+    public String getRootDirectory() {
+        return this.rootDirectory;
+    }
 }

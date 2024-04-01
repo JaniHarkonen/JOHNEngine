@@ -1,0 +1,37 @@
+form login {
+	cols: 2
+	rows: 2
+	button {
+		colSpan: 2
+		rowSpan: 1
+		caption: "Cancel"
+	}
+	button {
+		row: 1
+		colSpan: 2
+		rowSpan: 1
+		caption: "Login"
+	}
+}
+
+gui {
+	width: 640
+	height: 480
+	frame {
+		width: 640
+		height: 480
+		form {
+			cols: 2
+			rows: 4
+			text {
+				colSpan: 2
+				rowSpan: 1
+				content: "Welcome to the login page"
+			}
+			login {
+				row: 2
+				rowSpan: 3
+			}
+		}
+	}
+}

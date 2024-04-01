@@ -30,5 +30,7 @@ same functionalities (inheritance of position and scaling) as AGUIElements
 - the model matrices for GUI-elements are currently being generated on the fly
 while being submitted to the render pass
 	-> see if the matrix can be calculated seldom and cached
+- add comments to the GUI markup language
+- add x and y properties to GUI markup language
 
 - could compute shaders be used to calculate collisions?

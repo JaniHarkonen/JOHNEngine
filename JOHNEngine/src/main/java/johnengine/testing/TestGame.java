@@ -10,6 +10,7 @@ import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
+import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
@@ -40,6 +41,7 @@ import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
+import johnengine.extra.jegmd.GUIBuilder;
 import johnengine.utils.FontUtils;
 import johnengine.utils.counter.MilliCounter;
 
@@ -258,6 +260,14 @@ public class TestGame extends AGame {
         this.physicsWorld = new Physics.World();
         this.physicsWorld.addObject(player);
         this.physicsWorld.addObject(box);
+        
+        TextAsset guiSource = new TextAsset("gui-source-code");
+        TextAsset.LoadTask guiLoadTask = new TextAsset.LoadTask(am.getRootDirectory() + "\\gui.gui", guiSource);
+        guiLoadTask.load();
+        
+        GUIBuilder guiBuilder = new GUIBuilder(guiSource.getAsset().get());
+        
+        guiBuilder.buildGUI();
     }
     
     private void loadMesh(String relativePath, Mesh mesh) {
