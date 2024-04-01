@@ -16,12 +16,9 @@ import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CModel;
-import johnengine.basic.game.components.CMouseListener;
-import johnengine.basic.game.gui.JButton;
 import johnengine.basic.game.gui.JForm;
 import johnengine.basic.game.gui.JFrame;
 import johnengine.basic.game.gui.JGUI;
-import johnengine.basic.game.gui.JImage;
 import johnengine.basic.game.gui.JText;
 import johnengine.basic.game.input.ControlSchema;
 import johnengine.basic.game.input.actions.ACTMoveBackward;
@@ -56,6 +53,7 @@ public class TestGame extends AGame {
     private Physics physics;
     private Physics.World physicsWorld;
     private JText testText;
+    private Material material;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -92,7 +90,7 @@ public class TestGame extends AGame {
         this.loadTexture("brick/Bricks082B_4K_NormalDX.jpg", normalMap);
         
         Texture roughnessMap = new Texture("rough");
-        this.loadTexture("brick/Bricks082B_4K_Roughness", roughnessMap);
+        this.loadTexture("brick/Bricks082B_4K_Roughness.jpg", roughnessMap);
         
         Texture testFont = new Texture("fon");
         this.loadTexture("font_arial20.png", testFont);
@@ -101,8 +99,10 @@ public class TestGame extends AGame {
         this.loadTexture("font_irregular.png", testFontBig);
         
         Material material = new Material();
+        this.material = material;
         material.setTexture(texture);
         material.setNormalMap(normalMap);
+        material.setRoughnessMap(roughnessMap);
         mesh.setMaterial(material);
         
         this.worldMain = new JWorld(this);
@@ -185,52 +185,11 @@ public class TestGame extends AGame {
         imageMesh.setGraphicsStrategy(renderer.getGraphicsStrategy(imageMesh));
         
         JFrame frame = new JFrame(this.gui, 0, 0, 640, 480);
-            JForm topLevelForm = new JForm(this.gui, 10, 10);
-                JForm leftForm = new JForm(this.gui, 20, 20);
-                    JImage leftFormImage = new JImage(this.gui, imageMesh, texture);
-                    //JText leftFormText = new JText(this.gui, "left");
-                    this.testText = new JText(this.gui, "left");
-                    JButton leftButton = new JButton(this.gui, "O_O", imageMesh);
-                        CMouseListener leftButtonMouseListener = new CMouseListener(
-                            this.window.getInput(), 
-                            new MouseKeyboardInputGL.MouseMove(), 
-                            leftButton
-                        ) {
-                            @Override
-                            public void eventOccurred(CMouseListener.EventContext context) {
-                                switch( context.type )
-                                {
-                                    case CMouseListener.EMIT_MOUSE_PRESSED:
-                                        DebugUtils.log(this, "mouse has been pressed :)");
-                                        break;
-                                        
-                                    case CMouseListener.EMIT_MOUSE_ENTER:
-                                        context.source.setColor(new Vector4f(1.0f, 0.5f, 0.5f, 1.0f));
-                                        break;
-                                        
-                                    case CMouseListener.EMIT_MOUSE_LEAVE:
-                                        context.source.setColor(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f));
-                                        break;
-                                }
-                            }
-                        };
-                        leftButtonMouseListener.listen(new MouseKeyboardInputGL.MousePressed(GLFW.GLFW_MOUSE_BUTTON_1), CMouseListener.EMIT_MOUSE_PRESSED);
-                    leftButton.setMouseListener(leftButtonMouseListener);
-                    leftButton.setColor(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f));
-                leftForm.addComponent(leftFormImage, 0, 0, 1, 1);
-                leftForm.addComponentAndFinalize(leftButton, 0, 0, 10, 10);
-                //leftForm.addComponentAndFinalize(/*leftFormText*/this.testText, 0, 0, 1, 1);
-                JForm rightForm = new JForm(this.gui, 20, 20);
-                    JImage rightFormImage = new JImage(this.gui, imageMesh, texture);
-                    JText rightFormText = new JText(this.gui, "right");
-                    rightFormText.setFont(bigFont);
-                rightForm.addComponent(rightFormImage, 0, 0, 1, 1);
-                rightForm.addComponentAndFinalize(rightFormText, 0, 0, 1, 1);
-                    
-                topLevelForm.addComponent(leftForm, 0, 0, 2, 2);
-                topLevelForm.addComponentAndFinalize(rightForm, 8, 0, 2, 2);
-            frame.addAndFinalize(topLevelForm);
-            frame.setFont(textFont);
+            JForm form = new JForm(this.gui, 2, 2);
+                this.testText = new JText(this.gui, "");
+            form.addComponentAndFinalize(this.testText, 0, 0, 1, 1);
+        frame.addAndFinalize(form);
+        frame.setFont(textFont);
         this.gui.addFrame(frame);
         
         /*try {
@@ -319,6 +278,23 @@ public class TestGame extends AGame {
             this.window.releaseCursor();
             else
             this.window.lockCursorToCenter();
+        }
+        
+        if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_KP_ADD)) )
+        {
+            //this.material.setReflectance(this.material.getReflectance() + 0.1f);
+            //this.material.setDiffuseColor(new Vector4f(this.material.getDiffuseColor().x + 0.1f, this.material.getDiffuseColor().y + 0.1f, this.material.getDiffuseColor().z + 0.1f, 1.0f));
+            //this.material.setDiffuseColor(diffuseColor);
+            this.material.setSpecularColor(new Vector4f(this.material.getSpecularColor().x + 0.1f, this.material.getSpecularColor().y + 0.1f, this.material.getSpecularColor().z + 0.1f, 1.0f));
+            DebugUtils.log(this, "reflectance increased: " + this.material.getReflectance(), "diffuse color increased: " + this.material.getDiffuseColor().toString());
+        }
+        
+        if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_KP_SUBTRACT)) )
+        {
+            //this.material.setReflectance(this.material.getReflectance() - 0.1f);
+            //this.material.setDiffuseColor(new Vector4f(this.material.getDiffuseColor().x - 0.1f, this.material.getDiffuseColor().y - 0.1f, this.material.getDiffuseColor().z - 0.1f, 1.0f));
+            this.material.setSpecularColor(new Vector4f(this.material.getSpecularColor().x - 0.1f, this.material.getSpecularColor().y - 0.1f, this.material.getSpecularColor().z - 0.1f, 1.0f));
+            DebugUtils.log(this, "reflectance increased: " + this.material.getReflectance());
         }
     }
     

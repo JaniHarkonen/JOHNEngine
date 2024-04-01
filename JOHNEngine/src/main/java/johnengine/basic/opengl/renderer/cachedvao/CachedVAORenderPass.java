@@ -106,6 +106,9 @@ public class CachedVAORenderPass implements IRenderPass {
         UNIInteger normalSampler = new UNIInteger(
             "normalSampler", "uNormalSampler"
         );
+        UNIInteger roughnessSampler = new UNIInteger(
+            "roughnessSampler", "uRoughnessSampler"
+        );
         UNIMatrix4f projectionMatrix = new UNIMatrix4f(
             "projectionMatrix", "uProjectionMatrix"
         );
@@ -139,6 +142,7 @@ public class CachedVAORenderPass implements IRenderPass {
         this.shaderProgram
         .declareUniform(textureSampler)
         .declareUniform(normalSampler)
+        .declareUniform(roughnessSampler)
         .declareUniform(projectionMatrix)
         .declareUniform(cameraMatrix)
         .declareUniform(modelMatrix)
@@ -193,6 +197,9 @@ public class CachedVAORenderPass implements IRenderPass {
         
         ((UNIInteger) this.shaderProgram.getUniform("normalSampler"))
         .set(1);
+        
+        ((UNIInteger) this.shaderProgram.getUniform("roughnessSampler"))
+        .set(2);
         
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
         .set(renderBuffer.getProjectionMatrix());
@@ -262,6 +269,7 @@ public class CachedVAORenderPass implements IRenderPass {
                 // Get and bind texture
             Texture texture = material.getTexture();
             Texture normalMap = material.getNormalMap();
+            Texture roughnessMap = material.getRoughnessMap();
             TextureGraphicsGL textureGraphics = 
                 (TextureGraphicsGL) texture.getGraphicsStrategy();
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
@@ -274,6 +282,12 @@ public class CachedVAORenderPass implements IRenderPass {
             {
                 GL46.glActiveTexture(GL46.GL_TEXTURE1);
                 ((TextureGraphicsGL) normalMap.getGraphicsStrategy()).bind();
+            }
+            
+            if( roughnessMap != null )
+            {
+                GL46.glActiveTexture(GL46.GL_TEXTURE2);
+                ((TextureGraphicsGL) roughnessMap.getGraphicsStrategy()).bind();
             }
             
                 // Bind VAO and issue a draw call

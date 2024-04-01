@@ -32,8 +32,6 @@ public class GUIBuilder {
         List<Parser.Node> frameNodes;
         parser.parse();
         frameNodes = parser.getFrameNodes();
-        
-        
     }
     
     public JGUI getGUI() {

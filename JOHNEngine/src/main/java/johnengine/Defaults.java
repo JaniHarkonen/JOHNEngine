@@ -85,7 +85,7 @@ public final class Defaults {
      * Default texture asset.
      */
     public static final Texture DEFAULT_TEXTURE;
-    static { 
+    static {
         DEFAULT_TEXTURE = new Texture("default-texture");
     }
     
@@ -97,7 +97,7 @@ public final class Defaults {
      */
     public static final Vector4f DEFAULT_DIFFUSE_COLOR;
     static {
-        DEFAULT_DIFFUSE_COLOR = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
+        DEFAULT_DIFFUSE_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
     
@@ -106,16 +106,16 @@ public final class Defaults {
      */
     public static final Vector4f DEFAULT_SPECULAR_COLOR;
     static {
-        DEFAULT_SPECULAR_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+        DEFAULT_SPECULAR_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
     
     /**
-     * Default specular highlight color of a material.
+     * Default reflectance factor of a material.
      */
     public static final float DEFAULT_REFLECTANCE;
     static {
-        DEFAULT_REFLECTANCE = 0.4f;
+        DEFAULT_REFLECTANCE = 1.0f;
     }
     
     
