@@ -7,8 +7,8 @@ import java.util.Map;
 
 import johnengine.extra.jegmd.Elements;
 import johnengine.extra.jegmd.SpecialCharacters;
-import johnengine.extra.jegmd.tokenizer2.TokenType;
-import johnengine.extra.jegmd.tokenizer2.Tokenizer;
+import johnengine.extra.jegmd.tokenizer.TokenType;
+import johnengine.extra.jegmd.tokenizer.Tokenizer;
 import johnengine.testing.DebugUtils;
 
 public class Parser {

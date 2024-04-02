@@ -228,8 +228,6 @@ public class TestGame extends AGame {
         
         GUIBuilder guiBuilder = new GUIBuilder(guiSource.getAsset().get());
         guiBuilder.buildGUI();
-        
-        Logger.logln(Logger.VERBOSITY_STANDARD, Logger.SEVERITY_NOTIFICATION, this, "Couldn't establish connection to server!", "Attempting again in 2 minutes.");
     }
     
     private void loadMesh(String relativePath, Mesh mesh) {

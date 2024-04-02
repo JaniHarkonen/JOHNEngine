@@ -5,17 +5,9 @@ import org.lwjgl.opengl.GL46;
 import johnengine.basic.assets.IGeneratable;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.opengl.renderer.ShaderProgram;
-import johnengine.core.exception.JOHNException;
+import johnengine.core.logger.Logger;
 
 public final class Shader extends TextAsset implements IGeneratable {
-    
-    @SuppressWarnings("serial")
-    public static class ShaderException extends JOHNException {
-
-        public ShaderException(String message, String shaderName, String reason) {
-            super(message, "%shader", shaderName, "%reason", "\n" + reason);
-        }
-    }
     
     protected final int type;
     protected int handle;
@@ -42,10 +34,11 @@ public final class Shader extends TextAsset implements IGeneratable {
             // Failed to compile
         if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE )
         {
-            throw new ShaderException(
-                "Failed to compile shader '%shader'!\n" +
-                "Reason: %reason",
-                this.name,
+            Logger.log(
+                Logger.VERBOSITY_MINIMAL, 
+                Logger.SEVERITY_FATAL, 
+                this, 
+                "Failed to compile shader '" + this.name + "'! Shader info log:",
                 GL46.glGetShaderInfoLog(this.handle)
             );
         }

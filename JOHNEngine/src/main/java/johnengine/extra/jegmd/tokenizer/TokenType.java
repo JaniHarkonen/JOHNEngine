@@ -1,4 +1,4 @@
-package johnengine.extra.jegmd.tokenizer2;
+package johnengine.extra.jegmd.tokenizer;
 
 public enum TokenType {
     NONE,

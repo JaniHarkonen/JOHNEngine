@@ -6,7 +6,7 @@ import johnengine.basic.game.gui.JGUI;
 //import johnengine.extra.jegmd.tokenizer.AToken;
 //import johnengine.extra.jegmd.tokenizer.Tokenizer;
 import johnengine.extra.jegmd.parser.Parser;
-import johnengine.extra.jegmd.tokenizer2.Tokenizer;
+import johnengine.extra.jegmd.tokenizer.Tokenizer;
 
 public class GUIBuilder {
 

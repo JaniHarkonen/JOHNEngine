@@ -7,22 +7,9 @@ import org.lwjgl.opengl.GL46;
 
 import johnengine.basic.assets.IBindable;
 import johnengine.basic.assets.IGeneratable;
-import johnengine.core.exception.JOHNException;
+import johnengine.core.logger.Logger;
 
 public class VAO implements IGeneratable, IBindable {
-    
-    @SuppressWarnings("serial")
-    public static class UngeneratedVBOException extends JOHNException {
-
-        public UngeneratedVBOException(AVBO<?, ?> vbo) {
-            super(
-                "Failed to generate a VAO! Reason: " +
-                "VBO of type '%vboType' has a NULL (0) handle!",
-                "%vboType",
-                vbo.getType()
-            );
-        }
-    }
     
     private int handle;
     private List<AVBO<?, ?>> vbos;
@@ -46,7 +33,15 @@ public class VAO implements IGeneratable, IBindable {
             AVBO<?, ?> vbo = this.vbos.get(i);
             
             if( vbo.getHandle() <= 0 )
-            throw new UngeneratedVBOException(vbo);
+            {
+                Logger.log(
+                    Logger.VERBOSITY_MINIMAL, 
+                    Logger.SEVERITY_FATAL, 
+                    this, 
+                    "VAO generation failed! VBO of type '" + vbo.getType() + "' " +
+                    "has a NULL (0) handle!"
+                );
+            }
             
             vbo.bind();
             

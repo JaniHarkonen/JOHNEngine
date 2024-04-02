@@ -10,18 +10,9 @@ import johnengine.Defaults;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.core.assetmngr.asset.ALoadTask;
-import johnengine.core.exception.JOHNException;
+import johnengine.core.logger.Logger;
 
 public class Texture implements IGraphicsAsset {
-    
-    /********************** MissingTextureInfoException-class **********************/
-    
-    @SuppressWarnings("serial")
-    public static class MissingTextureInfoException extends JOHNException {
-        public MissingTextureInfoException(String message, Texture texture) {
-            super(message, "%textureName", texture.getName(), "%textureInstance", texture);
-        }
-    }
 
     /********************** LoadTask-class **********************/
     
@@ -120,10 +111,11 @@ public class Texture implements IGraphicsAsset {
         
         if( this.info == null )
         {
-            throw new MissingTextureInfoException(
-                "Trying to create texture '%textureName' with null info!" +
-                "\n Texture instance: %textureInstance",
-                this
+            Logger.log(
+                Logger.VERBOSITY_MINIMAL, 
+                Logger.SEVERITY_FATAL, 
+                this, 
+                "Trying to create a texutre with null info!"
             );
         }
     }
