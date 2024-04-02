@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import johnengine.core.logger.Logger;
 import johnengine.extra.jegmd.Elements;
 import johnengine.extra.jegmd.SpecialCharacters;
 import johnengine.extra.jegmd.tokenizer.TokenType;
@@ -13,6 +14,9 @@ import johnengine.testing.DebugUtils;
 
 public class Parser {
     
+    /**
+     * Statements that can be parsed.
+     */
     private enum Statement {
         START,
         TEMPLATE,
@@ -22,6 +26,9 @@ public class Parser {
         ELEMENT,
         PROPERTY
     }
+    
+    
+    /************************ Node-class ************************/
     
     public class Node {
         public String type;
@@ -53,7 +60,13 @@ public class Parser {
             for( Map.Entry<String, Tokenizer.Token> en : this.properties.entrySet() )
             propertyString += en.getKey() + " - " + en.getValue().value + "\n";
                 
-            DebugUtils.log(this, "type: " + this.type, propertyString);
+            Logger.log(
+                Logger.VERBOSITY_MINIMAL, 
+                Logger.SEVERITY_NOTIFICATION, 
+                this, 
+                this.type, 
+                propertyString
+            );
             
             for( Node child : this.children )
             child.print();
@@ -64,6 +77,8 @@ public class Parser {
         }
     }
     
+    
+    /************************ Parser-class ************************/
 
     private List<Tokenizer.Token> tokens;
     private List<Node> frameNodes;
@@ -96,7 +111,12 @@ public class Parser {
             case START: {
                 if( !this.parseUntilNoneLeft(null, Statement.GUI, Statement.TEMPLATE) )
                 {
-                    DebugUtils.log(this, "ERROR: Invalid document body!");
+                    Logger.log(
+                        Logger.VERBOSITY_MINIMAL, 
+                        Logger.SEVERITY_FATAL, 
+                        this, 
+                        "Invalid document body!"
+                    );
                     return false;
                 }
                 
@@ -109,17 +129,32 @@ public class Parser {
                 
                 if( this.guiNode != null )
                 {
-                    DebugUtils.log(this, "ERROR: Document must have only one GUI!");
+                    DebugUtils.log(this, "ERROR: ");
+                    Logger.log(
+                        Logger.VERBOSITY_MINIMAL, 
+                        Logger.SEVERITY_FATAL, 
+                        this, 
+                        "Document must have only one GUI!"
+                    );
                     return false;
                 }
                 
                 this.position += 2;
-                
                 this.frameNodes = new ArrayList<>();
                 this.guiNode = new Node("gui");
-                if( !this.parseUntilNoneLeft(this.guiNode, Statement.FRAME, Statement.PROPERTY) )
+                
+                boolean didParse = this.parseUntilNoneLeft(
+                    this.guiNode, Statement.FRAME, Statement.PROPERTY
+                );
+                
+                if( !didParse )
                 {
-                    DebugUtils.log(this, "ERROR: GUIs must only consist of frames!");
+                    Logger.log(
+                        Logger.VERBOSITY_MINIMAL, 
+                        Logger.SEVERITY_FATAL, 
+                        this, 
+                        "Invalid GUI body!"
+                    );
                     return false;
                 }
                 
@@ -135,7 +170,13 @@ public class Parser {
                 
                 if( !this.parse(Statement.BLOCK, frameNode) )
                 {
-                    DebugUtils.log(this, "ERROR: Body expected after 'frame'!");
+                    Tokenizer.Token tInvalid = this.getToken(this.position);
+                    Logger.log(
+                        Logger.VERBOSITY_VERBOSE, 
+                        Logger.SEVERITY_WARNING, 
+                        this, 
+                        "Frame body expected, got: '" + tInvalid.value + "'!"
+                    );
                     return false;
                 }
                 
@@ -156,7 +197,19 @@ public class Parser {
                 
                 if( !this.parse(Statement.BLOCK, templateNode) )
                 {
-                    DebugUtils.log(this, "ERROR: Template missing a body!");
+                    /*Logger.log(
+                        Logger.VERBOSITY_MINIMAL, 
+                        Logger.SEVERITY_FATAL, 
+                        this, 
+                        "Template body expected!"
+                    );*/
+                    Tokenizer.Token tInvalid = this.getToken(this.position);
+                    Logger.log(
+                        Logger.VERBOSITY_VERBOSE, 
+                        Logger.SEVERITY_WARNING, 
+                        this, 
+                        "Template body expected, got: '" + tInvalid.value + "'!"
+                    );
                     return false;
                 }
                 
@@ -167,7 +220,12 @@ public class Parser {
                     // Start block {
                 if( !tCurrent.equals(TokenType.SPECIAL, SpecialCharacters.BLOCK_START) )
                 {
-                    DebugUtils.log(this, "ERROR: Expected a block start token '{', got '" + tCurrent.value + "'!", tCurrent.type);
+                    Logger.log(
+                        Logger.VERBOSITY_VERBOSE, 
+                        Logger.SEVERITY_WARNING, 
+                        this, 
+                        "Block start, '{', expected, got: '" + tCurrent.value + "'!"
+                    );
                     return false;
                 }
                 
@@ -179,7 +237,12 @@ public class Parser {
                     // End block }
                 if( !tEnd.equals(TokenType.SPECIAL, SpecialCharacters.BLOCK_END) )
                 {
-                    DebugUtils.log(this, "ERROR: Expected a block end token '}', go'" + tCurrent.value + "'!");
+                    Logger.log(
+                        Logger.VERBOSITY_VERBOSE, 
+                        Logger.SEVERITY_WARNING, 
+                        this, 
+                        "Block end, '}', expected, got: '" + tEnd.value + "'!"
+                    );
                     return false;
                 }
                 
@@ -208,7 +271,12 @@ public class Parser {
                 currentNode.setProperty(tCurrent.value, tValue);
                 else
                 {
-                    DebugUtils.log(this, "ERROR: Value (string or number) expected after property name!");
+                    Logger.log(
+                        Logger.VERBOSITY_STANDARD, 
+                        Logger.SEVERITY_WARNING, 
+                        this, 
+                        "String or number value expected after property name!"
+                    );
                     return false;
                 }
                 
@@ -224,7 +292,12 @@ public class Parser {
                     
                     if( templateNode == null )
                     {
-                        DebugUtils.log(this, "ERROR: Element or template '" + tCurrent.value + "' does not exist!");
+                        Logger.log(
+                            Logger.VERBOSITY_VERBOSE, 
+                            Logger.SEVERITY_WARNING, 
+                            this, 
+                            "Element or template '" + tCurrent.value + "' does not exist!"
+                        );
                         return false;
                     }
                     
@@ -236,7 +309,12 @@ public class Parser {
                     
                     if( !this.parse(Statement.BLOCK, templateNode) )
                     {
-                        DebugUtils.log(this, "ERROR: Template element body expected! Use {} for an empty body.");
+                        Logger.log(
+                            Logger.VERBOSITY_VERBOSE, 
+                            Logger.SEVERITY_WARNING, 
+                            this, 
+                            "Template element body expected! Use {} for an empty body!"
+                        );
                         return false;
                     }
                 }
@@ -250,7 +328,12 @@ public class Parser {
                     
                     if( !this.parse(Statement.BLOCK, elementNode) )
                     {
-                        DebugUtils.log(this, "ERROR: Element body expected!");
+                        Logger.log(
+                            Logger.VERBOSITY_VERBOSE, 
+                            Logger.SEVERITY_WARNING, 
+                            this, 
+                            "Element body expected!"
+                        );
                         return false;
                     }
                 }
@@ -261,7 +344,12 @@ public class Parser {
             }
             
             default: {
-                DebugUtils.log(this, "ERROR: Expecting a non-existing statement!");
+                Logger.log(
+                    Logger.VERBOSITY_MINIMAL, 
+                    Logger.SEVERITY_FATAL, 
+                    this, 
+                    "Expecting a non-existing statement!"
+                );
                 return false;
             }
         }

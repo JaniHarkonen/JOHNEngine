@@ -158,8 +158,6 @@ public class Tokenizer {
                         tokenValue += currentCharacter;
                         else
                         {
-                            //String lowerCaseTokenValue = tokenValue.toLowerCase();
-                            
                             if( this.isElementType(tokenValue) )
                             tokenType = TokenType.ELEMENT;
                             else if( this.isProperty(tokenValue) )
