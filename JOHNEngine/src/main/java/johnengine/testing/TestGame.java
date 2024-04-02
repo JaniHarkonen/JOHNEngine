@@ -38,6 +38,7 @@ import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
+import johnengine.core.logger.Logger;
 import johnengine.extra.jegmd.GUIBuilder;
 import johnengine.utils.FontUtils;
 import johnengine.utils.counter.MilliCounter;
@@ -187,6 +188,7 @@ public class TestGame extends AGame {
         JFrame frame = new JFrame(this.gui, 0, 0, 640, 480);
             JForm form = new JForm(this.gui, 2, 2);
                 this.testText = new JText(this.gui, "");
+                this.testText.setTextColor(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
             form.addComponentAndFinalize(this.testText, 0, 0, 1, 1);
         frame.addAndFinalize(form);
         frame.setFont(textFont);
@@ -225,8 +227,9 @@ public class TestGame extends AGame {
         guiLoadTask.load();
         
         GUIBuilder guiBuilder = new GUIBuilder(guiSource.getAsset().get());
-        
         guiBuilder.buildGUI();
+        
+        Logger.logln(Logger.VERBOSITY_STANDARD, Logger.SEVERITY_NOTIFICATION, this, "Couldn't establish connection to server!", "Attempting again in 2 minutes.");
     }
     
     private void loadMesh(String relativePath, Mesh mesh) {

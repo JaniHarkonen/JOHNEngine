@@ -48,7 +48,8 @@ public final class AssetManager implements IEngineComponent {
         private Queue<ALoadTask> queuedTasks;
         private boolean isRunning;
         
-        LoaderProcess() {
+        LoaderProcess(String name) {
+            super(name);
             this.queuedTasks = new ConcurrentLinkedQueue<>();
             this.isRunning = false;
         }
@@ -100,7 +101,8 @@ public final class AssetManager implements IEngineComponent {
             // Start up threads that will be used to process the incoming load requests
         for( int i = 0; i < numberOfThreads; i++ )
         {
-            LoaderProcess process = new LoaderProcess();
+            LoaderProcess process = 
+                new LoaderProcess("AssetManager-LoaderProcess-" + i);
             assetManager.loaderProcesses[i] = process;
             process.start();
         }
