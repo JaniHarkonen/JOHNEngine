@@ -51,7 +51,6 @@ public class TextureGraphicsGL
     public static final TextureHandle DEFAULT_TEXTURE_HANDLE = new TextureHandle();
     
     public static void generateDefault(RendererGL renderer) {
-        //DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Texture.DEFAULT_TEXTURE_INFO);
         DEFAULT_TEXTURE_HANDLE.handle.value = generateTexture(Defaults.DEFAULT_TEXTURE_INFO);
         Defaults.DEFAULT_TEXTURE.setGraphicsStrategy(new TextureGraphicsGL(renderer, Defaults.DEFAULT_TEXTURE, true));
     }
@@ -147,7 +146,7 @@ public class TextureGraphicsGL
     }
     
     
-    /************************ GETTERS ************************/
+    /************************ SETTERS ************************/
     
     @Override
     public void setTexture(Texture texture) {

@@ -31,6 +31,10 @@ same functionalities (inheritance of position and scaling) as AGUIElements
 while being submitted to the render pass
 	-> see if the matrix can be calculated seldom and cached
 - add comments to the GUI markup language
-- add x and y properties to GUI markup language
+- the way that Mesh and Texture assests are implemented continue to cause issues
+	-> currently hotfixed but needs improvement
+	-> crashes if the asset loading is skipped (should display default asset instead)
+	-> particular issues with how Meshes are being used (too many layers of 
+	encapsulation)
 
 - could compute shaders be used to calculate collisions?

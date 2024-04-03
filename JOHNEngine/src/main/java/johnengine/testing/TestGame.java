@@ -70,7 +70,6 @@ public class TestGame extends AGame {
         .lockCursorToCenter()
         .disableVSync()
         .resize(800, 600);
-        //.resize(1000, 1000);
         
         //this.window.enterFullscreen();
         //this.window.resize(1000, 1000);
@@ -84,6 +83,9 @@ public class TestGame extends AGame {
         Mesh mesh = new Mesh("man");
         this.loadMesh("brick/Brick.fbx", mesh);
         
+        Mesh manMesh = new Mesh("manman");
+        this.loadMesh("man.fbx", manMesh);
+        
         Texture texture = new Texture("creep");
         this.loadTexture("brick/Bricks082B_4K_Color.jpg", texture);
         
@@ -93,11 +95,18 @@ public class TestGame extends AGame {
         Texture roughnessMap = new Texture("rough");
         this.loadTexture("brick/Bricks082B_4K_Roughness.jpg", roughnessMap);
         
+        Texture creepTexture = new Texture("creeper");
+        this.loadTexture("creep.png", creepTexture);
+        
         Texture testFont = new Texture("fon");
         this.loadTexture("font_arial20.png", testFont);
         
         Texture testFontBig = new Texture("big");
         this.loadTexture("font_irregular.png", testFontBig);
+        
+        Material manMaterial = new Material();
+        manMaterial.setTexture(creepTexture);
+        manMesh.setMaterial(manMaterial);
         
         Material material = new Material();
         this.material = material;
@@ -111,11 +120,20 @@ public class TestGame extends AGame {
         
         CModel model = new CModel();
         model.setMesh(mesh);
-        JTestBox box = new JTestBox(this.worldMain, model);
+        JTestBox box = new JTestBox(this.worldMain);
         box.attach(model);
+        DebugUtils.log(this, model.getMesh().getInfo());
         model.getTransform().getScale().inherit();
         
+        CModel manModel = new CModel();
+        manModel.setMesh(manMesh);
+        JTestMan man = new JTestMan(this.worldMain, manModel);
+        man.attach(manModel);
+        DebugUtils.log(this, manModel.getMesh().getInfo());
+        manModel.getTransform().getScale().inherit();
+        
         this.worldMain.createInstance(box);
+        this.worldMain.createInstance(man);
         
         ControlSchema cs = new ControlSchema();
         cs.bind(
@@ -194,11 +212,6 @@ public class TestGame extends AGame {
         frame.setFont(textFont);
         this.gui.addFrame(frame);
         
-        /*try {
-        Thread.sleep(1000);
-        }
-        catch(Exception e) {}*/
-        
             // Update the active world and the GUI of the renderer
         renderer
         .getRenderPassManager()
@@ -237,8 +250,8 @@ public class TestGame extends AGame {
         mesh.setGraphicsStrategy(graphicsStrategy);
         SceneObjectLoadTask objLoadTask = new SceneObjectLoadTask();
         objLoadTask.expectMesh(
-            mesh, 
-            this.window.getRenderer().getGraphicsStrategy(mesh)
+            mesh,
+            graphicsStrategy
         );
         this.assetManager.scheduleFrom(relativePath, objLoadTask);
     }

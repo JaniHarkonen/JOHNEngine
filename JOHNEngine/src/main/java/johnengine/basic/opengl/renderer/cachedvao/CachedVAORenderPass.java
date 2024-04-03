@@ -247,6 +247,7 @@ public class CachedVAORenderPass implements IRenderPass {
     @Override
     public void render() {
         GL46.glEnable(GL46.GL_DEPTH_TEST);
+        
             // Pre-render
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
         this.preRender(renderBuffer);

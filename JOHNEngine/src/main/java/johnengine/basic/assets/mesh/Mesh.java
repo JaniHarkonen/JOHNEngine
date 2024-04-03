@@ -70,7 +70,8 @@ public class Mesh implements IGraphicsAsset {
         }
         
             // Populate
-        dest.info.setAsset(new MeshInfo.Data(
+        MeshInfo info = new MeshInfo("infoinfo");
+        info.setAsset(new MeshInfo.Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
             uvs,                                             // UVs
@@ -78,6 +79,15 @@ public class Mesh implements IGraphicsAsset {
             aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         ));
+        dest.info = info;
+        /*dest.info.setAsset(new MeshInfo.Data(
+            aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
+            aiVectorBufferToVector3fArray(src.mNormals()),   // normals
+            uvs,                                             // UVs
+            faces.toArray(new Face[faces.size()]),           // indices
+            aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
+            aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
+        ));*/
     }
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {

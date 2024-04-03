@@ -2,17 +2,18 @@ package johnengine.testing;
 
 import johnengine.basic.game.AWorldObject;
 import johnengine.basic.game.IWorld;
+import johnengine.basic.game.components.CModel;
 import johnengine.basic.game.physics.CPhysics;
 import johnengine.basic.game.physics.IPhysicsObject;
 import johnengine.basic.game.physics.PhysicsMaterial;
 import johnengine.basic.game.physics.collision.CollisionMesh;
 import johnengine.basic.game.physics.collision.shapes.Shape;
 
-public class JTestBox extends AWorldObject implements IPhysicsObject {
+public class JTestMan extends AWorldObject implements IPhysicsObject {
     private CPhysics physics;
     private boolean settedup = false;
 
-    public JTestBox(IWorld world) {
+    public JTestMan(IWorld world, CModel model) {
         super(world);
         this.physics = new CPhysics(this);
         
@@ -43,8 +44,6 @@ public class JTestBox extends AWorldObject implements IPhysicsObject {
         /*Vector3f dir = new Vector3f(0.05f);
         this.getTransform().getRightVector(dir);
         this.getTransform().shift(dir.mul(0.01f));*/
-        this.getTransform().getRotation().rotate(0.0f,0.1f,0.0f);
-        //this.getTransform().getRotation().rotate(new Vector3f(0.0f, 0.2f, 0.0f));
         //this.getTransform().rotate(new Vector3f(0.0f, 0.2f, 0.0f));
         //this.getTransform().getRotation().rotate(0.0f, 0.2f, 0.0f);
         //this.getTransform().scale(new Vector3f(0.005f));
