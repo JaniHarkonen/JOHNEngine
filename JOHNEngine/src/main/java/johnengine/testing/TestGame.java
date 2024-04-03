@@ -38,7 +38,6 @@ import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
-import johnengine.core.logger.Logger;
 import johnengine.extra.jegmd.GUIBuilder;
 import johnengine.utils.FontUtils;
 import johnengine.utils.counter.MilliCounter;
@@ -69,7 +68,8 @@ public class TestGame extends AGame {
         
         this.window
         .lockCursorToCenter()
-        .disableVSync();
+        .disableVSync()
+        .resize(800, 600);
         //.resize(1000, 1000);
         
         //this.window.enterFullscreen();
