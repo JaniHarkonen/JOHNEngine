@@ -227,25 +227,25 @@ public class Tokenizer {
     private void logTokens() {
         
             // Log tokens (depending on Logger settings)
-        if( Logger.getVerbosity() == Logger.VERBOSITY_VERBOSE )
+        if( Logger.getVerbosity() != Logger.VERBOSITY_VERBOSE )
+        return;
+        
+        String[] log = new String[this.tokens.size() * 3 + 1];
+        log[0] = "Tokenization result:";
+        for( int i = 0; i < this.tokens.size(); i++ )
         {
-            String[] log = new String[this.tokens.size() * 3 + 1];
-            log[0] = "Tokenization result:";
-            for( int i = 0; i < this.tokens.size(); i++ )
-            {
-                Tokenizer.Token token = this.tokens.get(i);
-                log[i * 3 + 1] = "TOKEN";
-                log[i * 3 + 2] = "  type:  " + token.type;
-                log[i * 3 + 3] = "  value: " + token.value;
-            }
-            
-            Logger.log(
-                Logger.VERBOSITY_VERBOSE, 
-                Logger.SEVERITY_NOTIFICATION, 
-                this, 
-                log
-            );
+            Tokenizer.Token token = this.tokens.get(i);
+            log[i * 3 + 1] = "TOKEN";
+            log[i * 3 + 2] = "  type:  " + token.type;
+            log[i * 3 + 3] = "  value: " + token.value;
         }
+        
+        Logger.log(
+            Logger.VERBOSITY_VERBOSE, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            log
+        );
     }
     
     private void reset() {

@@ -14,20 +14,6 @@ import johnengine.testing.DebugUtils;
 
 public class Parser {
     
-    /**
-     * Statements that can be parsed.
-     */
-    private enum Statement {
-        START,
-        TEMPLATE,
-        GUI,
-        FRAME,
-        BLOCK,
-        ELEMENT,
-        PROPERTY
-    }
-    
-    
     /************************ Node-class ************************/
     
     public class Node {
@@ -55,25 +41,33 @@ public class Parser {
             this.children.add(child);
         }
         
-        public void print() {
-            String propertyString = "";
+        public String printToString(String indentation) {
+            String log = this.indent("AST NODE", indentation) + "\n";
+            indentation += "  ";
+            log += this.indent("type: " + this.type, indentation) + "\n";
+            
             for( Map.Entry<String, Tokenizer.Token> en : this.properties.entrySet() )
-            propertyString += en.getKey() + " - " + en.getValue().value + "\n";
-                
-            Logger.log(
-                Logger.VERBOSITY_MINIMAL, 
-                Logger.SEVERITY_NOTIFICATION, 
-                this, 
-                this.type, 
-                propertyString
-            );
+            log += this.indent(en.getKey() + " - " + en.getValue().value + "\n", indentation);
+            
+            log += this.indent("CHILDREN: ", indentation);
+            
+            if( this.children.size() == 0 )
+            log += "NONE";
+            
+            log += "\n";
             
             for( Node child : this.children )
-            child.print();
+            log += child.printToString(indentation + "  ");
+            
+            return log;
         }
         
         private void setProperty(String propertyKey, Tokenizer.Token valueToken) {
             this.properties.put(propertyKey, valueToken);
+        }
+        
+        private String indent(String string, String indentation) {
+            return indentation + string;
         }
     }
     
@@ -97,7 +91,8 @@ public class Parser {
     
     public void parse() {
         this.position = 0;
-        this.parse(Statement.START, null);
+        this.parse(Statement.DOCUMENT, null);
+        this.logAST();
     }
     
     private boolean parse(Statement expectedStatement, Node currentNode) {
@@ -108,7 +103,7 @@ public class Parser {
             
         switch( expectedStatement )
         {
-            case START: {
+            case DOCUMENT: {
                 if( !this.parseUntilNoneLeft(null, Statement.GUI, Statement.TEMPLATE) )
                 {
                     Logger.log(
@@ -197,12 +192,6 @@ public class Parser {
                 
                 if( !this.parse(Statement.BLOCK, templateNode) )
                 {
-                    /*Logger.log(
-                        Logger.VERBOSITY_MINIMAL, 
-                        Logger.SEVERITY_FATAL, 
-                        this, 
-                        "Template body expected!"
-                    );*/
                     Tokenizer.Token tInvalid = this.getToken(this.position);
                     Logger.log(
                         Logger.VERBOSITY_VERBOSE, 
@@ -355,6 +344,22 @@ public class Parser {
         }
         
         return true;
+    }
+    
+    private void logAST() {
+        if( Logger.getVerbosity() != Logger.VERBOSITY_VERBOSE )
+        return;
+        
+        String log = "Parsed following AST:\n";
+        for( Node frameNode : this.frameNodes )
+        log += frameNode.printToString("");
+        
+        Logger.log(
+            Logger.VERBOSITY_VERBOSE, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            log
+        );
     }
     
     private boolean parseUntilNoneLeft(
