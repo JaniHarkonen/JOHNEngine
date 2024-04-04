@@ -36,7 +36,6 @@ public final class Launcher extends ALauncherFramework {
     public static void main(String[] args) {
             // Configure Logger
         Logger.configure(
-            Logger.SHOW_TIMESTAMP | 
             Logger.SHOW_SEVERITY | 
             Logger.SHOW_THREAD | 
             Logger.SHOW_CALLER

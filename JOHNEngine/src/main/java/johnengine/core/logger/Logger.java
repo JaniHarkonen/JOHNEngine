@@ -72,6 +72,7 @@ public class Logger {
     
     /******************** Severity-class ********************/
     
+    @SuppressWarnings("unused")
     private static class Severity {
         public final String label;
         public final int level;
@@ -173,7 +174,7 @@ public class Logger {
         for( String message : messages )
         log += message + "\n";
         
-        return log;
+        return log.substring(0, log.length() - 1);
     }
     
     private static boolean checkConfiguration(int configurationMask) {
@@ -196,5 +197,9 @@ public class Logger {
     
     public static void configure(int configurationMask) {
         configuration = configurationMask;
+    }
+    
+    public static Logger.Verbosity getVerbosity() {
+        return verbosity;
     }
 }

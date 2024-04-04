@@ -3,12 +3,14 @@ package johnengine.extra.jegmd.tokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import johnengine.core.logger.Logger;
 import johnengine.extra.jegmd.Elements;
 import johnengine.extra.jegmd.Properties;
-import johnengine.extra.jegmd.SpecialCharacters;
-import johnengine.testing.DebugUtils;
 
 public class Tokenizer {
+    
+    
+    /******************** Token ********************/
     
     public static final class Token {
         public TokenType type;
@@ -19,10 +21,6 @@ public class Tokenizer {
             this.value = value;
         }
         
-        
-        public void print() {
-            DebugUtils.log(this, "type: " + this.type, "value: " + this.value);
-        }
         
         public boolean equals(Token token) {
             return this.equals(token.type, token.value);
@@ -54,134 +52,223 @@ public class Tokenizer {
         }
     }
     
+    
+    /******************** Tokenizer ********************/
+    
     private List<Token> tokens;
     private String jegmdString;
+    private int position;
+    private TokenType tokenType;
+    private String tokenValue;
     
     public Tokenizer(String jegmdString) {
         this.tokens = new ArrayList<>();
         this.jegmdString = jegmdString;
+        this.reset();
     }
     
     
-    @SuppressWarnings("incomplete-switch")
     public void tokenize() {
-        TokenType tokenType = TokenType.NONE;
-        String tokenValue = "";
         boolean isDecimalFound = false;
         boolean skipEndingOnce = false;
-        char stringStartCharacter = 0;
+        char stringEndCharacter = 0;
+        
         int s = this.jegmdString.length();
-        int position = 0;
-        while( position < s )
+        while( this.position < s )
         {
-            char currentCharacter = this.jegmdString.charAt(position);
-            boolean closeToken = false;
+                // Whether this iteration was the ending of the token
+            char currentCharacter = this.jegmdString.charAt(this.position);
             
-            if( tokenType == TokenType.NONE )
+            if( this.tokenType == TokenType.NONE )
             {
-                if( currentCharacter == '"' || currentCharacter == '\'' )
+                this.tokenType = TokenTable.table[currentCharacter];
+                switch( this.tokenType )
                 {
-                    tokenType = TokenType.STRING;
-                    stringStartCharacter = currentCharacter;
-                    position++;
-                    continue;
-                }
-                else if( currentCharacter >= 48 && currentCharacter <= 57 )
-                tokenType = TokenType.NUMBER;
-                else if( currentCharacter == '.' )
-                {
-                    tokenType = TokenType.NUMBER;
-                    isDecimalFound = true;
-                }
-                else if(
-                    (currentCharacter >= 65 && currentCharacter <= 90) ||
-                    (currentCharacter >= 97 && currentCharacter <= 122) ||
-                    currentCharacter == '_'
-                )
-                tokenType = TokenType.IDENTIFIER;
-                else if( SpecialCharacters.isSpecialCharacter(currentCharacter) )
-                {
-                    tokenType = TokenType.SPECIAL;
-                    position++;
-                    closeToken = true;
-                }
-                else
-                {
-                    position++;
-                    continue;
+                    case STRING:
+                        stringEndCharacter = currentCharacter;
+                        this.advance();
+                        continue;
+                        
+                    case NUMBER: 
+                        isDecimalFound = (currentCharacter == '.');
+                        break;
+                        
+                    case LITERAL: break;
+                        
+                    case SPECIAL:
+                        this.tokenValue = "" + currentCharacter;
+                        this.recordToken();
+                        this.advance();
+                        continue;
+                        
+                    case COMMENT:
+                        int nextPosition = this.position + 1;
+                        
+                            // Single-line comment
+                        if( nextPosition + 1 >= this.jegmdString.length() )
+                        break;
+                        
+                            // Multi-line
+                        if( this.jegmdString.charAt(nextPosition) == '*' )
+                        this.tokenType = TokenType.COMMENT_MULTILINE;
+                        break;
+                        
+                    default:
+                        Logger.log(
+                            Logger.VERBOSITY_VERBOSE, 
+                            Logger.SEVERITY_WARNING, 
+                            this, 
+                            "Skipped character '" + currentCharacter +"'."
+                        );
+                        
+                        this.advance();
+                        continue;
                 }
                 
-                tokenValue += currentCharacter;
+                this.tokenValue += currentCharacter;
             }
             else
             {
-                switch( tokenType )
+                TokenType currentCharacterType = TokenTable.table[currentCharacter];
+                switch( this.tokenType )
                 {
                     case STRING: {
-                        if( currentCharacter == stringStartCharacter )
+                        if( currentCharacter == stringEndCharacter )
                         {
                             if( skipEndingOnce )
-                            tokenValue += currentCharacter;
+                            this.tokenValue += currentCharacter;
                             else
-                            {
-                                closeToken = true;
-                                position++; // Skip the closing character
-                            }
+                            this.recordToken();
                         }
                         else if( currentCharacter == '\\' )
                         skipEndingOnce = true;
                         else
-                        tokenValue += currentCharacter;
+                        this.tokenValue += currentCharacter;
                         
                         break;
                     }
                     
                     case NUMBER: {
                         if( 
-                            (currentCharacter >= 48 && currentCharacter <= 57) ||
+                            currentCharacterType == TokenType.NUMBER ||
                             !isDecimalFound && currentCharacter == '.'
                         )
-                        tokenValue += currentCharacter;
+                        this.tokenValue += currentCharacter;
                         else
-                        closeToken = true;
+                        {
+                            this.recordToken();
+                            this.hang();
+                        }
                         
                         break;
                     }
                     
-                    case IDENTIFIER: {
+                    case LITERAL: {
                         if(
-                            (currentCharacter >= 65 && currentCharacter <= 90) ||
-                            (currentCharacter >= 97 && currentCharacter <= 122) ||
-                            (currentCharacter >= 48 && currentCharacter <= 57) ||
-                            currentCharacter == '_'
+                            currentCharacterType == TokenType.LITERAL ||
+                            currentCharacterType == TokenType.NUMBER
                         )
-                        tokenValue += currentCharacter;
+                        this.tokenValue += currentCharacter;
                         else
                         {
-                            if( this.isElementType(tokenValue) )
-                            tokenType = TokenType.ELEMENT;
-                            else if( this.isProperty(tokenValue) )
-                            tokenType = TokenType.PROPERTY;
+                                // Further classify the token type as identifiers,
+                                // elements and properties all have similar 
+                                // characteristics to literals
+                            this.tokenType = TokenType.IDENTIFIER;
                             
-                            closeToken = true;
+                            if( this.isElementType(this.tokenValue) )
+                            this.tokenType = TokenType.ELEMENT;
+                            else if( this.isProperty(this.tokenValue) )
+                            this.tokenType = TokenType.PROPERTY;
+                            
+                            this.recordToken();
+                            this.hang();
                         }
                         
+                        break;
+                    }
+                    
+                    case COMMENT: {
+                        if( currentCharacter == '\n' )
+                        this.resetToken();
+                        
+                        break;
+                    }
+                    
+                    case COMMENT_MULTILINE: {
+                        if( 
+                            currentCharacter == '/' && 
+                            this.jegmdString.charAt(this.position - 1) == '*' 
+                        )
+                        this.resetToken();
+                        
+                        break;
+                    }
+                    
+                    default: {
+                        Logger.log(
+                            Logger.VERBOSITY_MINIMAL, 
+                            Logger.SEVERITY_FATAL, 
+                            this, 
+                            "Attempting to extract a token of non-existing type!"
+                        );
                         break;
                     }
                 }
             }
             
-            if( closeToken )
-            {
-                this.tokens.add(new Token(tokenType, tokenValue));
-                tokenType = TokenType.NONE;
-                tokenValue = "";
-            }
-            else
-            position++;
-            
+            this.advance();
             skipEndingOnce = false;
         }
+        
+        this.logTokens();
+    }
+    
+    private void logTokens() {
+        
+            // Log tokens (depending on Logger settings)
+        if( Logger.getVerbosity() == Logger.VERBOSITY_VERBOSE )
+        {
+            String[] log = new String[this.tokens.size() * 3 + 1];
+            log[0] = "Tokenization result:";
+            for( int i = 0; i < this.tokens.size(); i++ )
+            {
+                Tokenizer.Token token = this.tokens.get(i);
+                log[i * 3 + 1] = "TOKEN";
+                log[i * 3 + 2] = "  type:  " + token.type;
+                log[i * 3 + 3] = "  value: " + token.value;
+            }
+            
+            Logger.log(
+                Logger.VERBOSITY_VERBOSE, 
+                Logger.SEVERITY_NOTIFICATION, 
+                this, 
+                log
+            );
+        }
+    }
+    
+    private void reset() {
+        this.resetToken();
+        this.position = 0;
+    }
+    
+    private void recordToken() {
+        this.tokens.add(new Token(this.tokenType, this.tokenValue));
+        this.resetToken();
+    }
+    
+    private void advance() {
+        this.position++;
+    }
+    
+    private void hang() {
+        this.position--;
+    }
+    
+    private void resetToken() {
+        this.tokenType = TokenType.NONE;
+        this.tokenValue = "";
     }
     
     private boolean isElementType(String string) {

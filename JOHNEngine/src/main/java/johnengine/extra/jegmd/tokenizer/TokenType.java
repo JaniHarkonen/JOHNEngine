@@ -4,8 +4,11 @@ public enum TokenType {
     NONE,
     STRING,
     NUMBER,
+    LITERAL,
     IDENTIFIER,
     ELEMENT,
     PROPERTY,
-    SPECIAL
+    SPECIAL,
+    COMMENT,
+    COMMENT_MULTILINE
 }
