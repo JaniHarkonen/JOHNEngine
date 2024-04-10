@@ -38,6 +38,7 @@ import johnengine.core.AGame;
 import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
+import johnengine.core.logger.Logger;
 import johnengine.extra.jegmd.GUIBuilder;
 import johnengine.utils.FontUtils;
 import johnengine.utils.counter.MilliCounter;
@@ -293,23 +294,6 @@ public class TestGame extends AGame {
             else
             this.window.lockCursorToCenter();
         }
-        
-        if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_KP_ADD)) )
-        {
-            //this.material.setReflectance(this.material.getReflectance() + 0.1f);
-            //this.material.setDiffuseColor(new Vector4f(this.material.getDiffuseColor().x + 0.1f, this.material.getDiffuseColor().y + 0.1f, this.material.getDiffuseColor().z + 0.1f, 1.0f));
-            //this.material.setDiffuseColor(diffuseColor);
-            this.material.setSpecularColor(new Vector4f(this.material.getSpecularColor().x + 0.1f, this.material.getSpecularColor().y + 0.1f, this.material.getSpecularColor().z + 0.1f, 1.0f));
-            DebugUtils.log(this, "reflectance increased: " + this.material.getReflectance(), "diffuse color increased: " + this.material.getDiffuseColor().toString());
-        }
-        
-        if( this.window.getInput().getEvents().contains(new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_KP_SUBTRACT)) )
-        {
-            //this.material.setReflectance(this.material.getReflectance() - 0.1f);
-            //this.material.setDiffuseColor(new Vector4f(this.material.getDiffuseColor().x - 0.1f, this.material.getDiffuseColor().y - 0.1f, this.material.getDiffuseColor().z - 0.1f, 1.0f));
-            this.material.setSpecularColor(new Vector4f(this.material.getSpecularColor().x - 0.1f, this.material.getSpecularColor().y - 0.1f, this.material.getSpecularColor().z - 0.1f, 1.0f));
-            DebugUtils.log(this, "reflectance increased: " + this.material.getReflectance());
-        }
     }
     
     private String convertToLargestByte(long bytes) {
@@ -339,6 +323,11 @@ public class TestGame extends AGame {
     public void onClose() {
         this.assetManager.stop();
         this.window.stop();
-        DebugUtils.log(this, "BYEEEE");
+        Logger.log(
+            Logger.VERBOSITY_MINIMAL, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "Engine loop terminated!"
+        );
     }
 }

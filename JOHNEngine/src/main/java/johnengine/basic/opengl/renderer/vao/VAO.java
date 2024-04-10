@@ -28,6 +28,7 @@ public class VAO implements IGeneratable, IBindable {
         this.bind();
         
             // Bind all VBOs, except the one holding the indices
+            // (index VBO will be bound below)
         for( int i = 0; i < this.vbos.size(); i++ )
         {
             AVBO<?, ?> vbo = this.vbos.get(i);

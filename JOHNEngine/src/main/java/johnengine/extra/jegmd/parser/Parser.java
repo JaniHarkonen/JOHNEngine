@@ -10,7 +10,6 @@ import johnengine.extra.jegmd.Elements;
 import johnengine.extra.jegmd.SpecialCharacters;
 import johnengine.extra.jegmd.tokenizer.TokenType;
 import johnengine.extra.jegmd.tokenizer.Tokenizer;
-import johnengine.testing.DebugUtils;
 
 public class Parser {
     
@@ -124,7 +123,6 @@ public class Parser {
                 
                 if( this.guiNode != null )
                 {
-                    DebugUtils.log(this, "ERROR: ");
                     Logger.log(
                         Logger.VERBOSITY_MINIMAL, 
                         Logger.SEVERITY_FATAL, 
