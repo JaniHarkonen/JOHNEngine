@@ -90,6 +90,24 @@ public final class Defaults {
     }
     
     
+    /******************************* SHADOWS *******************************/
+    
+    public static final int SHADOW_MAP_WIDTH;
+    static {
+        SHADOW_MAP_WIDTH = 4096;
+    }
+    
+    public static final int SHADOW_MAP_HEIGHT;
+    static {
+        SHADOW_MAP_HEIGHT = 4096;
+    }
+    
+    public static final int SHADOW_DEPTH_MAP_LEVEL_COUNT;
+    static {
+        SHADOW_DEPTH_MAP_LEVEL_COUNT = 4;
+    }
+    
+    
     /******************************* MATERIALS *******************************/
     
     /**
@@ -172,4 +190,9 @@ public final class Defaults {
     static {
         DEFAULT_GUI_TEXT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
     }
+    
+    
+    /******************************* WINDOW *******************************/
+    
+    public static final long WINDOW_MAX_FPS = 300;
 }

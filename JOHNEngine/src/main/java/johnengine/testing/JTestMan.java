@@ -37,7 +37,8 @@ public class JTestMan extends AWorldObject implements IPhysicsObject {
         if( !this.settedup )
         {
             this.transform.getScale().setScale(0.5f, 0.5f, 0.5f);
-            this.transform.getRotation().setRotation(90, 0, 0);
+            //this.transform.getRotation().setRotation(90, 0, 0);
+            this.transform.getPosition().setPosition(0,10,30);
             this.settedup = true;
         }
         //this.position.shift(0.01f, 0.01f, 0.01f);

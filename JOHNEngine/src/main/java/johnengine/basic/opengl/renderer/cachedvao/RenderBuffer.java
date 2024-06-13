@@ -97,11 +97,11 @@ public class RenderBuffer implements IRenderBuffer<RenderBuffer> {
     }
     
     
-    Matrix4f getProjectionMatrix() {
+    public Matrix4f getProjectionMatrix() {
         return this.projectionMatrix;
     }
     
-    Matrix4f getCameraMatrix() {
+    public Matrix4f getCameraMatrix() {
         return this.cameraMatrix;
     }
     
@@ -109,11 +109,11 @@ public class RenderBuffer implements IRenderBuffer<RenderBuffer> {
         return this.ambientLight;
     }
     
-    SDirectionalLight getDirectionalLight() {
+    public SDirectionalLight getDirectionalLight() {
         return this.directionalLight;
     }
     
-    Set<Map.Entry<JPointLight, SPointLight>> getPointLights() {
+    public Set<Map.Entry<JPointLight, SPointLight>> getPointLights() {
         return this.pointLights.entrySet();
     }
     

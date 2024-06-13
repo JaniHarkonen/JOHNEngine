@@ -7,10 +7,10 @@ import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.opengl.renderer.asset.MeshGraphicsGL;
 
 public class RenderUnit {
-    MeshGraphicsGL meshGraphics;
-    MeshInfo.Data meshData;
-    Material material;
-    Matrix4f positionMatrix;
+    public MeshGraphicsGL meshGraphics;
+    public MeshInfo.Data meshData;
+    public Material material;
+    public Matrix4f positionMatrix;
     
     public RenderUnit(
         MeshGraphicsGL meshGraphics,

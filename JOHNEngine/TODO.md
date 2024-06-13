@@ -33,5 +33,13 @@ while being submitted to the render pass
 	-> crashes if the asset loading is skipped (should display default asset instead)
 	-> particular issues with how Meshes are being used (too many layers of 
 	encapsulation)
+- currently CascadeShadowSubRenderer is dependent on the RenderBuffer of the 'cachedvao'
+cached vao strategy
+	-> once instanced rendering is implemented consider if cachedvao is even necessary
+	-> at any rate the two must be separated OR the sub renderer must be a part of the
+	'cachedvao' package
+	-> consider creating a ISubRenderer interface for all the subrenderers
+- update all instances of "cascade" or "cascading" shadow to "cascaded" shadow
+- update rest of the light calculations in default.frag to use 'ioViewPosition'
 
 - could compute shaders be used to calculate collisions?

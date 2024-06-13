@@ -1,7 +1,5 @@
 package johnengine.basic.opengl.renderer;
 
-import org.lwjgl.opengl.GL11;
-
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.opengl.WindowGL;
@@ -10,10 +8,10 @@ import johnengine.basic.opengl.renderer.asset.TextureGraphicsGL;
 import johnengine.basic.opengl.renderer.cachedvao.CachedVAORenderPass;
 import johnengine.basic.opengl.renderer.gui.GUIRenderPass;
 import johnengine.core.FileUtils;
+import johnengine.core.logger.Logger;
 import johnengine.core.renderer.IRenderPass;
 import johnengine.core.renderer.IRenderer;
 import johnengine.core.renderer.RenderPassManager;
-import johnengine.testing.DebugUtils;
 
 public class RendererGL implements IRenderer {
     private WindowGL hostWindow;
@@ -40,9 +38,44 @@ public class RendererGL implements IRenderer {
     public void generateDefaults() {
         
             // Generate default assets that use OpenGL
+        long currentTime = System.nanoTime();
+        Logger.log(
+            Logger.VERBOSITY_VERBOSE, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "[OpenGL] Generating default mesh graphics strategy..."
+        );
         MeshGraphicsGL.generateDefault(this);
+        Logger.log(
+            Logger.VERBOSITY_STANDARD, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "Generated default mesh graphics strategy in " + 
+            (System.nanoTime() - currentTime) / 1000000 + "ms"
+        );
+        
+        currentTime = System.nanoTime();
+        Logger.log(
+            Logger.VERBOSITY_VERBOSE, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "[OpenGL] Generating default texture graphics strategy..."
+        );
         TextureGraphicsGL.generateDefault(this);
-        DebugUtils.log(this, "defaults generated");
+        Logger.log(
+            Logger.VERBOSITY_STANDARD, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "Generated default texture graphics strategy in " + 
+            (System.nanoTime() - currentTime) / 1000000 + "ms"
+        );
+        
+        Logger.log(
+            Logger.VERBOSITY_STANDARD, 
+            Logger.SEVERITY_NOTIFICATION, 
+            this, 
+            "[OpenGL] Defaults generated!"
+        );
     }
 
     @Override
@@ -65,10 +98,6 @@ public class RendererGL implements IRenderer {
     @Override
     public void render() {
         this.graphicsAssetProcessor.processGraphicsRequests();
-        
-        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glViewport(0, 0, this.hostWindow.getWidth(), this.hostWindow.getHeight());
         
         for( String passKey : this.renderPassManager.getOrder() )
         this.renderPassManager.getPass(passKey).render();

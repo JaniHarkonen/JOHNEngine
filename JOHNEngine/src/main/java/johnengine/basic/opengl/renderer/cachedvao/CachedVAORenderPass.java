@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
+import johnengine.Defaults;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.assets.texture.Texture;
@@ -27,6 +28,9 @@ import johnengine.basic.opengl.renderer.cachedvao.uniforms.UNIDirectionalLight;
 import johnengine.basic.opengl.renderer.cachedvao.uniforms.UNIMaterial;
 import johnengine.basic.opengl.renderer.cachedvao.uniforms.UNIPointLight;
 import johnengine.basic.opengl.renderer.cachedvao.uniforms.UNISpotLight;
+import johnengine.basic.opengl.renderer.shadows.CascadedShadowRenderStep;
+import johnengine.basic.opengl.renderer.shadows.structs.SCascadedShadow;
+import johnengine.basic.opengl.renderer.shadows.uniforms.UNICascadedShadow;
 import johnengine.basic.opengl.renderer.uniforms.UNIInteger;
 import johnengine.basic.opengl.renderer.uniforms.UNIMatrix4f;
 import johnengine.basic.opengl.renderer.uniforms.UniformArray;
@@ -50,6 +54,7 @@ public class CachedVAORenderPass implements IRenderPass {
     private RenderBufferManager<RenderBuffer> renderBufferManager;
     private SubmissionStrategyManager submissionManager;
     private DefaultRenderBufferPopulator renderBufferPopulator;
+    private CascadedShadowRenderStep cascadedShadows;
     
     private JWorld activeWorld;
     
@@ -60,6 +65,7 @@ public class CachedVAORenderPass implements IRenderPass {
         this.renderBufferManager = new RenderBufferManager<>(new RenderBuffer());
         this.activeWorld = null;
         this.renderBufferPopulator = new DefaultRenderBufferPopulator();
+        this.cascadedShadows = null;
         
         this.submissionManager = new SubmissionStrategyManager()
         .addStrategy(CModel.class, new SubmitModel(this))
@@ -122,22 +128,34 @@ public class CachedVAORenderPass implements IRenderPass {
             "directionalLight", "uDirectionalLight"
         );
         UNIMaterial material = new UNIMaterial("material", "uMaterial");
-        UniformArray<SPointLight, UNIPointLight> pointLight = 
-            new UniformArray<SPointLight, UNIPointLight>(
-                "pointLight", 
-                "uPointLight",
-                new UNIPointLight[MAX_POINT_LIGHT_COUNT]
-            );
+        UniformArray<SPointLight, UNIPointLight> pointLight = new UniformArray<>(
+            "pointLight", 
+            "uPointLight",
+            new UNIPointLight[MAX_POINT_LIGHT_COUNT]
+        );
         
-        UniformArray<SSpotLight, UNISpotLight> spotLight = 
-            new UniformArray<SSpotLight, UNISpotLight>(
-                "spotLight", 
-                "uSpotLight",
-                new UNISpotLight[MAX_SPOT_LIGHT_COUNT]
-            );
+        UniformArray<SSpotLight, UNISpotLight> spotLight = new UniformArray<>(
+            "spotLight", 
+            "uSpotLight",
+            new UNISpotLight[MAX_SPOT_LIGHT_COUNT]
+        );
+        
+        UniformArray<SCascadedShadow, UNICascadedShadow> cascadedShadow = new UniformArray<>(
+            "cascadedShadow",
+            "uCascadedShadow",
+            new UNICascadedShadow[Defaults.SHADOW_DEPTH_MAP_LEVEL_COUNT]
+        );
+        
+        UniformArray<Integer, UNIInteger> shadowSampler = new UniformArray<>(
+            "shadowSampler",
+            "uShadowSampler",
+            new UNIInteger[Defaults.SHADOW_DEPTH_MAP_LEVEL_COUNT]
+        );
         
         pointLight.fill(() -> new UNIPointLight());
         spotLight.fill(() -> new UNISpotLight());
+        cascadedShadow.fill(() -> new UNICascadedShadow());
+        shadowSampler.fill(() -> new UNIInteger(""));
 
         this.shaderProgram
         .declareUniform(textureSampler)
@@ -150,7 +168,44 @@ public class CachedVAORenderPass implements IRenderPass {
         .declareUniform(material)
         .declareUniform(pointLight)
         .declareUniform(directionalLight)
-        .declareUniform(spotLight);
+        .declareUniform(spotLight)
+        .declareUniform(cascadedShadow)
+        .declareUniform(shadowSampler);
+        
+            // Prepare cascaded shadows render step
+        ShaderProgram shadowShaderProgram = new ShaderProgram();
+        Shader shadowVertexShader = new Shader(
+            GL46.GL_VERTEX_SHADER,
+            "cascaded-shadows-vertex-shader",
+            true,
+            null
+        );
+        this.loadShader(shadowVertexShader, "cascaded-shadows.vert");
+        shadowShaderProgram.addShader(shadowVertexShader);
+        shadowShaderProgram.generate();
+        
+        UNIMatrix4f shadowProjectionMatrix = new UNIMatrix4f(
+            "shadowProjectionMatrix", "uShadowProjectionMatrix"
+        );
+        
+        UNIMatrix4f shadowModelMatrix = new UNIMatrix4f(
+            "shadowModelMatrix", "uShadowModelMatrix"
+        );
+        
+        shadowShaderProgram
+        .declareUniform(shadowProjectionMatrix)
+        .declareUniform(shadowModelMatrix);
+        
+        this.cascadedShadows = new CascadedShadowRenderStep(
+            shadowShaderProgram, 
+            this.vaoCache, 
+            "shadowProjectionMatrix", 
+            "shadowModelMatrix",
+            cascadedShadow,
+            shadowSampler
+        );
+        
+        this.cascadedShadows.initialize();
         
             // OpenGL configuration
         //GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -193,13 +248,19 @@ public class CachedVAORenderPass implements IRenderPass {
     @SuppressWarnings("unchecked")
     public void preRender(RenderBuffer renderBuffer) {
         this.shaderProgram.bind();
-        this.shaderProgram.getUniform("textureSampler").set();
+        
+        final int DIFFUSE_SAMPLER = 0;
+        final int NORMAL_SAMPLER = 1;
+        final int ROUGHNESS_SAMPLER = 2;
+        
+        ((UNIInteger) this.shaderProgram.getUniform("textureSampler"))
+        .set(DIFFUSE_SAMPLER);
         
         ((UNIInteger) this.shaderProgram.getUniform("normalSampler"))
-        .set(1);
+        .set(NORMAL_SAMPLER);
         
         ((UNIInteger) this.shaderProgram.getUniform("roughnessSampler"))
-        .set(2);
+        .set(ROUGHNESS_SAMPLER);
         
         ((UNIMatrix4f) this.shaderProgram.getUniform("projectionMatrix"))
         .set(renderBuffer.getProjectionMatrix());
@@ -247,10 +308,27 @@ public class CachedVAORenderPass implements IRenderPass {
     @Override
     public void render() {
         GL46.glEnable(GL46.GL_DEPTH_TEST);
+        GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+        GL46.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
         
             // Pre-render
+        final int FIRST_SHADOW_SAMPLER = 3;
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
+        this.shaderProgram.bind();
+        this.cascadedShadows.setUniforms(FIRST_SHADOW_SAMPLER);
+        this.cascadedShadows.render(renderBuffer);
+        
+        GL46.glViewport(
+            0, 
+            0, 
+            this.renderer.getWindow().getWidth(), 
+            this.renderer.getWindow().getHeight()
+        );
+        
         this.preRender(renderBuffer);
+        this.cascadedShadows.bindDepthTextures(GL46.GL_TEXTURE3);
         
             // Issue draw calls based on the render units
         UNIMatrix4f modelMatrix = 
@@ -276,15 +354,18 @@ public class CachedVAORenderPass implements IRenderPass {
             ((UNIMaterial) this.shaderProgram.getUniform("material"))
             .set(materialStruct);
             
+                // Diffuse map
             GL46.glActiveTexture(GL46.GL_TEXTURE0);
             textureGraphics.bind();
             
+                // Normal map
             if( normalMap != null )
             {
                 GL46.glActiveTexture(GL46.GL_TEXTURE1);
                 ((TextureGraphicsGL) normalMap.getGraphicsStrategy()).bind();
             }
             
+                // Roughness map
             if( roughnessMap != null )
             {
                 GL46.glActiveTexture(GL46.GL_TEXTURE2);

@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 
 public class CProjection {
 
-    public static final float DEFAULT_FOV_Y = (float) Math.toRadians(75.0f);
+    public static final float DEFAULT_FOV_Y = (float) Math.toRadians(90.0f);
     public static final int DEFAULT_VIEW_WIDTH = 640;
     public static final int DEFAULT_VIEW_HEIGHT = 480;
     public static final float DEFAULT_Z_NEAR = 0.001f;

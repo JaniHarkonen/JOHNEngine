@@ -61,11 +61,15 @@ public class Texture implements IGraphicsAsset {
             private ByteBuffer pixels;
             private int width;
             private int height;
+            private boolean repeatHorizontally;
+            private boolean repeatVertically;
             
             private Data(ByteBuffer pixels, int width, int height) {
                 this.pixels = pixels;
                 this.width = width;
                 this.height = height;
+                this.repeatHorizontally = true;
+                this.repeatVertically = true;
             }
         }
         
@@ -94,6 +98,14 @@ public class Texture implements IGraphicsAsset {
         
         public int getHeight() {
             return this.data.height;
+        }
+        
+        public boolean repeatHorizontally() {
+            return this.data.repeatHorizontally;
+        }
+        
+        public boolean repeatVertically() {
+            return this.data.repeatVertically;
         }
     }
     

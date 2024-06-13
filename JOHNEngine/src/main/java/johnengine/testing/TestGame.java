@@ -10,7 +10,6 @@ import johnengine.basic.assets.font.Font;
 import johnengine.basic.assets.mesh.Mesh;
 import johnengine.basic.assets.sceneobj.Material;
 import johnengine.basic.assets.sceneobj.SceneObjectLoadTask;
-import johnengine.basic.assets.textasset.TextAsset;
 import johnengine.basic.assets.texture.Texture;
 import johnengine.basic.game.JCamera;
 import johnengine.basic.game.JWorld;
@@ -29,6 +28,7 @@ import johnengine.basic.game.input.actions.ACTTurn;
 import johnengine.basic.game.input.cvrters.MouseKeyboardBooleanConverter;
 import johnengine.basic.game.input.cvrters.MouseKeyboardPointConverter;
 import johnengine.basic.game.lights.JAmbientLight;
+import johnengine.basic.game.lights.JDirectionalLight;
 import johnengine.basic.game.lights.JPointLight;
 import johnengine.basic.game.physics.Physics;
 import johnengine.basic.opengl.WindowGL;
@@ -39,7 +39,6 @@ import johnengine.core.IEngineComponent;
 import johnengine.core.assetmngr.AssetManager;
 import johnengine.core.engine.Engine;
 import johnengine.core.logger.Logger;
-import johnengine.extra.jegmd.GUIBuilder;
 import johnengine.utils.FontUtils;
 import johnengine.utils.counter.MilliCounter;
 
@@ -55,6 +54,7 @@ public class TestGame extends AGame {
     private Physics.World physicsWorld;
     private JText testText;
     private Material material;
+    private JTestPlayer player;
     
     @Override
     public void onStart(Engine engine, IEngineComponent[] engineComponents) {
@@ -123,14 +123,12 @@ public class TestGame extends AGame {
         model.setMesh(mesh);
         JTestBox box = new JTestBox(this.worldMain);
         box.attach(model);
-        DebugUtils.log(this, model.getMesh().getInfo());
         model.getTransform().getScale().inherit();
         
         CModel manModel = new CModel();
         manModel.setMesh(manMesh);
         JTestMan man = new JTestMan(this.worldMain, manModel);
         man.attach(manModel);
-        DebugUtils.log(this, manModel.getMesh().getInfo());
         manModel.getTransform().getScale().inherit();
         
         this.worldMain.createInstance(box);
@@ -168,15 +166,34 @@ public class TestGame extends AGame {
         player.setController(controller);
         
         this.worldMain.createInstance(player);
+        this.player = player;
         
         JAmbientLight ambientLight = new JAmbientLight(this.worldMain);
         this.worldMain.createInstance(ambientLight);
-        /*
+        
         JDirectionalLight directionalLight = new JDirectionalLight(this.worldMain);
-        this.worldMain.createInstance(directionalLight);*/
+        this.worldMain.createInstance(directionalLight);
         
         JPointLight pointLight = new JPointLight(this.worldMain);
         this.worldMain.createInstance(pointLight);
+        
+        ControlSchema csLightControls = new ControlSchema();
+        csLightControls.bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_R), 
+            new ACTMoveLeft(), 
+            new MouseKeyboardBooleanConverter()
+        ).bind(
+            new MouseKeyboardInputGL.KeyHeld(GLFW.GLFW_KEY_T), 
+            new ACTMoveRight(), 
+            new MouseKeyboardBooleanConverter()
+        );
+        
+        CController lightController = new CController();
+        lightController.setSchema(csLightControls);
+        lightController.setSource(this.window.getInput());
+        
+        directionalLight.setController(lightController);
+        
         /*JSpotLight spotLight = new JSpotLight(this.worldMain);
         spotLight.setPointLight(pointLight);
         camera.attach(spotLight);*/
@@ -236,12 +253,13 @@ public class TestGame extends AGame {
         this.physicsWorld.addObject(player);
         this.physicsWorld.addObject(box);
         
-        TextAsset guiSource = new TextAsset("gui-source-code");
+            // GUI markup language test
+        /*TextAsset guiSource = new TextAsset("gui-source-code");
         TextAsset.LoadTask guiLoadTask = new TextAsset.LoadTask(am.getRootDirectory() + "\\gui.gui", guiSource);
         guiLoadTask.load();
         
         GUIBuilder guiBuilder = new GUIBuilder(guiSource.getAsset().get());
-        guiBuilder.buildGUI();
+        guiBuilder.buildGUI();*/
     }
     
     private void loadMesh(String relativePath, Mesh mesh) {
@@ -282,7 +300,10 @@ public class TestGame extends AGame {
         this.testText.setTextString(
             "FPS: " + this.window.getFPS() + 
             "\nTICK: " + this.engine.getTickRate() + 
-            "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory())
+            "\nHEAP: " + this.convertToLargestByte(Runtime.getRuntime().totalMemory()) +
+            "\nplayer: (" + this.player.getTransform().getPosition().get().x +
+            ", " + this.player.getTransform().getPosition().get().y +
+            ", " + this.player.getTransform().getPosition().get().z + ")" 
         );
         //this.timer.count();
         this.gui.tick(deltaTime);

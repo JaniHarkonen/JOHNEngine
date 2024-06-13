@@ -65,25 +65,34 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
 
     @Override
     public void loop() {
-        long startTime = System.currentTimeMillis();
+        long counterStartTime = System.nanoTime();
+        long limiterStartTime = counterStartTime;
         long fpsCounter = 0;
         
         while( !this.isWindowClosing() )
         {
+            double frameInterval = 
+                1 / ((double) this.properties.fpsMax.lastValue) * 1000000000.0d;
+            long currentTime = System.nanoTime();
+            
             this.requestManager.processRequests(this.properties);
             this.input.update();
-            GLFW.glfwSwapBuffers(this.windowID);
-            this.renderer.render();
+            
+                // Render and limit frames
+            if( currentTime - limiterStartTime >= frameInterval )
+            {
+                GLFW.glfwSwapBuffers(this.windowID);
+                this.renderer.render();
+                fpsCounter++;
+                limiterStartTime = currentTime;
+            }
             
                 // FPS-counter
-            long currentTime = System.currentTimeMillis();
-            fpsCounter++;
-            
-            if( currentTime - startTime >= 1000 )
+            if( currentTime - counterStartTime >= 1000000000 )
             {
                 this.properties.fps.set(fpsCounter);
                 fpsCounter = 0;
-                startTime = currentTime;
+                counterStartTime = currentTime;
             }
         }
         
@@ -250,7 +259,13 @@ public final class WindowGL implements IWindow, IEngineComponent, IThreadable
     public IWindow changeTitle(String title) {
         this.requestManager.addRequest(new RChangeTitle(title, this));
         return this;
-    }   
+    }
+    
+    @Override
+    public IWindow limitFPS(long fpsMax) {
+        this.requestManager.addRequest(new RLimitFPS(fpsMax));
+        return this;
+    }
 
     @Override
     public IWindow showBorder() {
