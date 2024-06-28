@@ -208,10 +208,10 @@ public class CachedVAORenderPass implements IRenderPass {
         this.cascadedShadows.initialize();
         
             // OpenGL configuration
-        //GL11.glEnable(GL11.GL_DEPTH_TEST);
-        //GL11.glEnable(GL11.GL_CULL_FACE);
-        //GL13.glEnable(GL13.GL_MULTISAMPLE);
-        //GL11.glCullFace(GL11.GL_BACK);
+        //GL11.glEnable(GL46.GL_DEPTH_TEST);
+        //GL11.glEnable(GL46.GL_CULL_FACE);
+        //GL13.glEnable(GL46.GL_MULTISAMPLE);
+        //GL11.glCullFace(GL46.GL_BACK);
     }
     
     private void loadShader(Shader targetShader, String filename) {
@@ -317,8 +317,8 @@ public class CachedVAORenderPass implements IRenderPass {
         final int FIRST_SHADOW_SAMPLER = 3;
         RenderBuffer renderBuffer = this.renderBufferManager.poll();
         this.shaderProgram.bind();
-        this.cascadedShadows.setUniforms(FIRST_SHADOW_SAMPLER);
-        this.cascadedShadows.render(renderBuffer);
+        //this.cascadedShadows.setUniforms(FIRST_SHADOW_SAMPLER);
+       // this.cascadedShadows.render(renderBuffer);
         
         GL46.glViewport(
             0, 
@@ -328,7 +328,7 @@ public class CachedVAORenderPass implements IRenderPass {
         );
         
         this.preRender(renderBuffer);
-        this.cascadedShadows.bindDepthTextures(GL46.GL_TEXTURE3);
+        //this.cascadedShadows.bindDepthTextures(GL46.GL_TEXTURE3);
         
             // Issue draw calls based on the render units
         UNIMatrix4f modelMatrix = 

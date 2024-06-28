@@ -46,8 +46,9 @@ const int   MAX_SPOT_LIGHT_COUNT = 5;
 const float SPECULAR_POWER = 10;
 
 	// cascaded shadow maps
-const int MAX_CASCADED_SHADOW_COUNT = 3 ;
-const float BIAS = 0.0005;
+const int MAX_CASCADED_SHADOW_COUNT = 3;
+//const float BIAS = 0.0005;
+const float BIAS = 0.5;
 const float SHADOW_FACTOR = 0.25;
 
 in vec3 ioPosition;
@@ -251,7 +252,7 @@ void main()
     outFragmentColor.rgb = outFragmentColor.rgb * fShadowFactor;
     //outFragmentColor = vec4(fShadowFactor, 0, 0, 1);
 
-    switch (iCascadeIndex) {
+    /*switch (iCascadeIndex) {
         case 0:
         outFragmentColor.rgb *= vec3(1.0f, 0.25f, 0.25f);
         break;
@@ -264,5 +265,5 @@ void main()
         default :
         outFragmentColor.rgb *= vec3(1.0f, 1.0f, 0.25f);
         break;
-    }
+    }*/
 }
