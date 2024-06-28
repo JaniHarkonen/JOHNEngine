@@ -1,7 +1,7 @@
 package johnengine.testing;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 import johnengine.basic.game.components.CController;
 import johnengine.basic.game.components.CMovement;
 import johnengine.basic.game.input.AControllerAction;
@@ -25,7 +25,7 @@ public class JTestPlayer extends AWorldObject implements IControllable, IPhysics
     private float movementSpeed;
     private boolean settedup;
     
-    public JTestPlayer(JWorld world) {
+    public JTestPlayer(IWorld world) {
         super(world);
         this.controller = null;
         this.movementSpeed = 0.05f;

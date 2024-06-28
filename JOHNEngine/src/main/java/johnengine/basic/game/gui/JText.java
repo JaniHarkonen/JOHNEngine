@@ -1,15 +1,30 @@
 package johnengine.basic.game.gui;
 
-import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+public class JText extends AGUIComponent {
 
-public class JText extends AWorldObject {
+    private String textString;
+    
+    public JText(
+        JGUI gui, 
+        String textString
+    ) {
+        super(gui);
+        this.textString = textString;
+    }
 
-    public JText(JWorld world) {
-        super(world);
+    
+    @Override
+    public void tick(float deltaTime) {
+        
     }
     
-
-    @Override
-    public void tick(float deltaTime) { }
+    
+    public void setTextString(String textString) {
+        this.textString = textString;
+    }
+    
+    
+    public String getTextString() {
+        return this.textString;
+    }
 }

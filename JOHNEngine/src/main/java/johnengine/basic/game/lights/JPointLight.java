@@ -3,7 +3,7 @@ package johnengine.basic.game.lights;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 import johnengine.basic.game.components.CAttenuation;
 
 public class JPointLight extends AWorldObject {
@@ -15,7 +15,7 @@ public class JPointLight extends AWorldObject {
     private Vector3f color;
     private CAttenuation attenuation;
     
-    public JPointLight(JWorld world) {
+    public JPointLight(IWorld world) {
         super(world);
         this.intensity = DEFAULT_INTENSITY;
         this.color = DEFAULT_COLOR;

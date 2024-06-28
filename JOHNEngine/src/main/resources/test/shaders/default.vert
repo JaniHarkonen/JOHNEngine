@@ -11,6 +11,8 @@ out vec3 ioNormal;
 out vec3 ioTangent;
 out vec3 ioBitangent;
 out vec2 ioTexCoord;
+out vec3 ioViewPosition;	// cascaded shadow maps
+out vec4 ioWorldPosition;	// cascaded shadow maps
 
 uniform mat4 uProjectionMatrix;
 uniform mat4 uCameraMatrix;
@@ -25,6 +27,9 @@ void main()
     ioTangent = normalize(m4ModelViewMatrix * vec4(inNormal, 0)).xyz;
     ioBitangent = normalize(m4ModelViewMatrix * vec4(inNormal, 0)).xyz;
     ioTexCoord = inTextureCoord;
+    
+    ioViewPosition = v4ModelViewPosition.xyz; // cascaded shadow maps
+    ioWorldPosition = uModelMatrix * vec4(ioPosition, 1) * 5; // cascaded shadow maps
 
     gl_Position = uProjectionMatrix * v4ModelViewPosition;
 }

@@ -8,9 +8,11 @@ public interface IRenderer {
     
     public void initialize();
     
-    public void generateRenderBuffer();
+    public void generateRenderBuffers();
     
     public void render();
     
     public IWindow getWindow();
+    
+    public RenderPassManager getRenderPassManager();
 }

@@ -14,7 +14,7 @@ import johnengine.Defaults;
 import johnengine.basic.assets.IGraphicsAsset;
 import johnengine.basic.assets.IGraphicsStrategy;
 import johnengine.basic.assets.sceneobj.Material;
-import johnengine.core.exception.JOHNException;
+import johnengine.core.logger.Logger;
 
 public class Mesh implements IGraphicsAsset {
     
@@ -32,15 +32,6 @@ public class Mesh implements IGraphicsAsset {
         
         public int getIndex(int position) {
             return this.indices[position];
-        }
-    }
-    
-    /********************** MissingMeshInfoException-class **********************/
-    
-    @SuppressWarnings("serial")
-    public static class MissingMeshInfoException extends JOHNException {
-        public MissingMeshInfoException(String message, Mesh mesh) {
-            super(message, "%meshName", mesh.getName(), "%meshInstance", mesh);
         }
     }
     
@@ -79,7 +70,8 @@ public class Mesh implements IGraphicsAsset {
         }
         
             // Populate
-        dest.info.setAsset(new MeshInfo.Data(
+        MeshInfo info = new MeshInfo("infoinfo");
+        info.setAsset(new MeshInfo.Data(
             aiVectorBufferToVector3fArray(src.mVertices()),  // vertices
             aiVectorBufferToVector3fArray(src.mNormals()),   // normals
             uvs,                                             // UVs
@@ -87,6 +79,7 @@ public class Mesh implements IGraphicsAsset {
             aiVectorBufferToVector3fArray(src.mTangents()),  // tangents
             aiVectorBufferToVector3fArray(src.mBitangents()) // bitangents
         ));
+        dest.info = info;
     }
     
     private static Vector3f[] aiVectorBufferToVector3fArray(AIVector3D.Buffer src) {
@@ -164,10 +157,11 @@ public class Mesh implements IGraphicsAsset {
         
         if( this.info == null )
         {
-            throw new MissingMeshInfoException(
-                "Trying to create mesh '%meshName' with null info!" +
-                "\n Mesh instance: %meshInstance",
-                this
+            Logger.log(
+                Logger.VERBOSITY_MINIMAL, 
+                Logger.SEVERITY_FATAL, 
+                this, 
+                "Trying to create a mesh with null info!"
             );
         }
     }

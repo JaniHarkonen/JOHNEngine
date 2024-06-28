@@ -49,6 +49,7 @@ public final class Engine extends AThreadable {
     }
     
     private Engine() {
+        super("Engine");
         this.state = STATE_STOPPED;
         this.tickRate = DEFAULT_TICK_RATE;
     }

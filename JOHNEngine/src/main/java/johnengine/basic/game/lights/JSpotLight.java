@@ -3,7 +3,7 @@ package johnengine.basic.game.lights;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 
 public class JSpotLight extends AWorldObject {
 
@@ -15,7 +15,7 @@ public class JSpotLight extends AWorldObject {
     private float cutOffAngle;
     private JPointLight pointLight;
     
-    public JSpotLight(JWorld world) {
+    public JSpotLight(IWorld world) {
         super(world);
         this.coneDirection = DEFAULT_CONE_DIRECTION;
         this.cutOffAngle = DEFAULT_CUT_OFF_ANGLE;

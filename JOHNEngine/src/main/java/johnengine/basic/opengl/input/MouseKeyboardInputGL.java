@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -239,14 +241,14 @@ public final class MouseKeyboardInputGL implements IInput {
     private final WindowGL hostWindow;
     private final int[] keyMap;
     private final int[] mouseButtonMap;
-    private List<AInputEvent<?>> eventList;
+    private Queue<AInputEvent<?>> eventList;
     private List<AInputEvent<?>> lastEventList;
     
     public MouseKeyboardInputGL(WindowGL hostWindow) {
         this.hostWindow = hostWindow;
         this.keyMap = new int[KEY_MAP_SIZE];
         this.mouseButtonMap = new int[MOUSE_BUTTON_MAP_SIZE];
-        this.eventList = new ArrayList<>();
+        this.eventList = new ConcurrentLinkedQueue<>();
         this.lastEventList = new ArrayList<>();
     }
     
@@ -313,8 +315,14 @@ public final class MouseKeyboardInputGL implements IInput {
 
     @Override
     public void pollEvents() {
-        this.lastEventList = Collections.unmodifiableList(this.eventList);
-        this.eventList = new ArrayList<>();
+        this.lastEventList = new ArrayList<>();
+        
+        AInputEvent<?> event;
+        while( (event = this.eventList.poll()) != null )
+        this.lastEventList.add(event);
+        
+        this.lastEventList = Collections.unmodifiableList(this.lastEventList);
+        this.eventList = new ConcurrentLinkedQueue<>();
     }
     
     @Override

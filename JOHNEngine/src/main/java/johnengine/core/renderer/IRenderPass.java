@@ -8,6 +8,8 @@ public interface IRenderPass {
     
     public void newBuffer();
     
+    public void populateBuffer();
+    
     public boolean executeSubmissionStrategy(IRenderable target);
     
     public void render();

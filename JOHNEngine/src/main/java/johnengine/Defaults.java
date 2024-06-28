@@ -85,8 +85,26 @@ public final class Defaults {
      * Default texture asset.
      */
     public static final Texture DEFAULT_TEXTURE;
-    static { 
+    static {
         DEFAULT_TEXTURE = new Texture("default-texture");
+    }
+    
+    
+    /******************************* SHADOWS *******************************/
+    
+    public static final int SHADOW_MAP_WIDTH;
+    static {
+        SHADOW_MAP_WIDTH = 4096;
+    }
+    
+    public static final int SHADOW_MAP_HEIGHT;
+    static {
+        SHADOW_MAP_HEIGHT = 4096;
+    }
+    
+    public static final int SHADOW_DEPTH_MAP_LEVEL_COUNT;
+    static {
+        SHADOW_DEPTH_MAP_LEVEL_COUNT = 4;
     }
     
     
@@ -97,7 +115,7 @@ public final class Defaults {
      */
     public static final Vector4f DEFAULT_DIFFUSE_COLOR;
     static {
-        DEFAULT_DIFFUSE_COLOR = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
+        DEFAULT_DIFFUSE_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
     
@@ -106,16 +124,16 @@ public final class Defaults {
      */
     public static final Vector4f DEFAULT_SPECULAR_COLOR;
     static {
-        DEFAULT_SPECULAR_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+        DEFAULT_SPECULAR_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
     
     /**
-     * Default specular highlight color of a material.
+     * Default reflectance factor of a material.
      */
     public static final float DEFAULT_REFLECTANCE;
     static {
-        DEFAULT_REFLECTANCE = 0.4f;
+        DEFAULT_REFLECTANCE = 1.0f;
     }
     
     
@@ -153,4 +171,28 @@ public final class Defaults {
         DEFAULT_MESH_INFO = new MeshInfo("default-mesh-info", true, DEFAULT_MESHINFO_DATA);
         MeshInfo.generateDefaults();
     }
+    
+    
+    /******************************* GUI *******************************/
+    
+    /**
+     * Default RGBA-color of a GUI-element.
+     */
+    public static final Vector4f DEFAULT_GUI_ELEMENT_COLOR;
+    static {
+        DEFAULT_GUI_ELEMENT_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    
+    /**
+     * Default RGBA-color of the text of a GUI-element.
+     */
+    public static final Vector4f DEFAULT_GUI_TEXT_COLOR;
+    static {
+        DEFAULT_GUI_TEXT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+    
+    
+    /******************************* WINDOW *******************************/
+    
+    public static final long WINDOW_MAX_FPS = 300;
 }

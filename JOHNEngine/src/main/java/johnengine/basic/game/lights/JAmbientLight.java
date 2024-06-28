@@ -3,7 +3,7 @@ package johnengine.basic.game.lights;
 import org.joml.Vector3f;
 
 import johnengine.basic.game.AWorldObject;
-import johnengine.basic.game.JWorld;
+import johnengine.basic.game.IWorld;
 
 public class JAmbientLight extends AWorldObject {
 
@@ -13,7 +13,7 @@ public class JAmbientLight extends AWorldObject {
     private Vector3f color;
     private float intensity;
     
-    public JAmbientLight(JWorld world) {
+    public JAmbientLight(IWorld world) {
         super(world);
         this.color = DEFAULT_COLOR;
         this.intensity = DEFAULT_INTENSITY;

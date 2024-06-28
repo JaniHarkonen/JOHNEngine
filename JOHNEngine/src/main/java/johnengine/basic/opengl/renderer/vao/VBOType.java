@@ -7,5 +7,7 @@ public enum VBOType {
     UVS,
     INDICES,
     TANGENTS,
-    BITANGENTS
+    BITANGENTS,
+    BONE_WEIGHTS,
+    BONE_INDICES
 }

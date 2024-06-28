@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
+import johnengine.Defaults;
 import johnengine.core.input.IInput;
 import johnengine.core.renderer.IRenderer;
 
@@ -17,6 +18,7 @@ public interface IWindow {
         public static final String MONITOR_SIZE = "monitor-size";
         public static final String TITLE = "title";
         public static final String FPS = "fps";
+        public static final String FPS_MAX = "fps-max";
         public static final String HAS_BORDER = "has-border";
         public static final String IS_CURSOR_LOCKED_TO_CENTER = "is-cursor-locked-to-center";
         public static final String IS_CURSOR_VISIBLE = "is-cursor-visible";
@@ -31,6 +33,7 @@ public interface IWindow {
         public Property<Point> monitorSize;
         public Property<String> title;
         public Property<Long> fps;
+        public Property<Long> fpsMax;
         public Property<Boolean> hasBorder;
         public Property<Boolean> isCursorLockedToCenter;
         public Property<Boolean> isCursorVisible;
@@ -48,6 +51,7 @@ public interface IWindow {
             this.monitorSize = new Property<>(MONITOR_SIZE, new Point(0, 0));
             this.title = new Property<>(TITLE, "Powered by JOHNEngine v.1.0.0");
             this.fps = new Property<>(FPS, (long) 0);
+            this.fpsMax = new Property<>(FPS_MAX, (long) Defaults.WINDOW_MAX_FPS);
             this.hasBorder = new Property<>(HAS_BORDER, true);
             this.isCursorLockedToCenter = new Property<>(IS_CURSOR_LOCKED_TO_CENTER, false);
             this.isCursorVisible = new Property<>(IS_CURSOR_VISIBLE, true);
@@ -63,6 +67,7 @@ public interface IWindow {
             this.storeProperty(this.monitorSize);
             this.storeProperty(this.title);
             this.storeProperty(this.fps);
+            this.storeProperty(this.fpsMax);
             this.storeProperty(this.hasBorder);
             this.storeProperty(this.isCursorLockedToCenter);
             this.storeProperty(this.isCursorVisible);
@@ -162,6 +167,8 @@ public interface IWindow {
     public IWindow resize(int width, int height);
     
     public IWindow changeTitle(String title);
+    
+    public IWindow limitFPS(long fpsMax);
     
     public IWindow showBorder();
     

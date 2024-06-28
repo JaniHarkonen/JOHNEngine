@@ -1,8 +1,8 @@
 package johnengine.basic.game;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import johnengine.basic.NodeManager;
 import johnengine.basic.game.components.geometry.CTransform;
 import johnengine.core.IRenderable;
 import johnengine.core.renderer.IRenderPass;
@@ -10,28 +10,31 @@ import johnengine.core.renderer.IRenderPass;
 public abstract class AWorldObject extends AGameObject implements 
     IRenderable, 
     ISceneGraphParent, 
-    ISceneGraphChild
+    ISceneGraphNode
 {
     
-    protected JWorld world;
+    protected IWorld world;
     protected boolean isVisible;
     protected CTransform transform;
-    protected AWorldObject parent;
-    protected List<ISceneGraphChild> children;
+    protected NodeManager<AWorldObject, ISceneGraphNode> nodeManager;
+    //protected AWorldObject parent;
+    //protected List<ISceneGraphNode> children;
 
-    public AWorldObject(JWorld world) {
+    public AWorldObject(IWorld world) {
         super(world.getGame());
         this.world = world;
         this.isVisible = true;
         this.transform = new CTransform();
-        this.parent = null;
-        this.children = new ArrayList<>();
+        this.nodeManager = new NodeManager<>();
+        //this.parent = null;
+        //this.children = new ArrayList<>();
     }
     
     
     @Override
     public void submit(IRenderPass renderPass) {
-        for( ISceneGraphChild child : this.children )
+        //for( ISceneGraphNode child : this.children )
+        for( ISceneGraphNode child : this.nodeManager.getChildren() )
         child.submit(renderPass);
         
         renderPass.executeSubmissionStrategy(this);
@@ -39,53 +42,70 @@ public abstract class AWorldObject extends AGameObject implements
     
     @Override
     public void destroy() {
-        if( this.world != null )
+        /*if( this.world != null )
         this.world.destroyInstance(this);
         
-        super.destroy();
+        super.destroy();*/
     }
     
     @Override
-    public void attach(ISceneGraphChild child) {
-        //ISceneGraphParent.super.attach(child);
+    public void attach(ISceneGraphNode child) {
         child.attached(this);
-        this.children.add(child);
+        this.nodeManager.addChild(child);
+        //this.children.add(child);
     }
     
     @Override
-    public void detach(ISceneGraphChild child) {
-        int s = this.children.size();
+    public void detach(ISceneGraphNode child) {
+        /*List<ISceneGraphNode> children = this.nodeManager.getChildren();
+        int s = children.size();//this.children.size();
         for( int i = 0; i < s; i++ )
         {
-            ISceneGraphChild currentChild = this.children.get(i);
+            ISceneGraphNode currentChild = children.get(i);//this.children.get(i);
             if( currentChild != child )
             continue;
             
             this.detach(currentChild, i);
             return;
-        }
+        }*/
+        
+        if( this.nodeManager.removeChild(child) )
+        ISceneGraphParent.super.detach(child);
     }
     
     public void detach(int childIndex) {
-        ISceneGraphChild child = this.children.get(childIndex);
-        this.detach(child, childIndex);
+        //ISceneGraphNode child = this.children.get(childIndex);
+        //ISceneGraphNode child = this.nodeManager.getChild(childIndex);
+        //this.detach(child, childIndex);
+        
+        ISceneGraphNode child = this.nodeManager.getChild(childIndex);
+        
+        if( child != null )
+        this.detach(child);
+        
+        //if( this.nodeManager.removeChild(childIndex) != null )
+        //ISceneGraphParent.super.detach(child);
     }
     
-    public void detach(ISceneGraphChild child, int childIndex) {
-        ISceneGraphParent.super.detach(child);
-        this.children.remove(childIndex);
-    }
+    /*public void detach(ISceneGraphNode child, int childIndex) {
+        //ISceneGraphParent.super.detach(child);
+        this.nodeManager.removeChild(child);
+        //this.children.remove(childIndex);
+    }*/
     
     @Override
     public void attached(ISceneGraphParent parent) {
-        this.parent = (AWorldObject) parent;
-        this.transform.attachTo(this.parent.transform);
+        //this.parent = (AWorldObject) parent;
+        AWorldObject parentWorldObject = (AWorldObject) parent;
+        this.nodeManager.setParent(parentWorldObject);
+        this.transform.attachTo(parentWorldObject.transform);
     }
     
     @Override
     public void detached() {
         this.transform.unparent();
-        this.parent = null;
+        //this.parent = null;
+        this.nodeManager.removeParent();
     }
     
     
@@ -101,7 +121,7 @@ public abstract class AWorldObject extends AGameObject implements
         this.isVisible = true;
     }
     
-    public JWorld getWorld() {
+    public IWorld getWorld() {
         return this.world;
     }
     
@@ -110,10 +130,17 @@ public abstract class AWorldObject extends AGameObject implements
     }
     
     public AWorldObject getParent() {
-        return this.parent;
+        //return this.parent;
+        return this.nodeManager.getParent();
     }
     
     public CTransform getTransform() {
         return this.transform;
+    }
+    
+    @Override
+    public List<ISceneGraphNode> getChildren() {
+        //return this.children;
+        return this.getChildren();
     }
 }

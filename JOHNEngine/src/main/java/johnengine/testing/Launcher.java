@@ -3,6 +3,8 @@ package johnengine.testing;
 import johnengine.basic.opengl.WindowGL;
 import johnengine.core.ALauncherFramework;
 import johnengine.core.assetmngr.AssetManager;
+import johnengine.core.logger.ConsoleRecorder;
+import johnengine.core.logger.Logger;
 import johnengine.core.networker.Networker;
 
 public final class Launcher extends ALauncherFramework {
@@ -32,6 +34,15 @@ public final class Launcher extends ALauncherFramework {
 
     
     public static void main(String[] args) {
+            // Configure Logger
+        Logger.configure(
+            Logger.SHOW_SEVERITY | 
+            Logger.SHOW_THREAD | 
+            Logger.SHOW_CALLER
+        );
+        Logger.setVerbosity(Logger.VERBOSITY_VERBOSE);
+        Logger.addRecorder("console", new ConsoleRecorder());
+        
         Launcher launcher = new Launcher();
         launcher.launch();
     }

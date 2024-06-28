@@ -45,7 +45,7 @@ public class CMovement implements ITickable {
     
     @Override
     public void tick(float deltaTime) {
-        float speedMultiplier = 0.1f;
+        float speedMultiplier = 0.4f;
         
         CTransform targetTransform = this.target.getTransform();
         CTransform.Rotation targetRotation = targetTransform.getRotation();
@@ -65,7 +65,7 @@ public class CMovement implements ITickable {
     
     public void moveX(float xMovementIntensity) {
         this.xMovementIntensity = xMovementIntensity;
-        float speedMultiplier = 0.1f;
+        float speedMultiplier = 0.4f;
         
         CTransform targetTransform = this.target.getTransform();
         CTransform.Rotation targetRotation = targetTransform.getRotation();
@@ -80,7 +80,7 @@ public class CMovement implements ITickable {
     
     public void moveZ(float zMovementIntensity) {
         this.zMovementIntensity = zMovementIntensity;
-        float speedMultiplier = 0.1f;
+        float speedMultiplier = 0.4f;
         
         CTransform targetTransform = this.target.getTransform();
         CTransform.Rotation targetRotation = targetTransform.getRotation();

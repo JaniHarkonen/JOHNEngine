@@ -111,13 +111,17 @@ public class MeshInfo extends AAsset<MeshInfo.Data> {
     /********************** MeshInfo-class **********************/
     
     public static void generateDefaults() {
+        float width = 1.0f;
+        float height = 1.0f;
+        float z = 0.0f;
+        
         MeshInfo.Data.State dataState = new MeshInfo.Data.State(
                 // Vertices
             new Vector3f[] {
-                new Vector3f(-0.5f, 0.5f, -1.0f),        // top left
-                new Vector3f(-0.5f, -0.5f, -1.0f),       // bottom left
-                new Vector3f(0.5f, -0.5f, -1.0f),        // bottom right
-                new Vector3f(0.5f, 0.5f, -1.0f)          // top right
+                new Vector3f(0, 0, z),        // top left
+                new Vector3f(0, height, z),       // bottom left
+                new Vector3f(width, height, z),        // bottom right
+                new Vector3f(width, 0, z)          // top right
             }, 
                 // Normals
             new Vector3f[] {

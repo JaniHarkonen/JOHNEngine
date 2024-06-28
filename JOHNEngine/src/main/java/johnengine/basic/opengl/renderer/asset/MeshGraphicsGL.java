@@ -113,9 +113,13 @@ public class MeshGraphicsGL
         VBOVector3f vboTangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboTangents.generate(data.getTangents());
     
-            // Generate tangents VBO
+            // Generate bitangents VBO
         VBOVector3f vboBitangents = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
         vboBitangents.generate(data.getBitangents());
+        
+            // Generate bone weights VBO
+        VBOVector3f vboBoneWeights = new VBOVector3f(GL46.GL_ARRAY_BUFFER);
+        //vboBoneWeights.generate(data.get)
         
         VBOContainer vbos = new VBOContainer();
         vbos.setVBO(VBOType.VERTICES, vboVertices);
