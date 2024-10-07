@@ -1,4 +1,4 @@
-## JOHNEngine [PAUSED]
+## JOHNEngine [MIGRATED, READ BELOW]
 The renderer for this engine is currently being developed over at:[https://github.com/JaniHarkonen/3d-renderer](https://github.com/JaniHarkonen/3d-renderer).
 
 Once the renderer has been fully developed, it will be integrated with this project.
